@@ -1,0 +1,13 @@
+<h1>Logged={{singin.logged}}</h1>
+<form ng-submit="singin.onSubmit()">
+    <div class="form-group">
+        <label for="username">User name</label>
+        <input type="text" class="form-control" id="username" placeholder="Enter your name" ng-model="singin.credentials.username">
+    </div>
+    <div class="form-group">
+        <label for="password">Password</label>
+        <input type="password" class="form-control" id="password" placeholder="Password" ng-model="singin.credentials.password">
+    </div>
+    <button type="submit" class="btn btn-default">Sing in</button>
+</form>
+
