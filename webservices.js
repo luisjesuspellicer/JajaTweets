@@ -1,5 +1,7 @@
 /**
- * Created by diego on 21/04/16.
+ * Created by Diego on 21/04/16.
+ *
+ * Web services list.
  */
 (function (){
 
