@@ -13,6 +13,7 @@
         var admin_required = require('../../config/policies.config').admin_required;
         var admin_or_self_required = require('../../config/policies.config').admin_or_self_required;
 
+
         // Setup the controller for REST;
         var resource = Resource(app, '', route, app.models.users)
             .get(admin_or_self_required)
@@ -41,7 +42,7 @@
                             "error": false,
                             "data": {
                                 "token": token,
-                                "url": "http://localhost:3000/"
+                                "url": "http://localhost:3000/login"
                             }
                         }
                     }, next);
