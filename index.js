@@ -25,7 +25,7 @@
     app.use(methodOverride('X-HTTP-Method-Override'));
 
     // Connect to MongoDB
-    mongoose.connect('mongodb://localhost/meanapp');
+    mongoose.connect(process.env.MONGODB_URI ||'mongodb://localhost/meanapp');
     mongoose.connection.once('open', function() {
 
         // Load all the models
