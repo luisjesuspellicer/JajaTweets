@@ -2,7 +2,7 @@
  * Created by diego on 22/04/16.
  */
 (function() {
-    'require strict';
+    'use strict';
 
     var jwt = require('express-jwt');
     var _ = require('lodash');
@@ -69,6 +69,36 @@
         } else {
             next();
         }
+    };
+
+    exports.user_required = {
+        before: [auth,function (req, res, next) { // Need to be admin
+            if (req.payload && req.payload.email != "test@test") {
+                res.status(401)
+                    .json({
+                        "error": false,
+                        "data": {
+                            "message": "Insufficient privileges.",
+                            "url": "http://localhost:3000/login"
+                        }
+                    })
+            } else {
+                next();
+            }
+        }],
+        after: [function (err, req, res, next) { // Need to be authenticated
+            if (err && err.name === "UnauthorizedError") {
+                res.status(401).json({
+                    "error": false,
+                    "data": {
+                        "message": "Authentication required.",
+                        "url": "http://localhost:3000/login"
+                    }
+                })
+            } else {
+                next();
+            }
+        }, addUrl] // Url required in REST
     };
 
 

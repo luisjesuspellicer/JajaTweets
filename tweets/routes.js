@@ -6,7 +6,7 @@
     module.exports = {
         'tweets': require('./controllers/tweets.controller.js'),
         'mentions': require('./controllers/mentions.controller'),
-        'auth': require('./controllers/auth.controller')
+        'auth.twitter': require('./controllers/auth.controller')
     };
 
 })();
