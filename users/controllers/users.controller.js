@@ -29,14 +29,16 @@
         };
 
         // Setup the controller for REST;
-        Resource(app, '', route, app.models.users)
+        var res = Resource(app, '', route, app.models.users)
             .get(with_auth)
             .put(with_auth)
             .delete(with_auth)
             .index(with_auth);
 
+        res.register(app, 'post', '/users', createUser, res.respond.bind(res));
+
         // Add register option
-        app.post('/users',function(req, res, next) {
+        function createUser(req, res, next) {
             var user = new User();
 
             user.name = req.body.name;
@@ -52,7 +54,7 @@
                     "token" : token
                 });
             });
-        });
+        }
 
         // Return middleware.
         return function(req, res, next) {

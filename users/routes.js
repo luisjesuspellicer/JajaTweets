@@ -4,8 +4,8 @@
 (function() {
 
     module.exports = {
-        'users': require('./controllers/users.controller'),
-        'auth': require('./controllers/auth.controller')
+        'auth.local': require('./controllers/auth.controller'),
+        'users': require('./controllers/users.controller')
     };
 
 })();
