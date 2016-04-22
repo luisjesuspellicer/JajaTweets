@@ -25,7 +25,11 @@
                     token = user.generateJwt();
                     res.status(200);
                     res.json({
-                        "token" : token
+                        "error": false,
+                        "data": {
+                            "token" : token,
+                            "url": "http://localhost:3000/"
+                        }
                     });
                 } else {
                     // If user is not found
