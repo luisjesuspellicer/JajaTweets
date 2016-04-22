@@ -5,13 +5,16 @@
   "main": "index.js",
   "dependencies": {
     "body-parser": "^1.15.0",
+    "cookie-parser": "^1.4.1",
     "express": "^4.13.4",
     "express-jwt": "^3.3.0",
+    "express-session": "^1.13.0",
     "jsonwebtoken": "^5.7.0",
     "lodash": "^4.11.1",
     "method-override": "^2.3.5",
     "passport": "^0.3.2",
     "passport-local": "^1.0.0",
+    "passport-twitter": "^1.0.4",
     "resourcejs": "^1.2.0"
   },
   "devDependencies": {

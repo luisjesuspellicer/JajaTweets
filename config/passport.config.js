@@ -6,6 +6,7 @@
 
     var passport = require('passport');
     var LocalStrategy = require('passport-local').Strategy;
+    var TwitterStrategy = require('passport-twitter').Strategy;
     var mongoose = require('mongoose');
     var User = mongoose.model('users');
 
@@ -32,6 +33,25 @@
             });
         }
     ));
+
+    passport.use(new TwitterStrategy({
+            consumerKey: process.env.TWITTER_CONSUMER_KEY,
+            consumerSecret: process.env.TWITTER_CONSUMER_SECRET,
+            callbackURL: "http://localhost:3000/auth/twitter/callback"
+        },
+        function(token, tokenSecret, profile, cb) {
+            return cb(null, {"token": token, "tokenSecret": tokenSecret, "profile": profile});
+        }
+    ));
+
+    // For passport sessions
+    passport.serializeUser(function(user, done) {
+        done(null, user);
+    });
+
+    passport.deserializeUser(function(id, done) {
+        done(null, id);
+    });
 
 
 })();

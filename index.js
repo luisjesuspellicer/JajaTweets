@@ -10,8 +10,10 @@
     'use strict';
 
     var express = require('express');
+    var session = require('express-session');
     var mongoose = require('mongoose');
     var bodyParser = require('body-parser');
+    var cookieParser = require('cookie-parser');
     var methodOverride = require('method-override');
     var _ = require('lodash');
     var passport = require('passport');
@@ -36,7 +38,17 @@
 
         // Load passport module
         require('./config/passport.config');
+
+        // Authentication configuration
+        app.use(session({
+            resave: false,
+            saveUninitialized: true,
+            name: "id",
+            secret: process.env.MY_SECRET
+        }));
+        app.use(cookieParser());
         app.use(passport.initialize());
+        app.use(passport.session());
 
         // Load all the routes
         var routes = {};

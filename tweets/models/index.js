@@ -5,7 +5,7 @@
     'use strict';
 
     module.exports = {
-        users: require('./tweets.model.js')
+        tweets: require('./tweets.model.js')
     };
 
 })();
