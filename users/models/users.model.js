@@ -1,7 +1,10 @@
 /**
- * Created by diego on 16/04/16.
+ * Created by Diego on 16/04/16.
+ *
+ * Manages basic user information.
  */
 (function() {
+
     'use strict';
 
     var mongoose = require('mongoose');
@@ -23,16 +26,19 @@
         salt: String
     });
 
+    // Creates hash and salt from password
     userSchema.methods.setPassword = function(password){
         this.salt = crypto.randomBytes(16).toString('hex');
         this.hash = crypto.pbkdf2Sync(password, this.salt, 1000, 64).toString('hex');
     };
 
+    // True if it's a valid password, otherwise false.
     userSchema.methods.validPassword = function(password) {
         var hash = crypto.pbkdf2Sync(password, this.salt, 1000, 64).toString('hex');
         return this.hash === hash;
     };
 
+    // Creates the Jwt from user's info and returns it.
     userSchema.methods.generateJwt = function() {
         var expiry = new Date();
         expiry.setDate(expiry.getDate() + 7);
