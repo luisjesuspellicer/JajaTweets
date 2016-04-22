@@ -24,7 +24,7 @@
     app.use(bodyParser.json());
     app.use(methodOverride('X-HTTP-Method-Override'));
 
-    // Connect to MongoDB
+    // Connect to MongoDB, selects between environment variable (Heroku DB) or localhost (Localhost custom DB)
     mongoose.connect(process.env.MONGODB_URI ||'mongodb://localhost/meanapp');
     mongoose.connection.once('open', function() {
 
@@ -53,6 +53,7 @@
         app.use(express.static('app'));
 
         console.log('Listening on port 3000...');
+        // Listen in the port specified, environment variable for Heroku, or custom on localhost
         app.listen(process.env.PORT || 3000);
     });
 

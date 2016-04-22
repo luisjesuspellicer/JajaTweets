@@ -11,42 +11,52 @@
 
     module.exports = function(app) {
 
+        // Luis
         app.get('/tweets',function(req, res, next) {
 
         });
 
+        // Raúl
         app.post('/tweets',function(req, res, next) {
 
         });
 
+        // Raúl
         app.get('/tweets/:id',function(req, res, next) {
 
         });
 
+        // Luis
         app.put('/tweets/:id',function(req, res, next) {
 
         });
 
+        // Luis
         app.delete('/tweets/:id',function(req, res, next) {
 
         });
 
+        // Raúl
         app.get('/tweets/:id/retweet',function(req, res, next) {
 
         });
 
+        // Luis
         app.get('/tweets/own',function(req, res, next) {
 
         });
 
+        // Luis
         app.get('/tweets/pending',function(req, res, next) {
 
         });
 
+        // Raúl
         app.get('/tweets/subscribed',function(req, res, next) {
 
         });
 
+        // Raúl
         app.get('/tweets/subscribed/:id',function(req, res, next) {
 
         });
