@@ -6,5 +6,6 @@
     'use strict';
 
     module.exports = [ 'users' ];
+    module.exports = [ 'tweets' ];
 
 })();
