@@ -6,7 +6,6 @@
     'use strict';
 
     var passport = require('passport');
-    var util = require('util');
     var mongoose = require('mongoose');
     var User = mongoose.model('users');
     var atob = require('atob');
@@ -25,7 +24,8 @@
                 var payload = req.headers.authorization.split('.')[1];
                 payload = atob(payload);
                 payload = JSON.parse(payload);
-                User.findOneAndUpdate({email: payload.email}, {$set:{token:req.user.token, secret: req.user.tokenSecret}},
+                User.findOneAndUpdate({email: payload.email}, {$set:{token:req.user.token,
+                    secret: req.user.tokenSecret}},
                     {new: false}, function(err, doc){
                     if(err){
                         // Error updating user

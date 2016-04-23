@@ -43,7 +43,7 @@
         id_str: {
             type: String,
             unique: true,
-            required: true
+            required: false
         },
         user: {
             type: String,

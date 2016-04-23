@@ -26,7 +26,8 @@
         salt: String,
         token: String,
         secret: String,
-        lastAccess: Date
+        lastAccess: Date,
+        subscribed: Object
     });
 
     // Creates hash and salt from password

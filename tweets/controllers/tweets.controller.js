@@ -14,6 +14,9 @@
     var User = mongoose.model('users');
     var user_required = require('../../config/policies.config').user_required;
 
+    // TODO: Quit in production
+    var util = require('util');
+
 
     module.exports = function(app) {
 
@@ -68,6 +71,61 @@
             });
         }
 
+        /**
+         * Gets an unique tweet from Twitter by unique id.
+         * Requires user authentication.
+         * @param user is the local user.
+         * @param params are the params of the request.
+         * @param callback is the callback object, containing the resultant tweet data.
+         */
+        function getTweet(user, params, callback){
+            initTwitterOauth(function(oa)
+            {
+                oa.get(
+                    "https://api.twitter.com/1.1/statuses/show.json?" +
+                    "id=" + params.id
+                    , user.token
+                    , user.secret
+                    , function (error, data, response) {
+                        if (error){
+                            callback(error);
+                        } else {
+                            callback(JSON.parse(data));
+                        }
+                    }
+                );
+            });
+        }
+
+        /**
+         * Retweet an unique tweet from Twitter by unique id.
+         * Requires user authentication.
+         * @param user is the local user.
+         * @param params are the params of the request.
+         * @param callback is the callback object, containing the resultant tweet data (and retweet data).
+         */
+        function makeRetweet(user, params, callback){
+            initTwitterOauth(function(oa)
+            {
+                oa.post(
+                    "https://api.twitter.com/1.1/statuses/retweet/" + params.id + ".json"
+                    , user.token
+                    , user.secret
+                    // Content
+                    , {
+                        "id": params.id
+                    }
+                    , function (error, data, response) {
+                        if (error){
+                            callback(error);
+                        } else {
+                            callback(JSON.parse(data));
+                        }
+                    }
+                );
+            });
+        }
+
 
 
         /**
@@ -101,7 +159,7 @@
          * - date: javascript date object (timestamp or string).
          * - status: status to put on the tweet.
          */
-        app.post('/tweets',user_required.before, function(req, res, next) {
+        app.post('/tweets', user_required.before, function(req, res, next) {
             var date = new Date();
             if(req.body.date && new Date(req.body.date) > date) {
                 // If tweet date is posterior of current date, the tweet is saved for posterior posting
@@ -113,7 +171,7 @@
                     });
                     newTweet.save(function(err){
                         if(err){
-                            res.json({
+                            res.status(500).json({
                                 "error": true,
                                 "data" : {
                                     "message": "Could not save tweet in database",
@@ -129,6 +187,7 @@
                                 }
                             });
                         }
+                        next();
                     });
                 });
             } else {
@@ -141,30 +200,63 @@
                                 "data" : {
                                     "message": "Tweet post successful",
                                     "id_str": result.id_str,
-                                    "url": "http://localhost:3000/tweets"
+                                    "url": "http://twitter.com/" + "statuses/" + result.id_str
                                 }
                             });
-                        } else {
-                            res.json({
+                        } else if(result.statusCode && result.statusCode != 200){
+                            res.status(result.statusCode).json({
                                 "error": true,
                                 "data" : {
                                     "message": "Tweet post unsuccessful",
                                     "url": "http://localhost:3000/"
                                 }
                             });
+                        } else {
+                            res.status(500).json({
+                                "error": true,
+                                "data" : {
+                                    "message": "Cannot post the specified tweet",
+                                    "url": "http://localhost:3000/"
+                                }
+                            });
                         }
+                        next();
                     });
-                });
+                })
             }
-            next();
+
         }, user_required.after);
 
         /**
          * Gets a tweet by the unique tweet id, and provides the data of it.
+         * Requires a local user account with at least one twitter account associated.
+         * Get parameters required:
+         * - id: unique tweet id (from Twitter "id_str").
          */
-        app.get('/tweets/:id',function(req, res, next) {
-
-        });
+        app.get('/tweets/:id', user_required.before, function(req, res, next) {
+            getUserFromJWT(req, function(user){
+                getTweet(user, req.params, function(result){
+                    if(result.statusCode && result.statusCode != 200){
+                        res.status(result.statusCode).json({
+                            "error": true,
+                            "data" : {
+                                "message": "Cannot get tweet with id: " + req.params.id,
+                                "url": "http://localhost:3000/"
+                            }
+                        });
+                    } else {
+                        res.json({
+                            "error": false,
+                            "data" : {
+                                "message": "Tweet get successful",
+                                "url": "http://twitter.com/" + "statuses/" + result.id_str,
+                                "content": result
+                            }
+                        });
+                    }
+                });
+            });
+        }, user_required.after);
 
         // Luis
         app.put('/tweets/:id',function(req, res, next) {
@@ -176,10 +268,36 @@
 
         });
 
-        // Raúl
-        app.get('/tweets/:id/retweet',function(req, res, next) {
-
-        });
+        /**
+         * Makes a retweet on a specific tweet (with determinated user account).
+         * Requires a local user account with at least one twitter account associated.
+         * Get parameters required:
+         * - id: unique tweet id (from Twitter "id_str").
+         */
+        app.get('/tweets/:id/retweet', user_required.before, function(req, res, next) {
+            getUserFromJWT(req, function(user){
+                makeRetweet(user, req.params, function(result){
+                    if(result.statusCode && result.statusCode != 200){
+                        res.status(result.statusCode).json({
+                            "error": true,
+                            "data" : {
+                                "message": "Cannot retweet with id: " + req.params.id,
+                                "url": "http://localhost:3000/"
+                            }
+                        });
+                    } else {
+                        res.json({
+                            "error": false,
+                            "data" : {
+                                "message": "Retweet successful",
+                                "url": "http://twitter.com/" + "statuses/" + result.id_str,
+                                "content": result
+                            }
+                        });
+                    }
+                });
+            });
+        }, user_required.after);
 
         // Luis
         app.get('/tweets/own',function(req, res, next) {
