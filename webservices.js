@@ -7,6 +7,6 @@
 
     'use strict';
 
-    module.exports = ['users', 'tweets'];
+    module.exports = ['users', 'tweets', 'analytics'];
 
 })();

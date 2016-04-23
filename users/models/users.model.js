@@ -23,7 +23,12 @@
             required: true
         },
         hash: String,
-        salt: String
+        salt: String,
+        token: {
+            type: String,
+            unique: true
+        },
+        secret: String
     });
 
     // Creates hash and salt from password
