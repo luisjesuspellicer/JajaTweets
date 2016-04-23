@@ -23,6 +23,8 @@
                 // If a user is found
                 if(user){
                     token = user.generateJwt();
+                    user.lastAccess = new Date();
+                    user.save();
                     res.status(200);
                     res.json({
                         "error": false,

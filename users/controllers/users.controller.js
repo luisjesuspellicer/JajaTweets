@@ -30,6 +30,7 @@
             .index(admin_required);
 
         resource.register(app, 'post', '/users', createUser, resource.respond.bind(resource), admin_required);
+        resource.register(app, 'get', '/users:last', getLastUsers, resource.respond.bind(resource), admin_required);
 
         // Add register option
         function createUser(req, res, next) {
@@ -63,6 +64,14 @@
             next();
         };
     };
+
+    function getLastUsers(req, res, next) {
+        User.find({}).sort({lastAccess: -1}).limit(20).exec(
+            function(err, users) {
+                res.status(200).json(users);
+            }
+        );
+    }
 
     /**
      * Uses the Analytics API so as to update subunsub data
