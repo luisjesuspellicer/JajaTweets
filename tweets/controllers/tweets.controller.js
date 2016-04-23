@@ -8,6 +8,7 @@
     var passport = require('passport');
     var mongoose = require('mongoose');
     var Tweet = mongoose.model('tweets');
+    var user_required = require('../../config/policies.config');
 
     module.exports = function(app) {
 
@@ -17,9 +18,10 @@
         });
 
         // Raúl
-        app.post('/tweets',function(req, res, next) {
-
-        });
+        app.post('/tweets',user_required.before, function(req, res, next) {
+            res.status(200).json({'All': 'right'});
+            next();
+        }, user_required.after);
 
         // Raúl
         app.get('/tweets/:id',function(req, res, next) {
