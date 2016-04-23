@@ -9,5 +9,5 @@
     webservices.forEach(function(ws){
         require('../'+ws+'/test');
     })
-    
+
 })();

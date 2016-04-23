@@ -19,9 +19,6 @@
      * @param next
      */
     var add_url = function(req, res, next) {
-        if (res && res.resource.item && res.resource.item && !res.resource.item.url) {
-            res.resource.item.url = "http://localhost:3000/login";
-        }
         next();
     };
 
