@@ -44,6 +44,11 @@
             type: String,
             unique: true,
             required: true
+        },
+        user: {
+            type: String,
+            unique: false,
+            required: true
         }
     });
 

@@ -13,9 +13,11 @@
     "jsonwebtoken": "^5.7.0",
     "lodash": "^4.11.1",
     "method-override": "^2.3.5",
+    "oauth": "^0.9.14",
     "passport": "^0.3.2",
     "passport-local": "^1.0.0",
     "passport-twitter": "^1.0.4",
+    "request": "^2.72.0",
     "resourcejs": "^1.2.0"
   },
   "devDependencies": {
