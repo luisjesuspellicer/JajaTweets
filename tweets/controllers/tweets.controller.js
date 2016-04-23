@@ -8,7 +8,7 @@
     var passport = require('passport');
     var mongoose = require('mongoose');
     var Tweet = mongoose.model('tweets');
-    var user_required = require('../../config/policies.config');
+    var user_required = require('../../config/policies.config').user_required;
 
     module.exports = function(app) {
 

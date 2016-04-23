@@ -24,10 +24,7 @@
         },
         hash: String,
         salt: String,
-        token: {
-            type: String,
-            unique: true
-        },
+        token: String,
         secret: String
     });
 
