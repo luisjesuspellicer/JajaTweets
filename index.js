@@ -67,6 +67,9 @@
         console.log('Listening on port 3000...');
         // Listen in the port specified, environment variable for Heroku, or custom on localhost
         app.listen(process.env.PORT || 3000);
+
+        // export app so we can test it
+        exports = module.exports = app;
     });
 
 })();

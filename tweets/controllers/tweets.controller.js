@@ -126,7 +126,159 @@
             });
         }
 
+        /**
+         * Unretweets an unique tweet from Twitter by unique id.
+         * Requires user authentication.
+         * @param user is the local user.
+         * @param params are the params of the request.
+         * @param callback is the callback object, containing the resultant tweet data (and unretweet data).
+         */
+        function makeUnretweet(user, params, callback){
+            initTwitterOauth(function(oa)
+            {
+                oa.post(
+                    "https://api.twitter.com/1.1/statuses/unretweet/" + params.id + ".json"
+                    , user.token
+                    , user.secret
+                    // Content
+                    , {
+                        "id": params.id
+                    }
+                    , function (error, data, response) {
+                        if (error){
+                            callback(error);
+                        } else {
+                            callback(JSON.parse(data));
+                        }
+                    }
+                );
+            });
+        }
 
+        /**
+         * Favorite/like an unique tweet from Twitter by unique id.
+         * Requires user authentication.
+         * @param user is the local user.
+         * @param params are the params of the request.
+         * @param callback is the callback object, containing the resultant tweet data (and favorite data).
+         */
+        function makeFavorite(user, params, callback){
+            initTwitterOauth(function(oa)
+            {
+                oa.post(
+                    "https://api.twitter.com/1.1/favorites/create.json"
+                    , user.token
+                    , user.secret
+                    // Content
+                    , {
+                        "id": params.id
+                    }
+                    , function (error, data, response) {
+                        if (error){
+                            callback(error);
+                        } else {
+                            callback(JSON.parse(data));
+                        }
+                    }
+                );
+            });
+        }
+
+        /**
+         * Unfavorite/dislike an unique tweet from Twitter by unique id.
+         * Requires user authentication.
+         * @param user is the local user.
+         * @param params are the params of the request.
+         * @param callback is the callback object, containing the resultant tweet data (and unfavorite data).
+         */
+        function makeUnfavorite(user, params, callback){
+            initTwitterOauth(function(oa)
+            {
+                oa.post(
+                    "https://api.twitter.com/1.1/favorites/destroy.json"
+                    , user.token
+                    , user.secret
+                    // Content
+                    , {
+                        "id": params.id
+                    }
+                    , function (error, data, response) {
+                        if (error){
+                            callback(error);
+                        } else {
+                            callback(JSON.parse(data));
+                        }
+                    }
+                );
+            });
+        }
+
+        /**
+         * Gets user info from Twitter by unique id.
+         * Requires user authentication.
+         * @param user is the local user.
+         * @param id is the id of the twitter user.
+         * @param callback is the callback object, containing the resultant user data (statistics info).
+         */
+        function getUserInfo(user, id, callback){
+            initTwitterOauth(function(oa)
+            {
+                oa.get(
+                    "https://api.twitter.com/1.1/users/show.json?id=" + id
+                    , user.token
+                    , user.secret
+                    , function (error, data, response) {
+                        if (error){
+                            callback(error);
+                        } else {
+                            callback(JSON.parse(data));
+                        }
+                    }
+                );
+            });
+        }
+
+        /**
+         * Gets user info from Twitter by unique id.
+         * Requires user authentication.
+         * @param user is the local user.
+         * @param query is the query to find tweets.
+         * @param callback is the callback object, containing the resultant user data (searched tweets).
+         */
+        function searchTweets(user, query, callback){
+            initTwitterOauth(function(oa)
+            {
+                oa.get(
+                    "https://api.twitter.com/1.1/search/tweets.json?q=" + query
+                    , user.token
+                    , user.secret
+                    , function (error, data, response) {
+                        if (error){
+                            callback(error);
+                        } else {
+                            callback(JSON.parse(data));
+                        }
+                    }
+                );
+            });
+        }
+
+        /**
+         * Increments the local saved number of tweets by num.
+         * @param user is the local user object.
+         * @param id is the twitter id user.
+         * @param num_app is the number to add to the local total tweets statistic.
+         */
+        function updateStatistics(user, id, num_app){
+            getUserInfo(user, id, function(result){
+                User.findOneAndUpdate({email: user.email}, {$set: {tweet_total: result.statuses_count},
+                    $inc: { tweet_app: num_app }}, function(err, doc){
+                        if(err) {
+                            console.log(err);
+                        }
+                    });
+            });
+        }
 
         /**
          * Converts a JWT in request to a JSON Object.
@@ -139,18 +291,18 @@
             payload = atob(payload);
             payload = JSON.parse(payload);
             User.findOne({email: payload.email}, function(err, doc){
-                    if(err) {
-                        callback(err);
-                    } else {
-                        callback(doc);
-                    }
-                });
+                if(err) {
+                    callback(err);
+                } else {
+                    callback(doc);
+                }
+            });
         }
 
         // Luis
-        app.get('/tweets',function(req, res, next) {
+        app.get('/tweets', user_required.before, function(req, res, next) {
 
-        });
+        }, user_required.after);
 
         /**
          * Endpoint that updates a twitter status (post a tweet).
@@ -160,10 +312,11 @@
          * - status: status to put on the tweet.
          */
         app.post('/tweets', user_required.before, function(req, res, next) {
-            var date = new Date();
-            if(req.body.date && new Date(req.body.date) > date) {
-                // If tweet date is posterior of current date, the tweet is saved for posterior posting
-                getUserFromJWT(req, function(user) {
+            getUserFromJWT(req, function(user) {
+                var date = new Date();
+                if(req.body.date && new Date(req.body.date) > date) {
+                    // If tweet date is posterior of current date, the tweet is saved for posterior posting
+
                     var newTweet = new Tweet({
                         "status": req.body.status,
                         "date": req.body.date,
@@ -189,12 +342,11 @@
                         }
                         next();
                     });
-                });
-            } else {
-                // If tweet date is before or equal to current date, its updated directly
-                getUserFromJWT(req, function(user){
+                } else {
+                    // If tweet date is before or equal to current date, its updated directly
                     makeTweet(user, req.body, function(result){
                         if(result.id_str){
+                            updateStatistics(user, result.user.id_str, 1);
                             res.json({
                                 "error": false,
                                 "data" : {
@@ -222,9 +374,7 @@
                         }
                         next();
                     });
-                })
-            }
-
+                }});
         }, user_required.after);
 
         /**
@@ -244,6 +394,7 @@
                                 "url": "http://localhost:3000/"
                             }
                         });
+                        next();
                     } else {
                         res.json({
                             "error": false,
@@ -253,20 +404,21 @@
                                 "content": result
                             }
                         });
+                        next();
                     }
                 });
             });
         }, user_required.after);
 
         // Luis
-        app.put('/tweets/:id',function(req, res, next) {
+        app.put('/tweets/:id', user_required.before, function(req, res, next) {
 
-        });
+        }, user_required.after);
 
         // Luis
-        app.delete('/tweets/:id',function(req, res, next) {
+        app.delete('/tweets/:id', user_required.before, function(req, res, next) {
 
-        });
+        }, user_required.after);
 
         /**
          * Makes a retweet on a specific tweet (with determinated user account).
@@ -285,6 +437,7 @@
                                 "url": "http://localhost:3000/"
                             }
                         });
+                        next();
                     } else {
                         res.json({
                             "error": false,
@@ -294,30 +447,211 @@
                                 "content": result
                             }
                         });
+                        next();
                     }
                 });
             });
         }, user_required.after);
 
+        /**
+         * Makes an unretweet on a specific tweet (with determinated user account).
+         * Requires a local user account with at least one twitter account associated.
+         * Get parameters required:
+         * - id: unique tweet id (from Twitter "id_str").
+         */
+        app.get('/tweets/:id/unretweet', user_required.before, function(req, res, next) {
+            getUserFromJWT(req, function(user){
+                makeUnretweet(user, req.params, function(result){
+                    if(result.statusCode && result.statusCode != 200){
+                        res.status(result.statusCode).json({
+                            "error": true,
+                            "data" : {
+                                "message": "Cannot unretweet with id: " + req.params.id,
+                                "url": "http://localhost:3000/"
+                            }
+                        });
+                        next();
+                    } else if(result.retweeted==false) {
+                        res.json({
+                            "error": true,
+                            "data" : {
+                                "message": "Tweet wasn't retweeted",
+                                "url": "http://twitter.com/" + "statuses/" + result.id_str,
+                                "content": result
+                            }
+                        });
+                        next();
+                    } else {
+                        res.json({
+                            "error": false,
+                            "data" : {
+                                "message": "Unretweet successful",
+                                "url": "http://twitter.com/" + "statuses/" + result.id_str,
+                                "content": result
+                            }
+                        });
+                        next();
+                    }
+                });
+            });
+        }, user_required.after);
+
+        /**
+         * Makes a favorite/like on a specific tweet (with determinated user account).
+         * Requires a local user account with at least one twitter account associated.
+         * Get parameters required:
+         * - id: unique tweet id (from Twitter "id_str").
+         */
+        app.get('/tweets/:id/favorite', user_required.before, function(req, res, next) {
+            getUserFromJWT(req, function(user){
+                makeFavorite(user, req.params, function(result){
+                    if(result.statusCode && result.statusCode != 200){
+                        res.status(result.statusCode).json({
+                            "error": true,
+                            "data" : {
+                                "message": "Cannot mark as favorite tweet with id: " + req.params.id,
+                                "url": "http://localhost:3000/"
+                            }
+                        });
+                        next();
+                    } else {
+                        res.json({
+                            "error": false,
+                            "data" : {
+                                "message": "Favorite/Like successful",
+                                "url": "http://twitter.com/" + "statuses/" + result.id_str,
+                                "content": result
+                            }
+                        });
+                        next();
+                    }
+                });
+            });
+        }, user_required.after);
+
+        /**
+         * Makes a favorite/like on a specific tweet (with determinated user account).
+         * Requires a local user account with at least one twitter account associated.
+         * Get parameters required:
+         * - id: unique tweet id (from Twitter "id_str").
+         */
+        app.get('/tweets/:id/unfavorite', user_required.before, function(req, res, next) {
+            getUserFromJWT(req, function(user){
+                makeUnfavorite(user, req.params, function(result){
+                    if(result.statusCode && result.statusCode != 200){
+                        res.status(result.statusCode).json({
+                            "error": true,
+                            "data" : {
+                                "message": "Cannot unfavorite with id: " + req.params.id,
+                                "url": "http://localhost:3000/"
+                            }
+                        });
+                        next();
+                    } else {
+                        res.json({
+                            "error": false,
+                            "data" : {
+                                "message": "Unfavorite successful",
+                                "url": "http://twitter.com/" + "statuses/" + result.id_str,
+                                "content": result
+                            }
+                        });
+                        next();
+                    }
+                });
+            });
+        }, user_required.after);
+
+
         // Luis
-        app.get('/tweets/own',function(req, res, next) {
+        app.get('/tweets/own', user_required.before, function(req, res, next) {
 
-        });
+        }, user_required.after);
 
         // Luis
-        app.get('/tweets/pending',function(req, res, next) {
+        app.get('/tweets/pending', user_required.before, function(req, res, next) {
 
-        });
+        }, user_required.after);
 
         // Raúl
-        app.get('/tweets/subscribed',function(req, res, next) {
+        app.get('/tweets/subscribed', user_required.before, function(req, res, next) {
+            getUserFromJWT(req, function(user){
+                User.findOne({email: user.email}, function(err, doc){
+                    if (err){
+                        res.json({
+                            "error": true,
+                            "data" : {
+                                "message": "Cannot obtain subscribed terms for this user"
+                            }
+                        });
+                    } else {
+                        res.json({
+                            "error": false,
+                            "data" : {
+                                "message": "Obtaining subscribed terms succesful",
+                                "url": "http://localhost:3000/tweets",
+                                "content": doc.subscribed
+                            }
+                        });
+                    }
+                });
+            });
+        }, user_required.after);
 
-        });
+        app.post('/tweets/subscribed', user_required.before, function(req, res, next) {
+            getUserFromJWT(req, function(user){
+                User.findOneAndUpdate({email: user.email}, {$push: {subscribed: {hashtag: req.body.hashtag}}},
+                    function(err, doc){
+                    if (err){
+                        res.json({
+                            "error": true,
+                            "data" : {
+                                "message": "Cannot subscribe user to: " + req.body.hashtag
+                            }
+                        });
+                        next();
+                    } else {
+                        res.json({
+                            "error": false,
+                            "data" : {
+                                "message": "User succesfully subscribed to: " + req.body.hashtag,
+                                "url": "http://localhost:3000/tweets",
+                                "content": doc.subscribed
+                            }
+                        });
+                        next();
+                    }
+                });
+            });
+        }, user_required.after);
 
         // Raúl
-        app.get('/tweets/subscribed/:id',function(req, res, next) {
-
-        });
+        app.get('/tweets/subscribed/:id', user_required.before, function(req, res, next) {
+            getUserFromJWT(req, function(user){
+                searchTweets(user, req.params.id, function(result){
+                    if(result.statusCode && result.statusCode != 200){
+                        res.status(result.statusCode).json({
+                            "error": true,
+                            "data" : {
+                                "message": "Cannot search with query: " + req.params.id,
+                                "url": "http://localhost:3000/"
+                            }
+                        });
+                        next();
+                    } else {
+                        res.json({
+                            "error": false,
+                            "data" : {
+                                "message": "Search successful",
+                                "url": "http://localhos:3000/tweets",
+                                "content": result
+                            }
+                        });
+                        next();
+                    }
+                });
+            });
+        }, user_required.after);
 
         // Return middleware.
         return function(req, res, next) {
