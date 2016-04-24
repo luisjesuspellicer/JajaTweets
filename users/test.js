@@ -14,9 +14,9 @@
     var admin_token, user_token, user_id, admin_id;
 
     // UNIT test begin
-    describe("Users unit test",function(){
+    describe("USERS api test",function(){
 
-        // #1 should return valid token
+        // #1 Should return the admin token
         it("POST /login test@test => Valid admin token", function(done) {
             server
                 .post("/login")
@@ -35,7 +35,7 @@
                 });
         });
 
-        // #2 should return valid token (due to admin token is used in the request)
+        // #2 Should return the new user's token (due to admin token is used in the request)
         it("POST /users test@test => New user token", function(done) {
             server
                 .post("/users")
@@ -55,8 +55,8 @@
                 });
         });
 
-        // #2.5 should return valid token
-        it("POST /login test@test => Valid user token", function(done) {
+        // #3 Should return the new user's token
+        it("POST /login user@user => Valid user token", function(done) {
             server
                 .post("/login")
                 .send({
@@ -74,7 +74,7 @@
                 });
         });
 
-        // #3 should return insufficient privileges (beacause user token is used)
+        // #4 should return insufficient privileges (beacause user token is used)
         it("POST /users user@user => 401 insufficient privileges", function(done) {
             server
                 .post("/users")
@@ -94,7 +94,7 @@
                 });
         });
 
-        // #4 should return users list
+        // #5 Should return users list (because admin token is used)
         it("GET /users test@test => Users list", function(done) {
             server
                 .get("/users")
@@ -109,7 +109,7 @@
                 });
         });
 
-        // #5 should return insufficient privileges
+        // #6 Should return insufficient privileges
         it("GET /users user@user => 401 insufficient privileges", function(done) {
             server
                 .get("/users")
@@ -123,7 +123,7 @@
                 });
         });
 
-        // #6 should return user information
+        // #7 Should return user information
         it("GET /users/:iduser test@test => User info", function(done) {
             server
                 .get("/users/"+user_id)
@@ -136,7 +136,7 @@
         });
 
 
-        // #6 should return user information
+        // #8 Should return user information
         it("GET /users/:iduser user@user => Self info", function(done) {
             server
                 .get("/users/"+user_id)
@@ -148,7 +148,7 @@
                 });
         });
 
-        // #7 should return insufficient privileges
+        // #9 Should return insufficient privileges
         it("GET /users/:idtest user@user => 401 insufficient privileges", function(done) {
             server
                 .get("/users/"+admin_id)
@@ -160,7 +160,7 @@
                 });
         });
 
-        // #8 should modify user information
+        // #10 Should modify user information
         it("PUT /users/:iduser test@test => Replace user info", function(done) {
             server
                 .put("/users/"+user_id)
@@ -177,7 +177,7 @@
                 });
         });
 
-        // #9 should modify user information
+        // #11 Should modify user information
         it("PUT /users/:iduser user@user => Replace self info", function(done) {
             server
                 .put("/users/"+user_id)
@@ -194,7 +194,7 @@
                 });
         });
 
-        // #10 should return insufficient privileges
+        // #12 Should return insufficient privileges
         it("PUT /users/:idtest user@user => 401 insufficient privileges", function(done) {
             server
                 .put("/users/"+admin_id)
@@ -211,7 +211,7 @@
                 });
         });
 
-        // #11 should return insufficient privileges
+        // #13 Should return insufficient privileges
         it("DELETE /users/:idtest user@user => 401 insufficient privileges", function(done) {
             server
                 .delete("/users/"+admin_id)
@@ -223,7 +223,7 @@
                 });
         });
 
-        // #12 should delete user account
+        // #14 should delete user account
         it("DELETE /users/:iduser test@test => User deleted", function(done) {
             server
                 .delete("/users/"+user_id)

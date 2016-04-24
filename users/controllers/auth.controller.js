@@ -1,5 +1,7 @@
 /**
  * Created by diego on 21/04/16.
+ *
+ * Manages the login endpoint.
  */
 (function() {
 
@@ -10,7 +12,12 @@
 
     module.exports = function(app) {
 
-        app.post('/login',function(req, res, next) {
+        /**
+         * Offers the endpoint POST /login
+         * Uses passport to authenticate the user
+         * and returns a valid JWT.
+         */
+        app.post('/login',function(req, res, err) {
             passport.authenticate('local', function(err, user, info){
                 var token;
 

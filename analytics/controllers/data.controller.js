@@ -46,6 +46,7 @@
                                 "url": "http://localhost:3000/data"
                             }});
                         break;
+
                     case "lastAccess":
                         http.request({ method: 'get',  port: 3000,  path:'/users:last',
                             headers: {
@@ -90,10 +91,15 @@
                     my_data = my_data.toObject();
                     data.remove();
                     delete my_data._id;
-                    my_data.chart.datasets.forEach(function(ds){
-                        ds.data = [];
-                    });
-                    console.log(JSON.stringify(my_data));
+                    switch(my_data.name) {
+                        case 'subunsub':
+                            my_data.chart[0].value = 0;
+                            my_data.chart[1].value = 0;
+                            break;
+                        case 'lastAccess':
+                            my_data.chart = [];
+                            break;
+                    }
                     new Data(my_data).save(function(err) {
                         if (err) return resource.setResponse(res, error, next);
                         else {

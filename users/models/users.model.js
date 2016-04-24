@@ -13,7 +13,7 @@
 
 
     var userSchema = new mongoose.Schema({
-        email: {
+        email: { // Used as key
             type: String,
             unique: true,
             required: true

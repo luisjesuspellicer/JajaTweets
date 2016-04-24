@@ -1,5 +1,10 @@
 /**
  * Created by diego on 22/04/16.
+ *
+ * Contains all the security policies supported by the endpoints
+ *      user_required:              Any logged user can access to the endpoint
+ *      admin_or_self_required:     Only the admin can access or an user if it is his own resource
+ *      admin_required:             Only the admin can acces to the endpoint
  */
 (function() {
     'use strict';

@@ -1,5 +1,11 @@
 /**
  * Created by diego on 16/04/16.
+ *
+ * Contains all the endpoints offered for the resource 'users'.
+ * It is a restful api.
+ *      GET,POST            /users
+ *      GET,PUT,DELETE      /users/:id
+ *      GET                 /users:last
  */
 (function () {
 
@@ -13,26 +19,35 @@
 
     module.exports = function (app, route) {
 
+        // First load the policies that will be used in the endpoints
         var admin_required = require('../../config/policies.config').admin_required;
         var admin_or_self_required = require('../../config/policies.config').admin_or_self_required;
+        // Delete operation should update Analytics
         var delete_options = _.cloneDeep(admin_or_self_required);
-        // Analytics to update with delete operation
         delete_options.after.push(function (req, res, next) {
             updateUsers(-1, jwt.sign(req.payload, process.env.MY_SECRET));
             next(); }
         );
 
-        // Setup the controller for REST;
+        // Setup the controller for REST
         var resource = Resource(app, '', route, app.models.users)
-            .get(admin_or_self_required)
-            .put(admin_or_self_required)
-            .delete(delete_options)
-            .index(admin_required);
+            .get(admin_or_self_required) // GET /users/:id
+            .put(admin_or_self_required)// PUT /users/:id
+            .delete(delete_options) // DELETE /users/:id
+            .index(admin_required); // GET /users
 
+        // POST /users must generate new JWT token
         resource.register(app, 'post', '/users', createUser, resource.respond.bind(resource), admin_required);
+        // GET /users:last offers the last accesses
         resource.register(app, 'get', '/users:last', getLastUsers, resource.respond.bind(resource), admin_required);
 
-        // Add register option
+        /**
+         * Create a new user and returns a JWT token, token could be
+         * changed so /login required.
+         * @param req
+         * @param res
+         * @param next
+         */
         function createUser(req, res, next) {
             var user = new User();
 
@@ -65,6 +80,12 @@
         };
     };
 
+    /**
+     * Returns the last access list, with 20 users.
+     * @param req
+     * @param res
+     * @param next
+     */
     function getLastUsers(req, res, next) {
         User.find({}).sort({lastAccess: -1}).limit(20).exec(
             function(err, users) {
@@ -90,10 +111,11 @@
                 result += chunk.toString();
             });
             res.on('end', function() {
-                var i = 0;
+                var i = -1;
 
                 var data = JSON.parse(result);
                 do {
+                    i++;
                     if (data[i].name == "subunsub") {
                         if (num>0) data[i].chart[0].value++;
                         else { data[i].chart[1].value++ }
@@ -106,7 +128,6 @@
                         req.write(JSON.stringify(data[i]));
                         req.end();
                     }
-                    i++;
                 } while (i < data.length && data[i].name != "subunsub");
             })
         }).end();
