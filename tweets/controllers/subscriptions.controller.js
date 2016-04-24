@@ -84,7 +84,7 @@
             getUserFromJWT(req, function(user){
                 User.findOne({email: user.email}, function(err, doc){
                     if (err){
-                        res.json({
+                        res.status(500).json({
                             "error": true,
                             "data" : {
                                 "message": "Cannot obtain subscribed terms for this user"
@@ -114,7 +114,7 @@
                 User.findOneAndUpdate({email: user.email}, {$push: {subscribed: {hashtag: req.body.hashtag}}},
                     {new:true}, function(err, doc){
                         if (err){
-                            res.json({
+                            res.status(500).json({
                                 "error": true,
                                 "data" : {
                                     "message": "Cannot subscribe user to: " + req.body.hashtag
@@ -175,7 +175,7 @@
                     {new: true},
                     function(err, doc){
                         if (err){
-                            res.json({
+                            res.status(500).json({
                                 "error": true,
                                 "data" : {
                                     "message": "Cannot unsubscribe user from: #" + req.params.id

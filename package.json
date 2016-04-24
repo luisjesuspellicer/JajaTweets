@@ -18,7 +18,8 @@
     "passport-local": "^1.0.0",
     "passport-twitter": "^1.0.4",
     "request": "^2.72.0",
-    "resourcejs": "^1.2.0"
+    "resourcejs": "^1.2.0",
+    "string-hash": "^1.1.0"
   },
   "devDependencies": {
     "mocha": "^2.4.5",
