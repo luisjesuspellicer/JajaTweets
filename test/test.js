@@ -4,6 +4,7 @@
 
 (function() {
     'use strict';
+
     var webservices = require('../webservices');
 
     webservices.forEach(function(ws){

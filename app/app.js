@@ -4,7 +4,7 @@
 angular.module('myApp', [
   'ngRoute',
   'myApp.singin',
-  'myApp.view2',
+  'myApp.errors',
   'myApp.singup',
   'myApp.version'
 ]).

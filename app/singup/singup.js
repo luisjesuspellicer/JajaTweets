@@ -12,14 +12,14 @@ angular.module('myApp.singup', ['ngRoute'])
 
 .controller('singupCtrl', singupCtrl);
 
-singupCtrl.$inject = ['$http'];
+singupCtrl.$inject = ['$http','errorsService','$location'];
 
-function singupCtrl($http) {
+function singupCtrl($http, errorsService, $location) {
 
     var vm = this;
 
     vm.credentials = {
-        'username': "",
+        'name': "",
         'email': "",
         'password': ""
     };
@@ -31,7 +31,11 @@ function singupCtrl($http) {
     function onSubmit() {
         $http.post('http://localhost:3000/users', vm.credentials)
             .then(function() {
-                vm.created = vm.credentials.username;
+                $location.path('profile');
+            }, function(err){
+                errorsService.errorCode = err.status;
+                errorsService.errorMessage = err.data.data.message;
+                $location.path('errors');
             });
     };
 }

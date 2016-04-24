@@ -2,35 +2,43 @@
 
 angular.module('myApp.singin', ['ngRoute'])
 
-.config(['$routeProvider', function($routeProvider) {
-  $routeProvider.when('/singin', {
-    templateUrl: 'singin/singin.html',
-    controller: 'singinCtrl',
-    controllerAs: 'singin'
-  });
-}])
+    .config(['$routeProvider', function ($routeProvider) {
+        $routeProvider.when('/singin', {
+            templateUrl: 'singin/singin.html',
+            controller: 'singinCtrl',
+            controllerAs: 'singin'
+        });
+    }])
 
-.controller('singinCtrl', singinCtrl);
+    .controller('singinCtrl', singinCtrl);
 
-singinCtrl.$inject = ['$http'];
+singinCtrl.$inject = ['$http', 'authentication', '$location', 'errorsService'];
 
-function singinCtrl($http) {
+function singinCtrl($http, authentication, $location, errorsService) {
 
-  var vm = this;
+    var vm = this;
 
-  vm.logged = false;
+    vm.err = {};
 
-  vm.credentials = {
-    'username': "",
-    'password': ""
-  };
+    vm.credentials = {
+        'email': "",
+        'password': ""
+    };
 
-  ///////
+    ///////
 
-  vm.onSubmit = function(){
-     $http.get('http://localhost:3000/users?username='+vm.credentials.username+'&password='+vm.credentials.password)
-         .then(function(data){
-           vm.logged = data.data.length>0;
-         });
-  }
+    vm.onSubmit = function () {
+
+        $http.post('http://localhost:3000/login', vm.credentials)
+            .then(function (data) {
+                authentication.saveToken(data.data.token);
+                $location.path('profile');
+            }, function (err) {
+                vm.err = err;
+                errorsService.errorCode = err.status;
+                errorsService.errorMessage = err.data.message;
+                $location.path('errors');
+            });
+
+    }
 }
