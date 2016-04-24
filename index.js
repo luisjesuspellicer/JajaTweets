@@ -26,8 +26,8 @@
     app.use(bodyParser.json());
     app.use(methodOverride('X-HTTP-Method-Override'));
 
-    // Connect to MongoDB, selects between environment variable (Heroku DB) or other (custom DB)
-    mongoose.connect(process.env.MONGODB_URI ||'mongodb://admin:mongomongo1@ds013981.mlab.com:13981/heroku_vw307h03');
+    // Connect to MongoDB, selects between environment variable (Heroku DB) or localhost (Localhost custom DB)
+    mongoose.connect(process.env.MONGODB_URI ||'mongodb://localhost/meanapp');
     mongoose.connection.once('open', function() {
 
         // Load all the models
