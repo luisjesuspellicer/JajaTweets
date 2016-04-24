@@ -8,7 +8,6 @@
     var supertest = require("supertest");
     var should = require("should");
     var atob = require('atob');
-    var util = require('util');
 
     // This agent refers to PORT where program is runninng.
     var server = supertest.agent("http://localhost:3000");
@@ -69,6 +68,70 @@
                     JSON.parse(res.text).error.should.be.exactly(false);
                     JSON.parse(res.text).data.should.have.property("content");
                     JSON.parse(res.text).data.message.should.be.exactly("Tweet get successful");
+                    done();
+                });
+        });
+
+        // #4 should retweet a valid tweet (with authorization)
+        it("GET /tweets/:id/retweet => Retweet tweet from twitter", function(done) {
+            server
+                .get("/tweets/" + status_id + "/retweet")
+                .set("Authorization", "Bearer " + admin_token)
+                .expect("Content-type",/json/)
+                .expect(200)
+                .end(function(err, res){
+                    res.status.should.equal(200);
+                    JSON.parse(res.text).error.should.be.exactly(false);
+                    JSON.parse(res.text).data.should.have.property("content");
+                    JSON.parse(res.text).data.message.should.be.exactly("Retweet successful");
+                    done();
+                });
+        });
+
+        // #5 should unretweet a valid tweet (with authorization)
+        it("GET /tweets/:id/unretweet => Unretweet tweet from twitter", function(done) {
+            server
+                .get("/tweets/" + status_id + "/unretweet")
+                .set("Authorization", "Bearer " + admin_token)
+                .expect("Content-type",/json/)
+                .expect(200)
+                .end(function(err, res){
+                    res.status.should.equal(200);
+                    JSON.parse(res.text).error.should.be.exactly(false);
+                    JSON.parse(res.text).data.should.have.property("content");
+                    JSON.parse(res.text).data.message.should.be.exactly("Unretweet successful");
+                    done();
+                });
+        });
+
+        // #6 should favorite a valid tweet (with authorization)
+        it("GET /tweets/:id/favorite => Favorite tweet from twitter", function(done) {
+            server
+                .get("/tweets/" + status_id + "/favorite")
+                .set("Authorization", "Bearer " + admin_token)
+                .expect("Content-type",/json/)
+                .expect(200)
+                .end(function(err, res){
+                    res.status.should.equal(200);
+                    JSON.parse(res.text).error.should.be.exactly(false);
+                    JSON.parse(res.text).data.should.have.property("content");
+                    JSON.parse(res.text).data.message.should.be.exactly("Favorite/Like successful");
+                    done();
+                });
+        });
+
+        // #7 should unfavorite a valid tweet (with authorization)
+        it("GET /tweets/:id/unfavorite => Unfavorite tweet from twitter", function(done) {
+            server
+                .get("/tweets/" + status_id + "/unfavorite")
+                .set("Authorization", "Bearer " + admin_token)
+                .expect("Content-type",/json/)
+                .expect(200)
+                .end(function(err, res){
+                    res.status.should.equal(200);
+                    JSON.parse(res.text).error.should.be.exactly(false);
+                    JSON.parse(res.text).data.should.have.property("content");
+                    JSON.parse(res.text).data.message.should.be.exactly("Unfavorite successful");
                     done();
                 });
         });

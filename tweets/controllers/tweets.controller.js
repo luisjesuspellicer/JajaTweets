@@ -476,8 +476,7 @@
                             "error": true,
                             "data" : {
                                 "message": "Tweet wasn't retweeted",
-                                "url": "http://twitter.com/" + "statuses/" + result.id_str,
-                                "content": result
+                                "url": "http://twitter.com/" + "statuses/" + result.id_str
                             }
                         });
                         next();
