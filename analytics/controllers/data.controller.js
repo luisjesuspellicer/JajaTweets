@@ -37,84 +37,88 @@
         function getData(req, res, next) {
             var _id = req.path.substr(req.path.lastIndexOf('/')+1);
             Data.findById(_id, function (err, data) {
-                switch (data.name) {
-                    case "subunsub":
-                        res.status(200).json({
-                            "error": false,
-                            "data": {
-                                "chart": data,
-                                "url": "http://localhost:3000/data"
-                            }});
-                        break;
+                if (err) return resource.setResponse(res, error, next);
+                else {
+                    switch (data.name) {
+                        case "subunsub":
+                            res.status(200).json({
+                                "error": false,
+                                "data": {
+                                    "chart": data,
+                                    "url": "http://localhost:3000/data"
+                                }});
+                            break;
 
-                    case "lastAccess":
-                        http.request({ method: 'get',  port: 3000,  path:'/users::last',
-                            headers: {
-                                'Content-type': 'application/json',
-                                'Authorization': 'Bearer '+ jwt.sign(req.payload,process.env.MY_SECRET)
-                            }
-                        }, function (subres) {
-                            var result = "";
-                            subres.on('data', function (chunk) {
-                                result += chunk.toString();
-                            });
-                            subres.on('end', function() {
-                                Data.findById(_id, function(err,data) {
-                                    data.chart = JSON.parse(result);
+                        case "lastAccess":
+                            http.request({ method: 'get',  port: 3000,  path:'/users::last',
+                                headers: {
+                                    'Content-type': 'application/json',
+                                    'Authorization': 'Bearer '+ jwt.sign(req.payload,process.env.MY_SECRET)
+                                }
+                            }, function (subres) {
+                                var result = "";
+                                subres.on('data', function (chunk) {
+                                    result += chunk.toString();
+                                });
+                                subres.on('end', function() {
+                                    Data.findById(_id, function(err,data) {
+                                        data.chart = JSON.parse(result);
+                                        data.save();
+                                    });
+                                    return resource.setResponse(res, {
+                                        "status": 200,
+                                        "item": {
+                                            "error": false,
+                                            "data": {
+                                                "chart": JSON.parse(result),
+                                                "url": "http://localhost:3000/data"
+                                            }
+                                        }
+
+                                    }, next);
+                                })
+                            }).end();
+                            break;
+
+                        case "tweets":
+                            var tweet_app = 0, tweet_total = 0;
+                            http.request({ method: 'get',  port: 3000,  path:'/users',
+                                headers: {
+                                    'Content-type': 'application/json',
+                                    'Authorization': 'Bearer '+ jwt.sign(req.payload,process.env.MY_SECRET)
+                                }
+                            }, function (subres) {
+                                var result = "";
+                                subres.on('data', function (chunk) {
+                                    result += chunk.toString();
+                                });
+                                subres.on('end', function() {
+                                    JSON.parse(result).forEach(function(user) {
+                                        tweet_app += user.tweet_app?user.tweet_app:0;
+                                        tweet_total += user.tweet_total?user.tweet_total:0;
+                                    });
+
+                                    data.chart[0].value = tweet_app;
+                                    data.chart[1].value = tweet_total;
                                     data.save();
-                                });
-                                return resource.setResponse(res, {
-                                    "status": 200,
-                                    "item": {
-                                        "error": false,
-                                        "data": {
-                                            "chart": JSON.parse(result),
-                                            "url": "http://localhost:3000/data"
+
+                                    return resource.setResponse(res, {
+                                        "status": 200,
+                                        "item": {
+                                            "error": false,
+                                            "data": {
+                                                "chart": data,
+                                                "url": "http://localhost:3000/data"
+                                            }
                                         }
-                                    }
 
-                                }, next);
-                            })
-                        }).end();
-                        break;
-
-                    case "tweets":
-                        var tweet_app = 0, tweet_total = 0;
-                        http.request({ method: 'get',  port: 3000,  path:'/users',
-                            headers: {
-                                'Content-type': 'application/json',
-                                'Authorization': 'Bearer '+ jwt.sign(req.payload,process.env.MY_SECRET)
-                            }
-                        }, function (subres) {
-                            var result = "";
-                            subres.on('data', function (chunk) {
-                                result += chunk.toString();
-                            });
-                            subres.on('end', function() {
-                                JSON.parse(result).forEach(function(user) {
-                                    tweet_app += user.tweet_app?user.tweet_app:0;
-                                    tweet_total += user.tweet_total?user.tweet_total:0;
-                                });
-
-                                data.chart[0].value = tweet_app;
-                                data.chart[1].value = tweet_total;
-                                data.save();
-
-                                return resource.setResponse(res, {
-                                    "status": 200,
-                                    "item": {
-                                        "error": false,
-                                        "data": {
-                                            "chart": data,
-                                            "url": "http://localhost:3000/data"
-                                        }
-                                    }
-
-                                }, next);
-                            })
-                        }).end();
-                        break;
+                                    }, next);
+                                })
+                            }).end();
+                            break;
+                    }
                 }
+
             })
         }
 

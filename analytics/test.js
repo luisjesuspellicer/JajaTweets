@@ -13,7 +13,7 @@
     var server = supertest.agent("http://localhost:3000");
     var admin_token, user_token, user_id, admin_id;
     var sub, unsub, subunsub_id;
-    var last_id;
+    var last_id, tweets_id;
 
     server
         .post("/login")
@@ -55,6 +55,7 @@
                 .expect(200)
                 .end(function (err, res) {
                     res.status.should.equal(200);
+                    JSON.parse(res.text).should.have.lengthOf(3);
                     JSON.parse(res.text).forEach(function (data) {
                         if (data.name == "subunsub") {
                             sub = data.chart[0].value;
@@ -62,6 +63,8 @@
                             subunsub_id = data._id;
                         } else if (data.name == "lastAccess") {
                             last_id = data._id;
+                        } else if (data.name == "tweets") {
+                            tweets_id = data._id;
                         }
                     });
                     done();
@@ -86,6 +89,8 @@
                         .expect(200)
                         .end(function (err, res) {
                             res.status.should.equal(200);
+                            JSON.parse(res.text).error.should.be.exactly(false);
+                            JSON.parse(res.text).data.chart.should.have.property("chart").with.lengthOf(2);
                             JSON.parse(res.text).data.chart.chart[0].value.should.equal(sub);
                             done();
                         });
@@ -106,6 +111,8 @@
                         .expect(200)
                         .end(function (err, res) {
                             res.status.should.equal(200);
+                            JSON.parse(res.text).error.should.be.exactly(false);
+                            JSON.parse(res.text).data.chart.should.have.property("chart").with.lengthOf(2);
                             JSON.parse(res.text).data.chart.chart[1].value.should.equal(unsub);
                             done();
                         });
@@ -144,7 +151,7 @@
                 });
         });
 
-        // #5 should reset the analytic
+        // #5 should return last accounts accessed
         it("GET /data/:accesses should return last accounts accessed", function (done) {
 
             server
@@ -154,6 +161,22 @@
                 .expect(200)
                 .end(function (err, res) {
                     res.status.should.equal(200);
+                    done();
+                });
+        });
+
+        // #5 should return tweets analytic
+        it("GET /data/:tweets should return tweets analytics", function (done) {
+
+            server
+                .get("/data/" + tweets_id)
+                .set("Authorization", "Bearer " + admin_token)
+                .expect("Content-type", /json/)
+                .expect(200)
+                .end(function (err, res) {
+                    res.status.should.equal(200);
+                    JSON.parse(res.text).error.should.be.exactly(false);
+                    JSON.parse(res.text).data.chart.should.have.property("chart").with.lengthOf(2);
                     done();
                 });
         });
