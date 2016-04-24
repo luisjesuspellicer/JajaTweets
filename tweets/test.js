@@ -17,7 +17,7 @@
     var date = new Date();
 
     // UNIT test begin
-    describe("Tweets unit test",function(){
+    describe("TWEETS unit test",function(){
 
         // #1 should return valid token
         it("POST /login test@test => Valid admin token", function(done) {

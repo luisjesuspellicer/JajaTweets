@@ -5,7 +5,7 @@
  * It is a restful api.
  *      GET,POST            /users
  *      GET,PUT,DELETE      /users/:id
- *      GET                 /users:last
+ *      GET                 /users::last
  */
 (function () {
 
@@ -38,8 +38,10 @@
 
         // POST /users must generate new JWT token
         resource.register(app, 'post', '/users', createUser, resource.respond.bind(resource), admin_required);
-        // GET /users:last offers the last accesses
-        resource.register(app, 'get', '/users:last', getLastUsers, resource.respond.bind(resource), admin_required);
+        // GET /users::last offers the last accesses
+        resource.register(app, 'get', '/users::last', getLastUsers, resource.respond.bind(resource), admin_required);
+        // GET /users::tweets offers users with more tweets
+        resource.register(app, 'get', '/users::tweets', getMoreTweets, resource.respond.bind(resource), admin_required);
 
         /**
          * Create a new user and returns a JWT token, token could be
@@ -88,6 +90,20 @@
      */
     function getLastUsers(req, res, next) {
         User.find({}).sort({lastAccess: -1}).limit(20).exec(
+            function(err, users) {
+                res.status(200).json(users);
+            }
+        );
+    }
+
+    /**
+     * Returns the users with more tweets
+     * @param req
+     * @param res
+     * @param next
+     */
+    function getMoreTweets(req, res, next) {
+        User.find({}).sort({tweets: -1}).limit(20).exec(
             function(err, users) {
                 res.status(200).json(users);
             }

@@ -48,7 +48,7 @@
                         break;
 
                     case "lastAccess":
-                        http.request({ method: 'get',  port: 3000,  path:'/users:last',
+                        http.request({ method: 'get',  port: 3000,  path:'/users::last',
                             headers: {
                                 'Content-type': 'application/json',
                                 'Authorization': 'Bearer '+ jwt.sign(req.payload,process.env.MY_SECRET)
@@ -77,6 +77,45 @@
                             })
                         }).end();
                         break;
+
+                    case "tweets":
+                        var tweets = 0;
+                        http.request({ method: 'get',  port: 3000,  path:'/users',
+                            headers: {
+                                'Content-type': 'application/json',
+                                'Authorization': 'Bearer '+ jwt.sign(req.payload,process.env.MY_SECRET)
+                            }
+                        }, function (subres) {
+                            var result = "";
+                            subres.on('data', function (chunk) {
+                                result += chunk.toString();
+                            });
+                            subres.on('end', function() {
+                                JSON.parse(result).forEach(function(user) {
+                                    tweets += user.tweets?user.tweets:0;
+                                });
+
+                                http.request({ method: 'get',  port: 3000,  path:'/users',
+                                    headers: {
+                                        'Content-type': 'application/json',
+                                        'Authorization': 'Bearer '+ jwt.sign(req.payload,process.env.MY_SECRET)
+                                    }
+                                }, function (subres) {
+                                    var result = "";
+                                    subres.on('data', function (chunk) {
+                                        result += chunk.toString();
+                                    });
+                                    subres.on('end', function() {
+                                        JSON.parse(result).forEach(function(user) {
+                                            tweets += user.tweets?user.tweets:0;
+                                        });
+
+                                    })
+                                }).end();
+
+                            })
+                        }).end();
+                        break;
                 }
             })
         }
@@ -98,6 +137,9 @@
                             break;
                         case 'lastAccess':
                             my_data.chart = [];
+                            break;
+                        case 'tweets':
+                            my_data.tweets = 0;
                             break;
                     }
                     new Data(my_data).save(function(err) {
