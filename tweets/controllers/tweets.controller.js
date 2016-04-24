@@ -239,31 +239,6 @@
         }
 
         /**
-         * Gets user info from Twitter by unique id.
-         * Requires user authentication.
-         * @param user is the local user.
-         * @param query is the query to find tweets.
-         * @param callback is the callback object, containing the resultant user data (searched tweets).
-         */
-        function searchTweets(user, query, callback){
-            initTwitterOauth(function(oa)
-            {
-                oa.get(
-                    "https://api.twitter.com/1.1/search/tweets.json?q=" + query
-                    , user.token
-                    , user.secret
-                    , function (error, data, response) {
-                        if (error){
-                            callback(error);
-                        } else {
-                            callback(JSON.parse(data));
-                        }
-                    }
-                );
-            });
-        }
-
-        /**
          * Increments the local saved number of tweets by num.
          * @param user is the local user object.
          * @param id is the twitter id user.
@@ -571,86 +546,7 @@
         app.get('/tweets/pending', user_required.before, function(req, res, next) {
 
         }, user_required.after);
-
-        // Raúl
-        app.get('/tweets/subscribed', user_required.before, function(req, res, next) {
-            getUserFromJWT(req, function(user){
-                User.findOne({email: user.email}, function(err, doc){
-                    if (err){
-                        res.json({
-                            "error": true,
-                            "data" : {
-                                "message": "Cannot obtain subscribed terms for this user"
-                            }
-                        });
-                    } else {
-                        res.json({
-                            "error": false,
-                            "data" : {
-                                "message": "Obtaining subscribed terms succesful",
-                                "url": "http://localhost:3000/tweets",
-                                "content": doc.subscribed
-                            }
-                        });
-                    }
-                });
-            });
-        }, user_required.after);
-
-        app.post('/tweets/subscribed', user_required.before, function(req, res, next) {
-            getUserFromJWT(req, function(user){
-                User.findOneAndUpdate({email: user.email}, {$push: {subscribed: {hashtag: req.body.hashtag}}},
-                    function(err, doc){
-                    if (err){
-                        res.json({
-                            "error": true,
-                            "data" : {
-                                "message": "Cannot subscribe user to: " + req.body.hashtag
-                            }
-                        });
-                        next();
-                    } else {
-                        res.json({
-                            "error": false,
-                            "data" : {
-                                "message": "User succesfully subscribed to: " + req.body.hashtag,
-                                "url": "http://localhost:3000/tweets",
-                                "content": doc.subscribed
-                            }
-                        });
-                        next();
-                    }
-                });
-            });
-        }, user_required.after);
-
-        // Raúl
-        app.get('/tweets/subscribed/:id', user_required.before, function(req, res, next) {
-            getUserFromJWT(req, function(user){
-                searchTweets(user, req.params.id, function(result){
-                    if(result.statusCode && result.statusCode != 200){
-                        res.status(result.statusCode).json({
-                            "error": true,
-                            "data" : {
-                                "message": "Cannot search with query: " + req.params.id,
-                                "url": "http://localhost:3000/"
-                            }
-                        });
-                        next();
-                    } else {
-                        res.json({
-                            "error": false,
-                            "data" : {
-                                "message": "Search successful",
-                                "url": "http://localhos:3000/tweets",
-                                "content": result
-                            }
-                        });
-                        next();
-                    }
-                });
-            });
-        }, user_required.after);
+        
 
         // Return middleware.
         return function(req, res, next) {
