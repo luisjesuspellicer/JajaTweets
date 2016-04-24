@@ -103,7 +103,7 @@
      * @param next
      */
     function getMoreTweets(req, res, next) {
-        User.find({}).sort({tweets: -1}).limit(20).exec(
+        User.find({}).sort({tweets_app: -1}).limit(20).exec(
             function(err, users) {
                 res.status(200).json(users);
             }

@@ -1,7 +1,7 @@
 /**
  * Created by diego on 23/04/16.
  */
-(function() {
+(function () {
     'use strict';
 
     var mongoose = require('mongoose');
@@ -31,8 +31,8 @@
             .index(user_required)
             .put(user_required);
 
-        resource.register(app, 'delete', '/'+route+'/:id', resetData, resource.respond.bind(resource), admin_required);
-        resource.register(app, 'get', '/'+route+'/:id', getData, resource.respond.bind(resource), admin_required);
+        resource.register(app, 'delete', '/' + route + '/:id', resetData, resource.respond.bind(resource), admin_required);
+        resource.register(app, 'get', '/' + route + '/:id', getData, resource.respond.bind(resource), admin_required);
 
         /**
          * Retrieves data from analytic with id = :id
@@ -41,7 +41,7 @@
          * @param next
          */
         function getData(req, res, next) {
-            var _id = req.path.substr(req.path.lastIndexOf('/')+1);
+            var _id = req.path.substr(req.path.lastIndexOf('/') + 1);
             Data.findById(_id, function (err, data) {
                 if (err) return resource.setResponse(res, error, next);
                 else {
@@ -52,22 +52,24 @@
                                 "data": {
                                     "chart": data,
                                     "url": "http://localhost:3000/data"
-                                }});
+                                }
+                            });
                             break;
 
                         case "lastAccess":
-                            http.request({ method: 'get',  port: 3000,  path:'/users::last',
+                            http.request({
+                                method: 'get', port: 3000, path: '/users::last',
                                 headers: {
                                     'Content-type': 'application/json',
-                                    'Authorization': 'Bearer '+ jwt.sign(req.payload,process.env.MY_SECRET)
+                                    'Authorization': 'Bearer ' + jwt.sign(req.payload, process.env.MY_SECRET)
                                 }
                             }, function (subres) {
                                 var result = "";
                                 subres.on('data', function (chunk) {
                                     result += chunk.toString();
                                 });
-                                subres.on('end', function() {
-                                    Data.findById(_id, function(err,data) {
+                                subres.on('end', function () {
+                                    Data.findById(_id, function (err, data) {
                                         data.chart = JSON.parse(result);
                                         data.save();
                                     });
@@ -88,20 +90,21 @@
 
                         case "tweets":
                             var tweet_app = 0, tweet_total = 0;
-                            http.request({ method: 'get',  port: 3000,  path:'/users',
+                            http.request({
+                                method: 'get', port: 3000, path: '/users',
                                 headers: {
                                     'Content-type': 'application/json',
-                                    'Authorization': 'Bearer '+ jwt.sign(req.payload,process.env.MY_SECRET)
+                                    'Authorization': 'Bearer ' + jwt.sign(req.payload, process.env.MY_SECRET)
                                 }
                             }, function (subres) {
                                 var result = "";
                                 subres.on('data', function (chunk) {
                                     result += chunk.toString();
                                 });
-                                subres.on('end', function() {
-                                    JSON.parse(result).forEach(function(user) {
-                                        tweet_app += user.tweet_app?user.tweet_app:0;
-                                        tweet_total += user.tweet_total?user.tweet_total:0;
+                                subres.on('end', function () {
+                                    JSON.parse(result).forEach(function (user) {
+                                        tweet_app += user.tweet_app ? user.tweet_app : 0;
+                                        tweet_total += user.tweet_total ? user.tweet_total : 0;
                                     });
 
                                     data.chart[0].value = tweet_app;
@@ -122,6 +125,35 @@
                                 })
                             }).end();
                             break;
+
+                        case "tweetsxuser":
+                            http.request({
+                                method: 'get', port: 3000, path: '/users::tweets',
+                                headers: {
+                                    'Content-type': 'application/json',
+                                    'Authorization': 'Bearer ' + jwt.sign(req.payload, process.env.MY_SECRET)
+                                }
+                            }, function (subres) {
+                                var result = "";
+                                subres.on('data', function (chunk) {
+                                    result += chunk.toString();
+                                });
+                                subres.on('end', function() {
+                                    return resource.setResponse(res, {
+                                        "status": 200,
+                                        "item": {
+                                            "error": false,
+                                            "data": {
+                                                "chart": JSON.parse(result),
+                                                "url": "http://localhost:3000/data"
+                                            }
+                                        }
+
+                                    }, next);
+                                })
+
+                            }).end();
+                            break;
                     }
                 }
 
@@ -135,8 +167,8 @@
          * @param next
          */
         function resetData(req, res, next) {
-            var _id = req.path.substr(req.path.lastIndexOf('/')+1);
-            Data.findById(_id,function(err, data) {
+            var _id = req.path.substr(req.path.lastIndexOf('/') + 1);
+            Data.findById(_id, function (err, data) {
                 if (err) {
                     return resource.setResponse(res, error, next);
                 } else {
@@ -144,7 +176,7 @@
                     my_data = my_data.toObject();
                     data.remove();
                     delete my_data._id;
-                    switch(my_data.name) {
+                    switch (my_data.name) {
                         case 'subunsub':
                             my_data.chart[0].value = 0; // Subs
                             my_data.chart[1].value = 0; // Unsubs
@@ -156,8 +188,11 @@
                             my_data.chart[0].value = 0; // App tweets
                             my_data.chart[1].value = 0; // Total tweets
                             break;
+                        case 'tweetsxuser':
+                            my_data.chart = []; // Tweets per user
+                            break;
                     }
-                    new Data(my_data).save(function(err) {
+                    new Data(my_data).save(function (err) {
                         if (err) return resource.setResponse(res, error, next);
                         else {
                             return resource.setResponse(res, {

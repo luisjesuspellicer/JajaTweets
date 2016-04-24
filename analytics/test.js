@@ -13,7 +13,7 @@
     var server = supertest.agent("http://localhost:3000");
     var admin_token, user_token, user_id, admin_id;
     var sub, unsub, subunsub_id;
-    var last_id, tweets_id;
+    var last_id, tweets_id, tweetsx_id;
 
     server
         .post("/login")
@@ -55,7 +55,7 @@
                 .expect(200)
                 .end(function (err, res) {
                     res.status.should.equal(200);
-                    JSON.parse(res.text).should.have.lengthOf(3);
+                    JSON.parse(res.text).should.have.lengthOf(4);
                     JSON.parse(res.text).forEach(function (data) {
                         if (data.name == "subunsub") {
                             sub = data.chart[0].value;
@@ -65,6 +65,8 @@
                             last_id = data._id;
                         } else if (data.name == "tweets") {
                             tweets_id = data._id;
+                        } else if (data.name == "tweetsxuser") {
+                            tweetsx_id = data._id;
                         }
                     });
                     done();
@@ -177,6 +179,22 @@
                     res.status.should.equal(200);
                     JSON.parse(res.text).error.should.be.exactly(false);
                     JSON.parse(res.text).data.chart.should.have.property("chart").with.lengthOf(2);
+                    done();
+                });
+        });
+
+        // #6 should return users with more tweets
+        it("GET /data/:tweetsperuser should return users with more tweets", function (done) {
+
+            server
+                .get("/data/" + tweetsx_id)
+                .set("Authorization", "Bearer " + admin_token)
+                .expect("Content-type", /json/)
+                .expect(200)
+                .end(function (err, res) {
+                    res.status.should.equal(200);
+                    JSON.parse(res.text).error.should.be.exactly(false);
+                    JSON.parse(res.text).data.should.have.property("chart");
                     done();
                 });
         });
