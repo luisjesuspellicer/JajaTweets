@@ -79,7 +79,7 @@
                         break;
 
                     case "tweets":
-                        var tweets = 0;
+                        var tweet_app = 0, tweet_total = 0;
                         http.request({ method: 'get',  port: 3000,  path:'/users',
                             headers: {
                                 'Content-type': 'application/json',
@@ -92,27 +92,25 @@
                             });
                             subres.on('end', function() {
                                 JSON.parse(result).forEach(function(user) {
-                                    tweets += user.tweets?user.tweets:0;
+                                    tweet_app += user.tweet_app?user.tweet_app:0;
+                                    tweet_total += user.tweet_total?user.tweet_total:0;
                                 });
 
-                                http.request({ method: 'get',  port: 3000,  path:'/users',
-                                    headers: {
-                                        'Content-type': 'application/json',
-                                        'Authorization': 'Bearer '+ jwt.sign(req.payload,process.env.MY_SECRET)
+                                data.chart[0].value = tweet_app;
+                                data.chart[1].value = tweet_total;
+                                data.save();
+
+                                return resource.setResponse(res, {
+                                    "status": 200,
+                                    "item": {
+                                        "error": false,
+                                        "data": {
+                                            "chart": data,
+                                            "url": "http://localhost:3000/data"
+                                        }
                                     }
-                                }, function (subres) {
-                                    var result = "";
-                                    subres.on('data', function (chunk) {
-                                        result += chunk.toString();
-                                    });
-                                    subres.on('end', function() {
-                                        JSON.parse(result).forEach(function(user) {
-                                            tweets += user.tweets?user.tweets:0;
-                                        });
 
-                                    })
-                                }).end();
-
+                                }, next);
                             })
                         }).end();
                         break;
@@ -139,7 +137,8 @@
                             my_data.chart = [];
                             break;
                         case 'tweets':
-                            my_data.tweets = 0;
+                            my_data.chart[0].value = 0;
+                            my_data.chart[1].value = 0;
                             break;
                     }
                     new Data(my_data).save(function(err) {
