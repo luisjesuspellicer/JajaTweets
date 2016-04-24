@@ -27,7 +27,8 @@
         token: String,
         secret: String,
         lastAccess: Date,
-        subscribed: Object
+        subscribed: Object,
+        tweets: Number
     });
 
     // Creates hash and salt from password
