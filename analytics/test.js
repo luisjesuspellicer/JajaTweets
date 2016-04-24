@@ -44,7 +44,7 @@
 
 
     // UNIT test begin
-    describe("ANALYITICS api test", function () {
+    describe("ANALYTICS api test", function () {
 
         // #1 Should return all the analytics
         it("GET /data user@user => All the analytics available", function (done) {
