@@ -34,6 +34,12 @@
         resource.register(app, 'delete', '/'+route+'/:id', resetData, resource.respond.bind(resource), admin_required);
         resource.register(app, 'get', '/'+route+'/:id', getData, resource.respond.bind(resource), admin_required);
 
+        /**
+         * Retrieves data from analytic with id = :id
+         * @param req
+         * @param res
+         * @param next
+         */
         function getData(req, res, next) {
             var _id = req.path.substr(req.path.lastIndexOf('/')+1);
             Data.findById(_id, function (err, data) {
@@ -122,6 +128,12 @@
             })
         }
 
+        /**
+         * Resets the analytic with id = _id to 0
+         * @param req
+         * @param res
+         * @param next
+         */
         function resetData(req, res, next) {
             var _id = req.path.substr(req.path.lastIndexOf('/')+1);
             Data.findById(_id,function(err, data) {
@@ -134,15 +146,15 @@
                     delete my_data._id;
                     switch(my_data.name) {
                         case 'subunsub':
-                            my_data.chart[0].value = 0;
-                            my_data.chart[1].value = 0;
+                            my_data.chart[0].value = 0; // Subs
+                            my_data.chart[1].value = 0; // Unsubs
                             break;
                         case 'lastAccess':
-                            my_data.chart = [];
+                            my_data.chart = []; // Users list
                             break;
                         case 'tweets':
-                            my_data.chart[0].value = 0;
-                            my_data.chart[1].value = 0;
+                            my_data.chart[0].value = 0; // App tweets
+                            my_data.chart[1].value = 0; // Total tweets
                             break;
                     }
                     new Data(my_data).save(function(err) {
