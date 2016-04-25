@@ -1,5 +1,5 @@
 /**
- * Created by piraces on 22/04/16.
+ * Created by piraces on 25/04/16.
  */
 (function() {
 
@@ -12,7 +12,8 @@
     // This agent refers to PORT where program is runninng.
     var server = supertest.agent("http://localhost:3000");
     var admin_token;
-    var hash = 2429896593;
+    var hash = 2387498318;
+    var createdHash;
     var date = new Date();
 
     // UNIT test begin
@@ -53,8 +54,8 @@
                 });
         });
 
-        // #3 should add a new subscription to a valid user (with authorization)
-        it("POST /shortened => Add a new twitter hashtag subscription to user", function(done) {
+        // #3 should add a new shortened URL to a valid user (with authorization)
+        it("POST /shortened => Add a new shortened URL to user", function(done) {
             server
                 .post("/shortened")
                 .set("Authorization", "Bearer " + admin_token)
@@ -68,12 +69,30 @@
                     JSON.parse(res.text).error.should.be.exactly(false);
                     JSON.parse(res.text).data.should.have.property("content");
                     JSON.parse(res.text).data.message.should.be.exactly("URL successfully shortened");
+                    var content = JSON.parse(res.text).data.content;
+                    createdHash = content.hash;
+                    done();
+                });
+        });
+
+        // #4 should delete a shortened URL from a valid user (with authorization)
+        it("DELETE /shortened/:id => Deletes a shortened URL from user", function(done) {
+            server
+                .delete("/shortened/" + createdHash)
+                .set("Authorization", "Bearer " + admin_token)
+                .expect("Content-type",/json/)
+                .expect(200)
+                .end(function(err, res){
+                    res.status.should.equal(200);
+                    JSON.parse(res.text).error.should.be.exactly(false);
+                    JSON.parse(res.text).data.should.have.property("content");
+                    JSON.parse(res.text).data.message.should.be.exactly("Shortened URL deleted successfully");
                     done();
                 });
         });
 
 
-        // #4 should return ONE shortened URL of current user
+        // #5 should return ONE shortened URL of current user
         it("GET /shortened/:id => Shortened URL", function(done) {
             server
                 .get("/shortened/" + hash)
@@ -89,7 +108,7 @@
                 });
         });
 
-        // #4 should redirect user to another URL
+        // #6 should redirect user to another URL
         it("GET /s/:id => Redirect to another URL", function(done) {
             server
                 .get("/s/" + hash)

@@ -111,28 +111,52 @@
          */
         app.post('/subscriptions', user_required.before, function(req, res, next) {
             getUserFromJWT(req, function(user){
-                User.findOneAndUpdate({email: user.email}, {$push: {subscribed: {hashtag: req.body.hashtag}}},
-                    {new:true}, function(err, doc){
-                        if (err){
-                            res.status(500).json({
-                                "error": true,
-                                "data" : {
-                                    "message": "Cannot subscribe user to: " + req.body.hashtag
+                User.findOne({email: user.email, subscribed: {hashtag: req.body.hashtag}}, function(err,doc){
+                    if(err){
+                        res.status(500).json({
+                            "error": true,
+                            "data" : {
+                                "message": "Cannot subscribe user to: " + req.body.hashtag,
+                                "url": "http://localhost:3000/"
+                            }
+                        });
+                        next();
+                    } else if(doc!=null){
+                        res.status(400).json({
+                            "error": true,
+                            "data" : {
+                                "message": "User is already subscribed to: " + req.body.hashtag,
+                                "url": "http://localhost:3000/",
+                                "content": doc.subscribed
+                            }
+                        });
+                        next();
+                    } else {
+                        User.findOneAndUpdate({email: user.email}, {$push: {subscribed: {hashtag: req.body.hashtag}}},
+                            {new: true}, function (err, doc) {
+                                if (err) {
+                                    res.status(500).json({
+                                        "error": true,
+                                        "data": {
+                                            "message": "Cannot subscribe user to: " + req.body.hashtag,
+                                            "url": "http://localhost:3000/"
+                                        }
+                                    });
+                                    next();
+                                } else {
+                                    res.json({
+                                        "error": false,
+                                        "data": {
+                                            "message": "User succesfully subscribed to: " + req.body.hashtag,
+                                            "url": "http://localhost:3000/tweets",
+                                            "content": doc.subscribed
+                                        }
+                                    });
+                                    next();
                                 }
                             });
-                            next();
-                        } else {
-                            res.json({
-                                "error": false,
-                                "data" : {
-                                    "message": "User succesfully subscribed to: " + req.body.hashtag,
-                                    "url": "http://localhost:3000/tweets",
-                                    "content": doc.subscribed
-                                }
-                            });
-                            next();
-                        }
-                    });
+                    }
+                });
             });
         }, user_required.after);
 

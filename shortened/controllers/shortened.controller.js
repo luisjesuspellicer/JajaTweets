@@ -1,5 +1,5 @@
 /**
- * Created by piraces on 24/04/16.
+ * Created by piraces on 25/04/16.
  */
 (function() {
 
@@ -75,12 +75,7 @@
         app.post('/shortened', user_required.before, function(req, res, next) {
             getUserFromJWT(req, function(user){
                 var newHash = hash(req.body.link);
-                var newShortened = new Shortened({
-                    "link": req.body.link,
-                    "hash": newHash,
-                    "user": user._id
-                });
-                newShortened.save(function(err){
+                Shortened.findOne({hash: newHash, user: user._id}, function(err,doc){
                     if(err){
                         res.status(500).json({
                             "error": true,
@@ -90,17 +85,45 @@
                             }
                         });
                         next();
-                    } else {
-                        res.json({
-                            "error": false,
+                    } else if(doc!=null){
+                        res.status(400).json({
+                            "error": true,
                             "data" : {
-                                "message": "URL successfully shortened",
-                                "url": "http://localhost:3000/shortened/" + newHash,
-                                "direct_url": "http://localhost:3000/" + newHash,
-                                "content": newShortened
+                                "message": "URL already shortened by user: " + req.body.link,
+                                "url": "http://localhost:3000/",
+                                "content": doc
                             }
                         });
                         next();
+                    } else {
+                        var newShortened = new Shortened({
+                            "link": req.body.link,
+                            "hash": newHash,
+                            "user": user._id
+                        });
+                        newShortened.save(function(err){
+                            if(err){
+                                res.status(500).json({
+                                    "error": true,
+                                    "data" : {
+                                        "message": "Could shorten given link: " + req.body.link,
+                                        "url": "http://localhost:3000/"
+                                    }
+                                });
+                                next();
+                            } else {
+                                res.json({
+                                    "error": false,
+                                    "data" : {
+                                        "message": "URL successfully shortened",
+                                        "url": "http://localhost:3000/shortened/" + newHash,
+                                        "direct_url": "http://localhost:3000/" + newHash,
+                                        "content": newShortened
+                                    }
+                                });
+                                next();
+                            }
+                        });
                     }
                 });
             });
@@ -127,6 +150,44 @@
                         "data" : {
                             "message": "URL obtained successfully",
                             "url": doc.link,
+                            "content": doc
+                        }
+                    });
+                    next();
+                }
+            });
+        }, user_required.after);
+
+        /**
+         * Deletes a shortened URL by hash.
+         * Requires user authentication.
+         */
+        app.delete('/shortened/:id', user_required.before, function(req, res, next) {
+            Shortened.findOneAndRemove({hash: req.params.id}, function(err,doc){
+                if(err){
+                    res.status(500).json({
+                        "error": true,
+                        "data" : {
+                            "message": "Could not delete the shortened URL",
+                            "url": "http://localhost:3000/"
+                        }
+                    });
+                    next();
+                } else if(doc==null){
+                    res.status(404).json({
+                        "error": true,
+                        "data" : {
+                            "message": "Could not found the shortened URL",
+                            "url": "http://localhost:3000/shortened"
+                        }
+                    });
+                    next();
+                } else {
+                    res.json({
+                        "error": false,
+                        "data" : {
+                            "message": "Shortened URL deleted successfully",
+                            "url": "http://localhost:3000/shortened",
                             "content": doc
                         }
                     });
