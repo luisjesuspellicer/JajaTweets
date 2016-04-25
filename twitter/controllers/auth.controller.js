@@ -7,8 +7,11 @@
 
     var passport = require('passport');
     var mongoose = require('mongoose');
-    var User = mongoose.model('users');
+    var Twitter = mongoose.model('twitter');
     var atob = require('atob');
+
+    // TODO: quit in production
+    var util = require('util');
 
     module.exports = function(app) {
 
@@ -24,9 +27,25 @@
                 var payload = req.headers.authorization.split('.')[1];
                 payload = atob(payload);
                 payload = JSON.parse(payload);
-                User.findOneAndUpdate({email: payload.email}, {$set:{token:req.user.token,
-                    secret: req.user.tokenSecret}},
-                    {new: false}, function(err, doc){
+                var mainContent = req.user.profile._json;
+                var newTwitter = new Twitter({
+                    "user": payload.email,
+                    "in_use": false,
+                    "token": req.user.token,
+                    "secret": req.user.tokenSecret,
+                    "description": mainContent.description,
+                    "screen_name": mainContent.screen_name,
+                    "name": mainContent.name,
+                    "id_str": mainContent.id_str,
+                    "location": mainContent.location,
+                    "url": mainContent.url,
+                    "followers_count": mainContent.followers_count,
+                    "friends_count": mainContent.friends_count,
+                    "favourites_count": mainContent.favourites_count,
+                    "statuses_count": mainContent.statuses_count,
+                    "profile_image_url": mainContent.profile_image_url
+                });
+                newTwitter.save(function(err){
                     if(err){
                         // Error updating user
                         res.status(500).json({
@@ -35,18 +54,18 @@
                                 "token" : req.user.token,
                                 "tokenSecret": req.user.tokenSecret,
                                 "errorMessage": err,
-                                "url": "http://localhost:3000/tweets"
+                                "url": "http://localhost:3000/twitter"
                             }
                         });
                     } else {
-                        // Successful authentication, redirect home.
-                        res.status(200).json({
+                        // Successful authentication
+                        res.json({
                             "error": false,
                             "data": {
                                 "token" : req.user.token,
                                 "tokenSecret": req.user.tokenSecret,
-                                "username": doc.name,
-                                "url": "http://localhost:3000/tweets"
+                                "email": payload.email,
+                                "url": "http://localhost:3000/twitter"
                             }
                         });
                     }

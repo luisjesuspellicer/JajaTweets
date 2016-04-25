@@ -11,7 +11,7 @@
     var atob = require('atob');
     var hash = require('string-hash');
     var Shortened = mongoose.model('shortened');
-    var User = mongoose.model('users');
+    var Twitter = mongoose.model('twitter');
     var user_required = require('../../config/policies.config').user_required;
 
 
@@ -27,7 +27,7 @@
             var payload = req.headers.authorization.split('.')[1];
             payload = atob(payload);
             payload = JSON.parse(payload);
-            User.findOne({email: payload.email}, function(err, doc){
+            Twitter.findOne({user: payload.email}, function(err, doc){
                 if(err) {
                     callback(err);
                 } else {
@@ -43,7 +43,7 @@
          */
         app.get('/shortened', user_required.before, function(req, res, next) {
             getUserFromJWT(req, function(user){
-                Shortened.find({user: user._id}, function(err,doc){
+                Shortened.find({user: user.user}, function(err,doc){
                     if(err){
                         res.status(500).json({
                             "error": true,
@@ -75,7 +75,7 @@
         app.post('/shortened', user_required.before, function(req, res, next) {
             getUserFromJWT(req, function(user){
                 var newHash = hash(req.body.link);
-                Shortened.findOne({hash: newHash, user: user._id}, function(err,doc){
+                Shortened.findOne({hash: newHash, user: user.user}, function(err,doc){
                     if(err){
                         res.status(500).json({
                             "error": true,
@@ -99,7 +99,7 @@
                         var newShortened = new Shortened({
                             "link": req.body.link,
                             "hash": newHash,
-                            "user": user._id
+                            "user": user.user
                         });
                         newShortened.save(function(err){
                             if(err){
@@ -134,12 +134,21 @@
          * Requires user authentication.
          */
         app.get('/shortened/:id', user_required.before, function(req, res, next) {
-            Shortened.find({hash: req.params.id}, function(err,doc){
+            Shortened.findOne({hash: req.params.id}, function(err,doc){
                 if(err){
                     res.status(500).json({
                         "error": true,
                         "data" : {
                             "message": "Could not get the URL of that hash",
+                            "url": "http://localhost:3000/"
+                        }
+                    });
+                    next();
+                } else if(doc == null){
+                    res.status(404).json({
+                        "error": true,
+                        "data" : {
+                            "message": "The hash doesn't exists",
                             "url": "http://localhost:3000/"
                         }
                     });

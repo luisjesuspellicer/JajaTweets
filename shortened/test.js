@@ -75,24 +75,7 @@
                 });
         });
 
-        // #4 should delete a shortened URL from a valid user (with authorization)
-        it("DELETE /shortened/:id => Deletes a shortened URL from user", function(done) {
-            server
-                .delete("/shortened/" + createdHash)
-                .set("Authorization", "Bearer " + admin_token)
-                .expect("Content-type",/json/)
-                .expect(200)
-                .end(function(err, res){
-                    res.status.should.equal(200);
-                    JSON.parse(res.text).error.should.be.exactly(false);
-                    JSON.parse(res.text).data.should.have.property("content");
-                    JSON.parse(res.text).data.message.should.be.exactly("Shortened URL deleted successfully");
-                    done();
-                });
-        });
-
-
-        // #5 should return ONE shortened URL of current user
+        // #4 should return ONE shortened URL of current user
         it("GET /shortened/:id => Shortened URL", function(done) {
             server
                 .get("/shortened/" + hash)
@@ -108,7 +91,7 @@
                 });
         });
 
-        // #6 should redirect user to another URL
+        // #5 should redirect user to another URL
         it("GET /s/:id => Redirect to another URL", function(done) {
             server
                 .get("/s/" + hash)
@@ -118,6 +101,23 @@
                     done();
                 });
         });
+
+        // #6 should delete a shortened URL from a valid user (with authorization)
+        it("DELETE /shortened/:id => Deletes a shortened URL from user", function(done) {
+            server
+                .delete("/shortened/" + createdHash)
+                .set("Authorization", "Bearer " + admin_token)
+                .expect("Content-type",/json/)
+                .expect(200)
+                .end(function(err, res){
+                    res.status.should.equal(200);
+                    JSON.parse(res.text).error.should.be.exactly(false);
+                    JSON.parse(res.text).data.should.have.property("content");
+                    JSON.parse(res.text).data.message.should.be.exactly("Shortened URL deleted successfully");
+                    done();
+                });
+        });
+
 
     });
 
