@@ -273,12 +273,73 @@
                 }
             });
         }
+        /**
+         * Gets own tweets from Twitter.
+         * Requires user authentication.
+         * @param callback is the object callback, a user from database.
+         */
+        function getOwnTweets(user, callback){
+            initTwitterOauth(function(oa)
+            {
+                oa.get(
+                    "https://api.twitter.com/1.1/statuses/user_timeline.json?count=200"
+                    , user.token,user.secret,
+                    function(error, data, response){
+                        if(error){
+                            callback(error);
+                        }else{
+                            callback(JSON.parse(data));
+                        }
+                    }
 
-        // Luis
-        app.get('/tweets', user_required.before, function(req, res, next) {
+                )});
 
-        }, user_required.after);
+        }
+        /**
+         * Gets all tweets from Twitter account.
+         * Requires user authentication
+         * @param user is the local user object.
+         * @param callback is the object callback, a user from database.
+         */
+        function getAccountTweets(user,callback){
+            initTwitterOauth(function(oa)
+            {
+                oa.get(
+                    "https://api.twitter.com/1.1/statuses/home_timeline.json?count=200"
+                    , user.token,user.secret,
+                    function(error, data, response){
+                        if(error){
+                            callback(error);
+                        }else{
+                            callback(JSON.parse(data));
+                        }
+                    }
 
+                )});
+        }
+        /**
+         * Delete tweet in Twitter
+         * Requires user authentication.
+         * @param user is the local user object.
+         * @param callback is the object callback, a user from database.
+         */
+        function deleteTweet(user, id, callback){
+            initTwitterOauth(function(oa)
+            {
+                oa.post(
+                    "https://api.twitter.com/1.1/statuses/destroy/"+id+".json"
+                    , user.token,user.secret,
+                    function(error, data, response){
+
+                        if(error){
+                            callback(error);
+                        }else{
+                            callback(JSON.parse(data));
+                        }
+                    }
+
+                )});
+        }
         /**
          * Endpoint that updates a twitter status (post a tweet).
          * Requires a local user account with at least one twitter account associated.
@@ -353,6 +414,40 @@
         }, user_required.after);
 
         /**
+         * Gets own tweets.
+         * Requires a local user account with at least one twitter account associated.
+         */
+        app.get('/tweets::own', user_required.before, function(req, res, next) {
+
+            getUserFromJWT(req, function(user){
+                getOwnTweets(user,function(result){
+                    if(result.statusCode && result.statusCode != 200){
+                        consolelog("También entra");
+                        res.status(result.statusCode).json({
+                            "error": true,
+                            "data" : {
+                                "message": "Cannot get own tweets",
+                                "url": "http://localhost:3000/"
+                            }
+                        });
+                        next();
+                    } else {
+
+                        res.json({
+                            "error": false,
+                            "data" : {
+                                "message": "Own tweets",
+                                "url": "http://localhost:3000/",
+                                "content": result
+                            }
+                        });
+
+                        next();
+                    }
+                });
+            });
+        }, user_required.after);
+        /**
          * Gets a tweet by the unique tweet id, and provides the data of it.
          * Requires a local user account with at least one twitter account associated.
          * Get parameters required:
@@ -371,6 +466,7 @@
                         });
                         next();
                     } else {
+
                         res.json({
                             "error": false,
                             "data" : {
@@ -385,15 +481,6 @@
             });
         }, user_required.after);
 
-        // Luis
-        app.put('/tweets/:id', user_required.before, function(req, res, next) {
-
-        }, user_required.after);
-
-        // Luis
-        app.delete('/tweets/:id', user_required.before, function(req, res, next) {
-
-        }, user_required.after);
 
         /**
          * Makes a retweet on a specific tweet (with determinated user account).
@@ -537,17 +624,129 @@
         }, user_required.after);
 
 
-        // Luis
-        app.get('/tweets/own', user_required.before, function(req, res, next) {
 
+
+        /*
+         * Modify only pending tweets.
+         * Body parameters required:
+         * - date: javascript date object (timestamp or string).
+         * - status: status to put on the tweet.
+         * - id  unique tweet id (from Twitter "id_str").
+         */
+        app.put('/tweets/:id', user_required.before, function(req, res, next) {
+            var date = new Date();
+            Tweet.update({"id":req.params.id},{"date":body.date,"status":body.status},function(err, result){
+                if(err){
+                    res.json({
+                        "error": true,
+                        "data" : {
+                            "message": "Cant't modify tweet",
+                            "url": "localhost:3000/tweets" + req.params.id,
+                            "content": result
+                        }
+                    });
+                    next();
+                }else{
+                    res.json({
+                        "error": false,
+                        "data" : {
+                            "message": "Tweet successfully changed",
+                            "url": "localhost:3000/tweets" + req.params.id,
+                            "content": result
+                        }
+                    });
+                    next();
+                }
+            });
         }, user_required.after);
 
-        // Luis
-        app.get('/tweets/pending', user_required.before, function(req, res, next) {
+        
+        app.delete('/tweets/:id', user_required.before, function(req, res, next) {
+            getUserFromJWT(req, function(user){
+                deleteTweet(user, req.params.id, function(result){
+                    console.log(req.params.id);
+                    if(result.statusCode && result.statusCode != 200){
+                        console.log(result);
+                        res.status(result.statusCode).json({
 
+                            "error": true,
+                            "data" : {
+                                "message": "Cannot delete tweet with  id: " + req.params.id,
+                                "url": "http://localhost:3000/"
+                            }
+                        });
+                        next();
+                    } else {
+                        console.log(result);
+                        res.json({
+                            "error": false,
+                            "data" : {
+                                "message": "Delete successful",
+                                "url": "localhost:3000/tweets::own",
+                                "content": result
+                            }
+                        });
+                        next();
+                    }
+                });
+            });
         }, user_required.after);
         
+        app.get('/tweets', user_required.before, function(req, res, next) {
+            getUserFromJWT(req, function(user){
+                getAccountTweets(user,function(result){
+                    if(result.statusCode && result.statusCode != 200){
+                        consolelog("También entra");
+                        res.status(result.statusCode).json({
+                            "error": true,
+                            "data" : {
+                                "message": "Cannot get own tweets",
+                                "url": "http://localhost:3000/"
+                            }
+                        });
+                        next();
+                    } else {
 
+                        res.json({
+                            "error": false,
+                            "data" : {
+                                "message": "Search successful",
+                                "url": "http://localhost:3000/",
+                                "content": result
+                            }
+                        });
+
+                        next();
+                    }
+                });
+            });
+        }, user_required.after);
+        
+        app.get('/tweets::pending', user_required.before, function(req, res, next) {
+            Tweet.find({}, function (err, tweets) {
+                if(err){
+                    res.json({"error": true,
+                        "data": {
+                            "message": "Cannot found pending tweets",
+                            "url": "localhost:3000/"
+
+                         }
+                    });
+
+                }else{
+                    console.log(tweets);
+                    res.json({
+                        "error": false,
+                        "data" : {
+                            "message": "Successful search",
+                            "url": "localhost:3000/",
+                            "content": tweets
+                        }
+                    });
+                }
+            });
+        }, user_required.after);
+        
         // Return middleware.
         return function(req, res, next) {
             next();

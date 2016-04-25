@@ -31,7 +31,7 @@
                 .end(function(err, res){
                     res.status.should.equal(200);
                     JSON.parse(res.text).data.should.have.property("token");
-                    JSON.parse(res.text).error.should.be.exactly(false);
+                    JSON.parse(res.text).error.shoul.be.exactly(false);
                     admin_token = JSON.parse(res.text).data.token;
                     done();
                 });
@@ -218,7 +218,95 @@
                     done();
                 });
         });
+        //   should get tweets from a account (with authorization)
+        it("GET /tweets => Gets tweets from one twitter account", function(done){
+            server
+                .get("/tweets/")
+                .set("Authorization", "Bearer " + admin_token)
+                .expect("Content-type",/json/)
+                .expect(200)
+                .end(function(err,res){
+                    res.status.should.equal(200);
+                    JSON.parse(res.text).error.should.be.exactly(false);
+                    JSON.parse(res.text).data.should.have.property("content");
+                    JSON.parse(res.text).data.message.should.be.exactly("Search successful");
+                    done();
+                })
+        });
 
+        //   should get tweets from a user
+        it("GET /tweets::own => Gets tweets from one account", function(done){
+            server
+                .get("/tweets/")
+                .set("Authorization", "Bearer " + admin_token)
+                .expect("Content-type",/json/)
+                .expect(200)
+                .end(function(err,res){
+                    res.status.should.equal(200);
+                    JSON.parse(res.text).error.should.be.exactly(false);
+                    JSON.parse(res.text).data.should.have.property("content");
+                    JSON.parse(res.text).data.message.should.be.exactly("Own tweets");
+                    done();
+                })
+        });
+
+        // should add pending tweet (with authorization and current date)
+        var date1 = new Date();
+        date1.setMilliseconds(180000 + date.getMilliseconds());
+        it("POST /tweets => New pending tweet save", function(done) {
+            server
+                .post("/tweets")
+                .set("Authorization", "Bearer " + admin_token)
+                .send({
+                    "status": "Test@" + date1.toString()
+                })
+                .expect("Content-type",/json/)
+                .expect(200)
+                .end(function(err, res){
+                    res.status.should.equal(200);
+                    JSON.parse(res.text).error.should.be.exactly(false);
+                    JSON.parse(res.text).data.message.should.be.exactly("Tweet saved succesfully");
+                    done();
+                });
+        });
+        // should get all pending tweets (with authorization)
+        it("GET /tweets::pending => GET all pending tweets", function(done) {
+            server
+                .get("/tweets::pending")
+                .set("Authorization", "Bearer " + admin_token)
+                .send({
+                    "status": "Test@" + date1.toString()
+                })
+                .expect("Content-type",/json/)
+                .expect(200)
+                .end(function(err, res){
+                    res.status.should.equal(200);
+                    JSON.parse(res.text).error.should.be.exactly(false);
+                    JSON.parse(res.text).data.message.should.be.exactly("Tweet saved succesfully");
+                    done();
+                });
+        });
+        
+        
+        // should modify a pending tweet (with authorization and year 2020)
+
+        date.setYear(2020);
+        it("PUT /tweets => Modify pending tweet", function(done) {
+            server
+                .put("/tweets")
+                .set("Authorization", "Bearer " + admin_token)
+                .send({
+                    "status": "Test@" + date1.toString()
+                })
+                .expect("Content-type",/json/)
+                .expect(200)
+                .end(function(err, res){
+                    res.status.should.equal(200);
+                    JSON.parse(res.text).error.should.be.exactly(false);
+                    JSON.parse(res.text).data.message.should.be.exactly("Tweet successfully changed");
+                    done();
+                });
+        });
     });
 
 })();

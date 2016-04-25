@@ -1,6 +1,6 @@
 /**
  * Created by diego on 22/04/16.
- */
+
 (function () {
 
     'use strict';
@@ -201,4 +201,4 @@
 
     });
 
-})();
+})();*/
