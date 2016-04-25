@@ -11,7 +11,7 @@
     var OAuth = require('oauth').OAuth;
     var atob = require('atob');
     var Tweet = mongoose.model('tweets');
-    var User = mongoose.model('users');
+    var Twitter = mongoose.model('twitter');
     var user_required = require('../../config/policies.config').user_required;
 
     // TODO: Quit in production
@@ -246,7 +246,7 @@
          */
         function updateStatistics(user, id, num_app){
             getUserInfo(user, id, function(result){
-                User.findOneAndUpdate({email: user.email}, {$set: {tweet_total: result.statuses_count},
+                Twitter.findOneAndUpdate({user: user.user}, {$set: {tweet_total: result.statuses_count},
                     $inc: { tweet_app: num_app }}, function(err, doc){
                         if(err) {
                             console.log(err);
@@ -265,7 +265,7 @@
             var payload = req.headers.authorization.split('.')[1];
             payload = atob(payload);
             payload = JSON.parse(payload);
-            User.findOne({email: payload.email}, function(err, doc){
+            Twitter.findOne({user: payload.email, in_use: true}, function(err, doc){
                 if(err) {
                     callback(err);
                 } else {
