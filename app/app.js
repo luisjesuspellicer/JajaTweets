@@ -3,12 +3,12 @@
 // Declare app level module which depends on views, and components
 angular.module('myApp', [
     'ngRoute',
-    'myApp.singin',
+    'myApp.signin',
     'myApp.errors',
-    'myApp.singup',
+    'myApp.signup',
     'myApp.version',
     'myApp.graphs'
 ]).
 config(['$routeProvider', function($routeProvider) {
-  $routeProvider.otherwise({redirectTo: '/singin'});
+  $routeProvider.otherwise({redirectTo: '/signin'});
 }]);

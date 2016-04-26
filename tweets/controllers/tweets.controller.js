@@ -368,7 +368,7 @@
                                 }
                             });
                         } else {
-                            res.json({
+                            res.status(200).json({
                                 "error": false,
                                 "data" : {
                                     "message": "Tweet saved succesfully",
@@ -383,7 +383,7 @@
                     makeTweet(user, req.body, function(result){
                         if(result.id_str){
                             updateStatistics(user, result.user.id_str, 1);
-                            res.json({
+                            res.status(200).json({
                                 "error": false,
                                 "data" : {
                                     "message": "Tweet post successful",
@@ -422,7 +422,7 @@
             getUserFromJWT(req, function(user){
                 getOwnTweets(user,function(result){
                     if(result.statusCode && result.statusCode != 200){
-                        consolelog("También entra");
+                        console.log("También entra");
                         res.status(result.statusCode).json({
                             "error": true,
                             "data" : {
@@ -705,7 +705,7 @@
             getUserFromJWT(req, function(user){
                 getAccountTweets(user,function(result){
                     if(result.statusCode && result.statusCode != 200){
-                        consolelog("También entra");
+                        console.log("También entra");
                         res.status(result.statusCode).json({
                             "error": true,
                             "data" : {

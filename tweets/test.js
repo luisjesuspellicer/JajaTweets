@@ -31,7 +31,7 @@
                 .end(function(err, res){
                     res.status.should.equal(200);
                     JSON.parse(res.text).data.should.have.property("token");
-                    JSON.parse(res.text).error.shoul.be.exactly(false);
+                    JSON.parse(res.text).error.should.be.exactly(false);
                     admin_token = JSON.parse(res.text).data.token;
                     done();
                 });
@@ -237,7 +237,7 @@
         //   should get tweets from a user
         it("GET /tweets::own => Gets tweets from one user", function(done){
             server
-                .get("/tweets/")
+                .get("/tweets::own")
                 .set("Authorization", "Bearer " + admin_token)
                 .expect("Content-type",/json/)
                 .expect(200)

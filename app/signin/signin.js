@@ -1,20 +1,20 @@
 'use strict';
 
-angular.module('myApp.singin', ['ngRoute'])
+angular.module('myApp.signin', ['ngRoute'])
 
     .config(['$routeProvider', function ($routeProvider) {
-        $routeProvider.when('/singin', {
-            templateUrl: 'singin/singin.html',
-            controller: 'singinCtrl',
-            controllerAs: 'singin'
+        $routeProvider.when('/signin', {
+            templateUrl: 'signin/signin.html',
+            controller: 'signinCtrl',
+            controllerAs: 'signin'
         });
     }])
 
-    .controller('singinCtrl', singinCtrl);
+    .controller('signinCtrl', signinCtrl);
 
-singinCtrl.$inject = ['$http', 'authentication', '$location', 'errorsService'];
+signinCtrl.$inject = ['$http', 'authentication', '$location', 'errorsService'];
 
-function singinCtrl($http, authentication, $location, errorsService) {
+function signinCtrl($http, authentication, $location, errorsService) {
 
     var vm = this;
 
@@ -30,7 +30,7 @@ function singinCtrl($http, authentication, $location, errorsService) {
         $http.post('http://localhost:3000/login', vm.credentials)
             .then(function (data) {
                 authentication.saveToken(data.data.data.token);
-                if (vm.credentials.email = "test@test") {
+                if (vm.credentials.email == "test@test") {
                     $location.path('graphs');
                 }
             }, function (err) {
