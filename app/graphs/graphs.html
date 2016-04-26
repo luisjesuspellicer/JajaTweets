@@ -1,26 +1,53 @@
-<h1>Subscriptions / unsubscriptions</h1>
-<canvas id="doughnut" class="chart chart-doughnut"
-        chart-data="graphs.data" chart-labels="graphs.labels">
-</canvas>
+<div class="col-md-6">
+    <div class="thumbnail">
+        <div class="caption" style="text-align: center">
+            <h3>Un/subscriptions</h3>
+        </div>
+        <canvas id="doughnut" class="chart chart-doughnut"
+                chart-data="graphs.data" chart-labels="graphs.labels">
+        </canvas>
+    </div>
+</div>
 
-<h1>Tweets app / tweets total</h1>
-<canvas id="doughnut1" class="chart chart-doughnut"
-        chart-data="graphs.data1" chart-labels="graphs.labels1">
-</canvas>
+<div class="col-md-6">
+    <div class="thumbnail">
+        <div class="caption" style="text-align: center">
+            <h3>In app/total tweets</h3>
+        </div>
+        <canvas id="doughnut1" class="chart chart-doughnut"
+                chart-data="graphs.data1" chart-labels="graphs.labels1">
+        </canvas>
+    </div>
+</div>
 
-<table>
-    <h1>Last users</h1>
-    <tr ng-repeat="user in graphs.accesses">
-        <td>{{user.name}}</td>
-        <td>{{user.lastAccess}}</td>
-    </tr>
-</table>
 
-<table>
-    <h1>More tweets</h1>
-    <tr ng-repeat="user in graphs.tweets">
-        <td>{{user.name}}</td>
-        <td>{{user.tweet_app?user.tweet_app:0}}, {{user.tweet_total?user.tweet_total:0}}</td>
-    </tr>
-</table>
+<div class="col-md-6">
+    <div class="caption" style="text-align: center"><h3>Last users</h3></div>
+    <table class="table table-responsive table-bordered col-md-6">
+        <tr>
+            <th>User</th>
+            <th>Last access</th>
+        </tr>
+        <tr ng-repeat="user in graphs.accesses">
+            <td>{{user.name}}</td>
+            <td>{{user.lastAccess}}</td>
+        </tr>
+    </table>
+</div>
+
+<div class="col-md-6">
+    <div class="caption" style="text-align: center"><h3>Users with more tweets</h3></div>
+    <table class="table table-responsive table-bordered">
+        <tr>
+            <th>User</th>
+            <th>In app tweets</th>
+            <th>Total tweets</th>
+        </tr>
+        <tr ng-repeat="user in graphs.tweets">
+            <td>{{user.name}}</td>
+            <td>{{user.tweet_app?user.tweet_app:0}}</td>
+            <td>{{user.tweet_total?user.tweet_total:0}}</td>
+        </tr>
+    </table>
+</div>
 

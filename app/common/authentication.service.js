@@ -22,15 +22,47 @@
             return tok?tok:$window.localStorage['mean-token'];
         };
 
-        logout = function() {
+        var logout = function() {
             $window.localStorage.removeItem('mean-token');
             tok = undefined;
+        };
+
+        var isLoggedIn = function() {
+            var token = getToken();
+            var payload;
+
+            if(token){
+                payload = token.split('.')[1];
+                payload = $window.atob(payload);
+                payload = JSON.parse(payload);
+
+                return payload.exp > Date.now() / 1000;
+            } else {
+                return false;
+            }
+        };
+
+        var isRoot = function() {
+            var token = getToken();
+            var payload;
+
+            if(token){
+                payload = token.split('.')[1];
+                payload = $window.atob(payload);
+                payload = JSON.parse(payload);
+
+                return payload.exp > Date.now() / 1000 && payload.email == "test@test";
+            } else {
+                return false;
+            }
         };
 
         return {
             saveToken : saveToken,
             getToken : getToken,
-            logout : logout
+            logout : logout,
+            isLoggedIn: isLoggedIn,
+            isRoot: isRoot
         };
     }
 
