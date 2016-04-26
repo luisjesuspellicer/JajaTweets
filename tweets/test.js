@@ -235,7 +235,7 @@
         });
 
         //   should get tweets from a user
-        it("GET /tweets::own => Gets tweets from one account", function(done){
+        it("GET /tweets::own => Gets tweets from one user", function(done){
             server
                 .get("/tweets/")
                 .set("Authorization", "Bearer " + admin_token)

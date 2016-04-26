@@ -8,7 +8,7 @@
     var webservices = require('../webservices');
 
     webservices.forEach(function(ws){
+
         require('../'+ws+'/test');
     })
-
 })();

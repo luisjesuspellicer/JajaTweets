@@ -337,7 +337,7 @@
                             callback(JSON.parse(data));
                         }
                     }
-
+                
                 )});
         }
         /**
@@ -626,7 +626,7 @@
 
 
 
-        /*
+        /**
          * Modify only pending tweets.
          * Body parameters required:
          * - date: javascript date object (timestamp or string).
@@ -635,7 +635,7 @@
          */
         app.put('/tweets/:id', user_required.before, function(req, res, next) {
             var date = new Date();
-            Tweet.update({"id":req.params.id},{"date":body.date,"status":body.status},function(err, result){
+            Tweet.update({"id_str":req.params.id},{"date":body.date,"status":body.status},function(err, result){
                 if(err){
                     res.json({
                         "error": true,
@@ -660,7 +660,11 @@
             });
         }, user_required.after);
 
-        
+        /**
+         * Delete tweet from Twitter.
+         * Body parameters required:
+         * - id  unique tweet id (from Twitter "id_str").
+         */
         app.delete('/tweets/:id', user_required.before, function(req, res, next) {
             getUserFromJWT(req, function(user){
                 deleteTweet(user, req.params.id, function(result){
@@ -691,7 +695,12 @@
                 });
             });
         }, user_required.after);
-        
+
+        /**
+         * Get all tweets from Twitter account.
+         * Body parameters required:
+         * - id  unique tweet id (from Twitter "id_str").
+         */
         app.get('/tweets', user_required.before, function(req, res, next) {
             getUserFromJWT(req, function(user){
                 getAccountTweets(user,function(result){
@@ -721,7 +730,10 @@
                 });
             });
         }, user_required.after);
-        
+
+        /**
+         * Get pending tweets from user. (User authentication required)
+         */
         app.get('/tweets::pending', user_required.before, function(req, res, next) {
             Tweet.find({}, function (err, tweets) {
                 if(err){
@@ -732,9 +744,9 @@
 
                          }
                     });
-
+                    next();
                 }else{
-                    console.log(tweets);
+
                     res.json({
                         "error": false,
                         "data" : {
@@ -743,6 +755,7 @@
                             "content": tweets
                         }
                     });
+                    next();
                 }
             });
         }, user_required.after);
