@@ -6,6 +6,7 @@
   "dependencies": {
     "atob": "^2.0.3",
     "body-parser": "^1.15.0",
+    "bower": "^1.7.9",
     "chart.js": "^2.0.2",
     "cookie-parser": "^1.4.1",
     "express": "^4.13.4",
@@ -30,7 +31,8 @@
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 0",
-    "start": "node index.js"
+    "start": "node index.js",
+    "postinstall": "cd app && ../node_modules/bower/bin/bower install"
   },
   "author": "",
   "license": "ISC"
