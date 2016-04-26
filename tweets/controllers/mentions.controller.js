@@ -78,6 +78,8 @@
 
         /**
          * Get the latest mentions of current user in twitter.
+         *
+         * (Checked)
          */
         app.get('/mentions', user_required.before, function(req, res, next) {
             getUserFromJWT(req, function(user){

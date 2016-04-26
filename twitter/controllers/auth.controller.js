@@ -43,7 +43,8 @@
                     "friends_count": mainContent.friends_count,
                     "favourites_count": mainContent.favourites_count,
                     "statuses_count": mainContent.statuses_count,
-                    "profile_image_url": mainContent.profile_image_url
+                    "profile_image_url": mainContent.profile_image_url,
+                    "tweet_app": 0
                 });
                 newTwitter.save(function(err){
                     if(err){

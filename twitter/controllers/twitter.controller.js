@@ -68,11 +68,14 @@
         /**
          * Save a twitter account for current user.
          * Local user authentication required.
+         *
+         * (Checked)
          */
         app.post('/twitter', user_required.before, function(req, res, next) {
             getUserFromJWT(req, function(user){
                 Twitter.create(req.body, function(err){
                     if(err){
+                        console.log(err);
                         res.json({
                             "error": true,
                             "data" : {
@@ -99,6 +102,8 @@
         /**
          * Deletes all twitter accounts of current user.
          * Local user authentication required.
+         *
+         * (Checked)
          */
         app.delete('/twitter', user_required.before, function(req, res, next) {
             getUserFromJWT(req, function(user){
@@ -126,41 +131,80 @@
             });
         }, user_required.after);
 
+        /**
+         * Set to not use all twitter accounts of current user (by unique id).
+         * Local user authentication required.
+         *
+         * (Checked)
+         */
+        app.get('/twitter/notUse', user_required.before, function(req, res, next) {
+            getUserFromJWT(req, function(user){
+                Twitter.update({user: user.email}, {$set: {in_use: false}}, function(err){
+                        if(err){
+                            res.status(500).json({
+                                "error": true,
+                                "data" : {
+                                    "message": "Cannot change use status of twitter accounts",
+                                    "url": "http://localhost:3000/"
+                                }
+                            });
+                            next();
+                        } else {
+                            res.json({
+                                "error": false,
+                                "data" : {
+                                    "message": "Now not using any twitter account of user",
+                                    "url": "http://localhost:3000/twitter"
+                                }
+                            });
+                            next();
+                        }
+                    });
+            });
+        }, user_required.after);
 
         /**
          * Gets one twitter accounts of current user (by unique id).
          * Local user authentication required.
+         *
+         * (Checked)
          */
         app.get('/twitter/:id', user_required.before, function(req, res, next) {
-            getUserFromJWT(req, function(user){
-                Twitter.findOne({user: user.email, id_str: req.params.id}, function(err, doc){
-                    if(err){
-                        res.status(500).json({
-                            "error": true,
-                            "data" : {
-                                "message": "Cannot get this twitter account for current user",
-                                "url": "http://localhost:3000/"
-                            }
-                        });
-                        next();
-                    } else {
-                        res.json({
-                            "error": false,
-                            "data" : {
-                                "message": "Twitter account retrieved successfully",
-                                "url": "http://localhost:3000/twitter",
-                                "content": doc
-                            }
-                        });
-                        next();
-                    }
+            if(req.params.id == "notUse" || req.params.id == "update"){
+                next();
+            } else {
+                getUserFromJWT(req, function (user) {
+                    Twitter.findOne({user: user.email, id_str: req.params.id}, function (err, doc) {
+                        if (err) {
+                            res.status(500).json({
+                                "error": true,
+                                "data": {
+                                    "message": "Cannot get this twitter account for current user",
+                                    "url": "http://localhost:3000/"
+                                }
+                            });
+                            next();
+                        } else {
+                            res.json({
+                                "error": false,
+                                "data": {
+                                    "message": "Twitter account retrieved successfully",
+                                    "url": "http://localhost:3000/twitter",
+                                    "content": doc
+                                }
+                            });
+                            next();
+                        }
+                    });
                 });
-            });
+            }
         }, user_required.after);
 
         /**
          * Set to use one twitter accounts of current user (by unique id).
          * Local user authentication required.
+         *
+         * (Checked)
          */
         app.get('/twitter/:id/use', user_required.before, function(req, res, next) {
             getUserFromJWT(req, function(user){
@@ -176,7 +220,7 @@
                         });
                         next();
                     } else if(doc==null){
-                        res.status(500).json({
+                        res.status(400).json({
                             "error": true,
                             "data" : {
                                 "message": "Cannot change use status of this twitter account",
@@ -185,23 +229,195 @@
                         });
                         next();
                     } else {
-                        res.json({
-                            "error": false,
-                            "data" : {
-                                "message": "Now using twitter account: " + doc.screen_name,
-                                "url": "http://localhost:3000/twitter",
-                                "content": doc
+                        var twitterDoc = doc;
+                        User.findOneAndUpdate({email: user.email}, {$set: {tweet_app: twitterDoc.tweet_app,
+                            tweet_total: doc.statuses_count}}, function(err, doc){
+                            if(err){
+                                res.status(500).json({
+                                    "error": true,
+                                    "data" : {
+                                        "message": "Cannot update statistics of this twitter account on change",
+                                        "url": "http://localhost:3000/"
+                                    }
+                                });
+                                next();
+                            } else if(doc==null) {
+                                res.status(400).json({
+                                    "error": true,
+                                    "data" : {
+                                        "message": "Cannot update statistics of this twitter account on change " +
+                                            "(User doesn't exists)",
+                                        "url": "http://localhost:3000/"
+                                    }
+                                });
+                                next();
+                            } else {
+                                res.json({
+                                    "error": false,
+                                    "data" : {
+                                        "message": "Now using twitter account: " + twitterDoc.screen_name,
+                                        "url": "http://localhost:3000/twitter",
+                                        "content": twitterDoc
+                                    }
+                                });
+                                next();
                             }
                         });
-                        next();
                     }
                 });
             });
         }, user_required.after);
 
         /**
+         * Update statistics of one twitter account of current user (by unique id).
+         * Local user authentication required.
+         *
+         * (Checked)
+         */
+        app.get('/twitter/:id/update', user_required.before, function(req, res, next) {
+            if(req.params.id=="update" || req.params.id=="notUse"){
+                next();
+            } else {
+                getUserFromJWT(req, function (user) {
+                    Twitter.findOne({user: user.email, id_str: req.params.id}, function (err, doc) {
+                        if (err) {
+                            res.status(500).json({
+                                "error": true,
+                                "data": {
+                                    "message": "Cannot find this twitter account",
+                                    "url": "http://localhost:3000/"
+                                }
+                            });
+                            next();
+                        } else if (doc == null) {
+                            res.status(400).json({
+                                "error": true,
+                                "data": {
+                                    "message": "This twitter account doesn't exists",
+                                    "url": "http://localhost:3000/"
+                                }
+                            });
+                            next();
+                        } else {
+                            var twitterDoc = doc;
+                            User.findOneAndUpdate({email: user.email}, {
+                                $set: {
+                                    tweet_app: doc.tweet_app,
+                                    tweet_total: doc.statuses_count
+                                }
+                            }, function (err, doc) {
+                                if (err) {
+                                    res.status(500).json({
+                                        "error": true,
+                                        "data": {
+                                            "message": "Cannot update statistics of this twitter account",
+                                            "url": "http://localhost:3000/"
+                                        }
+                                    });
+                                    next();
+                                } else if (doc == null) {
+                                    res.status(400).json({
+                                        "error": true,
+                                        "data": {
+                                            "message": "Cannot update statistics of this twitter account " +
+                                            "(User doesn't exists)",
+                                            "url": "http://localhost:3000/"
+                                        }
+                                    });
+                                    next();
+                                } else {
+                                    res.json({
+                                        "error": false,
+                                        "data": {
+                                            "message": "Updated statistics from twitter account: " +
+                                            twitterDoc.screen_name,
+                                            "url": "http://localhost:3000/twitter",
+                                            "content": twitterDoc
+                                        }
+                                    });
+                                    next();
+                                }
+                            });
+                        }
+                    });
+                });
+            }
+        }, user_required.after);
+
+        /**
+         * Update statistics of in use twitter account of current user (by unique id).
+         * Local user authentication required.
+         *
+         * (Checked)
+         */
+        app.get('/twitter/update', user_required.before, function(req, res, next) {
+            getUserFromJWT(req, function(user){
+                Twitter.findOne({user: user.email, in_use: true}, function(err, doc){
+                    if(err){
+                        res.status(500).json({
+                            "error": true,
+                            "data" : {
+                                "message": "Cannot find this twitter account",
+                                "url": "http://localhost:3000/"
+                            }
+                        });
+                        next();
+                    } else if(doc==null){
+                        res.status(400).json({
+                            "error": true,
+                            "data" : {
+                                "message": "This twitter account doesn't exists",
+                                "url": "http://localhost:3000/"
+                            }
+                        });
+                        next();
+                    } else {
+                        var twitterDoc = doc;
+                        User.findOneAndUpdate({email: user.email}, {$set: {tweet_app: doc.tweet_app,
+                            tweet_total: doc.statuses_count}}, function(err, doc){
+                            if(err){
+                                res.status(500).json({
+                                    "error": true,
+                                    "data" : {
+                                        "message": "Cannot update statistics of this twitter account",
+                                        "url": "http://localhost:3000/"
+                                    }
+                                });
+                                next();
+                            } else if(doc==null) {
+                                res.status(400).json({
+                                    "error": true,
+                                    "data" : {
+                                        "message": "Cannot update statistics of this twitter account " +
+                                        "(User doesn't exists)",
+                                        "url": "http://localhost:3000/"
+                                    }
+                                });
+                                next();
+                            } else {
+                                res.json({
+                                    "error": false,
+                                    "data" : {
+                                        "message": "Updated statistics from twitter account: " +
+                                        twitterDoc.screen_name,
+                                        "url": "http://localhost:3000/twitter",
+                                        "content": twitterDoc
+                                    }
+                                });
+                                next();
+                            }
+                        });
+                    }
+                });
+            });
+        }, user_required.after);
+
+
+        /**
          * Set to not use one twitter accounts of current user (by unique id).
          * Local user authentication required.
+         *
+         * (Checked)
          */
         app.get('/twitter/:id/notUse', user_required.before, function(req, res, next) {
             getUserFromJWT(req, function(user){
@@ -243,6 +459,8 @@
         /**
          * Deletes one twitter account of current user (by unique id).
          * Local user authentication required.
+         *
+         * (Checked)
          */
         app.delete('/twitter/:id', user_required.before, function(req, res, next) {
             getUserFromJWT(req, function(user){

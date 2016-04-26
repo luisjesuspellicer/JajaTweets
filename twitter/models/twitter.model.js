@@ -39,7 +39,11 @@
         statuses_count: Number,
         profile_image_url: String,
         subscribed: Object,
-        tweet_app: Number
+        tweet_app: {
+            type: Number,
+            required: true,
+            unique: false
+        }
     });
 
     // Export the model.

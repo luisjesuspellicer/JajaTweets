@@ -79,6 +79,8 @@
 
         /**
          * Gets hashtags subscriptions of current user.
+         *
+         * (Checked)
          */
         app.get('/subscriptions', user_required.before, function(req, res, next) {
             getUserFromJWT(req, function(user){
@@ -108,60 +110,75 @@
 
         /**
          * Add a new subscription (hashtag) to current user.
+         *
+         * (Checked)
          */
         app.post('/subscriptions', user_required.before, function(req, res, next) {
             getUserFromJWT(req, function(user){
-                User.findOne({email: user.email, subscribed: {hashtag: req.body.hashtag}}, function(err,doc){
-                    if(err){
-                        res.status(500).json({
-                            "error": true,
-                            "data" : {
-                                "message": "Cannot subscribe user to: " + req.body.hashtag,
-                                "url": "http://localhost:3000/"
-                            }
-                        });
-                        next();
-                    } else if(doc!=null){
-                        res.status(400).json({
-                            "error": true,
-                            "data" : {
-                                "message": "User is already subscribed to: " + req.body.hashtag,
-                                "url": "http://localhost:3000/",
-                                "content": doc.subscribed
-                            }
-                        });
-                        next();
-                    } else {
-                        User.findOneAndUpdate({email: user.email}, {$push: {subscribed: {hashtag: req.body.hashtag}}},
-                            {new: true}, function (err, doc) {
-                                if (err) {
-                                    res.status(500).json({
-                                        "error": true,
-                                        "data": {
-                                            "message": "Cannot subscribe user to: " + req.body.hashtag,
-                                            "url": "http://localhost:3000/"
-                                        }
-                                    });
-                                    next();
-                                } else {
-                                    res.json({
-                                        "error": false,
-                                        "data": {
-                                            "message": "User succesfully subscribed to: " + req.body.hashtag,
-                                            "url": "http://localhost:3000/tweets",
-                                            "content": doc.subscribed
-                                        }
-                                    });
-                                    next();
+                if(req.body.hashtag) {
+                    User.findOne({email: user.email, subscribed: {hashtag: req.body.hashtag}}, function (err, doc) {
+                        if (err) {
+                            res.status(500).json({
+                                "error": true,
+                                "data": {
+                                    "message": "Cannot subscribe user to: " + req.body.hashtag,
+                                    "url": "http://localhost:3000/"
                                 }
                             });
-                    }
-                });
+                            next();
+                        } else if (doc != null) {
+                            res.status(400).json({
+                                "error": true,
+                                "data": {
+                                    "message": "User is already subscribed to: " + req.body.hashtag,
+                                    "url": "http://localhost:3000/",
+                                    "content": doc.subscribed
+                                }
+                            });
+                            next();
+                        } else {
+                            User.findOneAndUpdate({email: user.email}, {$push: {subscribed: {hashtag: req.body.hashtag}}},
+                                {new: true}, function (err, doc) {
+                                    if (err) {
+                                        res.status(500).json({
+                                            "error": true,
+                                            "data": {
+                                                "message": "Cannot subscribe user to: " + req.body.hashtag,
+                                                "url": "http://localhost:3000/"
+                                            }
+                                        });
+                                        next();
+                                    } else {
+                                        res.json({
+                                            "error": false,
+                                            "data": {
+                                                "message": "User succesfully subscribed to: " + req.body.hashtag,
+                                                "url": "http://localhost:3000/tweets",
+                                                "content": doc.subscribed
+                                            }
+                                        });
+                                        next();
+                                    }
+                                });
+                        }
+                    });
+                } else {
+                    res.json({
+                        "error": true,
+                        "data": {
+                            "message": "Hashtag not provided (mandatory field)",
+                            "url": "http://localhost:3000/"
+                        }
+                    });
+                    next();
+                }
             });
         }, user_required.after);
 
         /**
          * Gets all statuses of hashtag in the request (using current user).
+         *
+         * (Checked)
          */
         app.get('/subscriptions/:id', user_required.before, function(req, res, next) {
             getUserFromJWT(req, function(user){
@@ -192,6 +209,8 @@
 
         /**
          * Delete a subscription (hashtag) from current user.
+         *
+         * (Checked)
          */
         app.delete('/subscriptions/:id', user_required.before, function(req, res, next) {
             getUserFromJWT(req, function(user){
