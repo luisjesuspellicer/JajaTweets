@@ -13,12 +13,13 @@
     var server = supertest.agent("http://localhost:3000");
     var admin_token;
     var status_id = 20;
+    var tweetId;
     var date = new Date();
 
     // UNIT test begin
     describe("TWEETS unit test",function(){
 
-        // #1 should return valid token
+        // #1 Should return the admin token
         it("POST /login test@test => Valid admin token", function(done) {
             server
                 .post("/login")
@@ -235,9 +236,9 @@
         });
 
         //   should get tweets from a user
-        it("GET /tweets::own => Gets tweets from one user", function(done){
+        it("GET /tweets/own => Gets tweets from one user", function(done){
             server
-                .get("/tweets::own")
+                .get("/tweets/own")
                 .set("Authorization", "Bearer " + admin_token)
                 .expect("Content-type",/json/)
                 .expect(200)
@@ -252,27 +253,30 @@
 
         // should add pending tweet (with authorization and current date)
         var date1 = new Date();
-        date1.setMilliseconds(180000 + date.getMilliseconds());
+        date1.setMilliseconds(180000 + date1.getMilliseconds());
         it("POST /tweets => New pending tweet save", function(done) {
             server
                 .post("/tweets")
                 .set("Authorization", "Bearer " + admin_token)
                 .send({
-                    "status": "Test@" + date1.toString()
+                    "status": "Test@" + date1.toString(),
+                    "date": date1.toString()
                 })
                 .expect("Content-type",/json/)
                 .expect(200)
                 .end(function(err, res){
                     res.status.should.equal(200);
                     JSON.parse(res.text).error.should.be.exactly(false);
+                    JSON.parse(res.text).data.should.have.property("content");
                     JSON.parse(res.text).data.message.should.be.exactly("Tweet saved succesfully");
+                    tweetId = JSON.parse(res.text).data.content;
                     done();
                 });
         });
         // should get all pending tweets (with authorization)
-        it("GET /tweets::pending => GET all pending tweets", function(done) {
+        it("GET /tweets/pending => GET all pending tweets", function(done) {
             server
-                .get("/tweets::pending")
+                .get("/tweets/pending")
                 .set("Authorization", "Bearer " + admin_token)
                 .send({
                     "status": "Test@" + date1.toString()
@@ -282,31 +286,50 @@
                 .end(function(err, res){
                     res.status.should.equal(200);
                     JSON.parse(res.text).error.should.be.exactly(false);
-                    JSON.parse(res.text).data.message.should.be.exactly("Tweet saved succesfully");
+                    JSON.parse(res.text).data.should.have.property("content");
+                    JSON.parse(res.text).data.message.should.be.exactly("Successful search");
                     done();
                 });
         });
         
         
         // should modify a pending tweet (with authorization and year 2020)
-
         date.setYear(2020);
-        it("PUT /tweets => Modify pending tweet", function(done) {
+        it("PUT /tweets/:id => Modify pending tweet", function(done) {
             server
-                .put("/tweets")
+                .put("/tweets/" + tweetId)
                 .set("Authorization", "Bearer " + admin_token)
                 .send({
-                    "status": "Test@" + date1.toString()
+                    "status": "Test@" + date.toString(),
+                    "date": date.toString()
                 })
                 .expect("Content-type",/json/)
                 .expect(200)
                 .end(function(err, res){
                     res.status.should.equal(200);
                     JSON.parse(res.text).error.should.be.exactly(false);
+                    JSON.parse(res.text).data.should.have.property("content");
                     JSON.parse(res.text).data.message.should.be.exactly("Tweet successfully changed");
                     done();
                 });
         });
+
+        // should delete pending tweet (one)
+        it("DELETE /tweets/pending/:id => Delete pending tweet", function(done) {
+            server
+                .delete("/tweets/pending/" + tweetId)
+                .set("Authorization", "Bearer " + admin_token)
+                .expect("Content-type",/json/)
+                .expect(200)
+                .end(function(err, res){
+                    res.status.should.equal(200);
+                    JSON.parse(res.text).error.should.be.exactly(false);
+                    JSON.parse(res.text).data.should.have.property("content");
+                    JSON.parse(res.text).data.message.should.be.exactly("Successful delete");
+                    done();
+                });
+        });
+
     });
 
 })();
