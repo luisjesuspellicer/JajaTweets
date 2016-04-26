@@ -29,7 +29,8 @@
         lastAccess: Date,
         subscribed: Object,
         tweet_app: Number,
-        tweet_total: Number
+        tweet_total: Number,
+        url: String
     });
 
     // Creates hash and salt from password

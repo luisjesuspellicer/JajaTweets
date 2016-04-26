@@ -29,12 +29,23 @@
             next(); }
         );
 
+        var index_options = _.cloneDeep(admin_required);
+        index_options.after.push(function(req, res, next) {
+            console.log(JSON.stringify(res.resource.item));
+            if (res.resource.item) {
+                res.resource.item.forEach(function(user) {
+                    user.url = 'http://localhost:3000/users/'+user._id
+                })
+            }
+            next();
+        });
+
         // Setup the controller for REST
         var resource = Resource(app, '', route, app.models.users)
             .get(admin_or_self_required) // GET /users/:id
             .put(admin_or_self_required)// PUT /users/:id
             .delete(delete_options) // DELETE /users/:id
-            .index(admin_required); // GET /users
+            .index(index_options); // GET /users
 
         // POST /users must generate new JWT token
         resource.register(app, 'post', '/users', createUser, resource.respond.bind(resource), admin_required);
