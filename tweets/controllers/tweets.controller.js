@@ -347,6 +347,8 @@
          * Get all tweets from Twitter account.
          * Body parameters required:
          * - id  unique tweet id (from Twitter "id_str").
+         *
+         * (Checked)
          */
         app.get('/tweets', user_required.before, function(req, res, next) {
             getUserFromJWT(req, function(user){
@@ -384,6 +386,8 @@
          * Body parameters required:
          * - date: javascript date object (timestamp or string).
          * - status: status to put on the tweet.
+         *
+         * (Checked)
          */
         app.post('/tweets', user_required.before, function(req, res, next) {
             getUserFromJWT(req, function(user) {
@@ -459,6 +463,8 @@
          * Requires a local user account with at least one twitter account associated.
          * Get parameters required:
          * - id: unique tweet id (from Twitter "id_str").
+         *
+         * (Checked)
          */
         app.get('/tweets/:id', user_required.before, function(req, res, next) {
             if(req.params.id == "own" || req.params.id == "pending"){
@@ -499,6 +505,8 @@
          * - date: javascript date object (timestamp or string).
          * - status: status to put on the tweet.
          * - id  unique tweet id (from Twitter "id_str").
+         *
+         * (Checked)
          */
         app.put('/tweets/:id', user_required.before, function(req, res, next) {
             getUserFromJWT(req, function(user){
@@ -538,6 +546,8 @@
          * Delete tweet from Twitter.
          * Body parameters required:
          * - id  unique tweet id (from Twitter "id_str").
+         *
+         * (Checked)
          */
         app.delete('/tweets/:id', user_required.before, function(req, res, next) {
             getUserFromJWT(req, function(user){
@@ -574,6 +584,8 @@
         /**
          * Gets own tweets.
          * Requires a local user account with at least one twitter account associated.
+         *
+         * (Checked)
          */
         app.get('/tweets/:own', user_required.before, function(req, res, next) {
             if(req.params.own != "own"){
@@ -585,7 +597,6 @@
                     } else {
                         getOwnTweets(user, function (result) {
                             if (result.statusCode && result.statusCode != 200) {
-                                console.log("También entra");
                                 res.status(result.statusCode).json({
                                     "error": true,
                                     "data": {
@@ -615,6 +626,8 @@
          * Requires a local user account with at least one twitter account associated.
          * Get parameters required:
          * - id: unique tweet id (from Twitter "id_str").
+         *
+         * (Checked)
          */
         app.get('/tweets/:id/retweet', user_required.before, function(req, res, next) {
             getUserFromJWT(req, function(user){
@@ -650,6 +663,8 @@
          * Requires a local user account with at least one twitter account associated.
          * Get parameters required:
          * - id: unique tweet id (from Twitter "id_str").
+         *
+         * (Checked)
          */
         app.get('/tweets/:id/unretweet', user_required.before, function(req, res, next) {
             getUserFromJWT(req, function(user){
@@ -693,6 +708,8 @@
          * Requires a local user account with at least one twitter account associated.
          * Get parameters required:
          * - id: unique tweet id (from Twitter "id_str").
+         *
+         * (Checked)
          */
         app.get('/tweets/:id/favorite', user_required.before, function(req, res, next) {
             getUserFromJWT(req, function(user){
@@ -728,6 +745,8 @@
          * Requires a local user account with at least one twitter account associated.
          * Get parameters required:
          * - id: unique tweet id (from Twitter "id_str").
+         *
+         * (Checked)
          */
         app.get('/tweets/:id/unfavorite', user_required.before, function(req, res, next) {
             getUserFromJWT(req, function(user){
@@ -760,6 +779,8 @@
 
         /**
          * Get pending tweets from user. (User authentication required)
+         *
+         * (Checked)
          */
         app.get('/tweets/:pending', user_required.before, function(req, res, next) {
             if(req.params.pending != "pending"){
@@ -793,6 +814,8 @@
 
         /**
          * Delete pending tweet from user, by unique tweet (local) id. (User authentication required)
+         *
+         * (Checked)
          */
         app.delete('/tweets/pending/:id', user_required.before, function(req, res, next) {
             if(req.params.id == "pending" || req.params.id == "own"){
