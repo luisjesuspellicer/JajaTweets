@@ -58,8 +58,8 @@
                     JSON.parse(res.text).should.have.lengthOf(4);
                     JSON.parse(res.text).forEach(function (data) {
                         if (data.name == "subunsub") {
-                            sub = data.chart[0].value;
-                            unsub = data.chart[1].value;
+                            sub = data.chart[0];
+                            unsub = data.chart[1];
                             subunsub_id = data._id;
                         } else if (data.name == "lastAccess") {
                             last_id = data._id;
@@ -93,7 +93,7 @@
                             res.status.should.equal(200);
                             JSON.parse(res.text).error.should.be.exactly(false);
                             JSON.parse(res.text).data.chart.should.have.property("chart").with.lengthOf(2);
-                            JSON.parse(res.text).data.chart.chart[0].value.should.equal(sub);
+                            JSON.parse(res.text).data.chart.chart[0].should.equal(sub);
                             done();
                         });
                 });
@@ -115,7 +115,7 @@
                             res.status.should.equal(200);
                             JSON.parse(res.text).error.should.be.exactly(false);
                             JSON.parse(res.text).data.chart.should.have.property("chart").with.lengthOf(2);
-                            JSON.parse(res.text).data.chart.chart[1].value.should.equal(unsub);
+                            JSON.parse(res.text).data.chart.chart[1].should.equal(unsub);
                             done();
                         });
                 });
@@ -144,8 +144,8 @@
                                 .expect(200)
                                 .end(function (err, res) {
                                     res.status.should.equal(200);
-                                    JSON.parse(res.text).data.chart.chart[1].value.should.equal(0);
-                                    JSON.parse(res.text).data.chart.chart[0].value.should.equal(0);
+                                    JSON.parse(res.text).data.chart.chart[1].should.equal(0);
+                                    JSON.parse(res.text).data.chart.chart[0].should.equal(0);
                                     done();
                                 });
                         });

@@ -18,8 +18,6 @@ function singinCtrl($http, authentication, $location, errorsService) {
 
     var vm = this;
 
-    vm.err = {};
-
     vm.credentials = {
         'email': "",
         'password': ""
@@ -31,10 +29,11 @@ function singinCtrl($http, authentication, $location, errorsService) {
 
         $http.post('http://localhost:3000/login', vm.credentials)
             .then(function (data) {
-                authentication.saveToken(data.data.token);
-                $location.path('profile');
+                authentication.saveToken(data.data.data.token);
+                if (vm.credentials.email = "test@test") {
+                    $location.path('graphs');
+                }
             }, function (err) {
-                vm.err = err;
                 errorsService.errorCode = err.status;
                 errorsService.errorMessage = err.data.message;
                 $location.path('errors');

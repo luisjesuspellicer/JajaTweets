@@ -7,20 +7,24 @@
         .module('myApp')
         .service('authentication', authentication);
 
-    authentication.$inject = ['$http', '$window'];
+    authentication.$inject = ['$window'];
 
-    function authentication ($http, $window) {
+    function authentication ($window) {
+
+        var tok;
 
         var saveToken = function (token) {
             $window.localStorage['mean-token'] = token;
+            tok = token;
         };
 
         var getToken = function () {
-            return $window.localStorage['mean-token'];
+            return tok?tok:$window.localStorage['mean-token'];
         };
 
         logout = function() {
             $window.localStorage.removeItem('mean-token');
+            tok = undefined;
         };
 
         return {

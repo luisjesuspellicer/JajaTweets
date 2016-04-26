@@ -107,8 +107,7 @@
                                         tweet_total += user.tweet_total ? user.tweet_total : 0;
                                     });
 
-                                    data.chart[0].value = tweet_app;
-                                    data.chart[1].value = tweet_total;
+                                    data.chart = [tweet_app, tweet_total];
                                     data.save();
 
                                     return resource.setResponse(res, {
@@ -178,15 +177,15 @@
                     delete my_data._id;
                     switch (my_data.name) {
                         case 'subunsub':
-                            my_data.chart[0].value = 0; // Subs
-                            my_data.chart[1].value = 0; // Unsubs
+                            my_data.chart[0] = 0; // Subs
+                            my_data.chart[1] = 0; // Unsubs
                             break;
                         case 'lastAccess':
                             my_data.chart = []; // Users list
                             break;
                         case 'tweets':
-                            my_data.chart[0].value = 0; // App tweets
-                            my_data.chart[1].value = 0; // Total tweets
+                            my_data.chart[0] = 0; // App tweets
+                            my_data.chart[1] = 0; // Total tweets
                             break;
                         case 'tweetsxuser':
                             my_data.chart = []; // Tweets per user

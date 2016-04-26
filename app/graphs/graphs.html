@@ -1,0 +1,26 @@
+<h1>Subscriptions / unsubscriptions</h1>
+<canvas id="doughnut" class="chart chart-doughnut"
+        chart-data="graphs.data" chart-labels="graphs.labels">
+</canvas>
+
+<h1>Tweets app / tweets total</h1>
+<canvas id="doughnut1" class="chart chart-doughnut"
+        chart-data="graphs.data1" chart-labels="graphs.labels1">
+</canvas>
+
+<table>
+    <h1>Last users</h1>
+    <tr ng-repeat="user in graphs.accesses">
+        <td>{{user.name}}</td>
+        <td>{{user.lastAccess}}</td>
+    </tr>
+</table>
+
+<table>
+    <h1>More tweets</h1>
+    <tr ng-repeat="user in graphs.tweets">
+        <td>{{user.name}}</td>
+        <td>{{user.tweet_app?user.tweet_app:0}}, {{user.tweet_total?user.tweet_total:0}}</td>
+    </tr>
+</table>
+

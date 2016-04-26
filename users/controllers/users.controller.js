@@ -55,6 +55,7 @@
 
             user.name = req.body.name;
             user.email = req.body.email;
+            user.lastAccess = new Date();
 
             user.setPassword(req.body.password);
 
@@ -133,8 +134,8 @@
                 do {
                     i++;
                     if (data[i].name == "subunsub") {
-                        if (num>0) data[i].chart[0].value++;
-                        else { data[i].chart[1].value++ }
+                        if (num>0) data[i].chart[0]++;
+                        else { data[i].chart[1]++ }
                         var req = http.request({ method: 'put',  port: 3000,  path:'/data/'+data[i]._id,
                             headers: {
                                 'Content-type': 'application/json',

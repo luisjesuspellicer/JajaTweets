@@ -8,7 +8,7 @@ describe('myApp.errors module', function() {
 
     it('should ....', inject(function($controller) {
       //spec body
-      var errorsCtrl = $controller('View2Ctrl');
+      var errorsCtrl = $controller('errorsCtrl');
       expect(errorsCtrl).toBeDefined();
     }));
 

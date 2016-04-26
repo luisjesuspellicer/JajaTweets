@@ -29,9 +29,13 @@ function singupCtrl($http, errorsService, $location) {
     ///////////
 
     function onSubmit() {
-        $http.post('http://localhost:3000/users', vm.credentials)
+        $http.post('http://localhost:3000/users',{
+            header: {
+                'Authorization': 'Bearer ' + authenticate.getToken()
+            }
+        }, vm.credentials)
             .then(function() {
-                $location.path('profile');
+                $location.path('singup');
             }, function(err){
                 errorsService.errorCode = err.status;
                 errorsService.errorMessage = err.data.data.message;
