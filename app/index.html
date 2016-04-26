@@ -41,7 +41,7 @@
             </ul>
             <ul class="nav navbar-nav navbar-right">
                 <li ng-hide="nav.isLoggedIn()"><a href="#/signin">Sign in</a></li>
-                <li ng-show="nav.isLoggedIn()"><a href="#/logout">Log out</a></li>
+                <li ng-show="nav.isLoggedIn()"><a href="" ng-click="nav.logOut();nav.loc.path('signin')">Log out</a></li>
                 <li ng-show="nav.isRoot()"><a href="#/signup">Sign up</a></li>
             </ul>
         </div><!-- /.navbar-collapse -->

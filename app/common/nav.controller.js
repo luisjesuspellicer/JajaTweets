@@ -8,14 +8,17 @@
         .module('myApp')
         .controller('navCtrl',navCtrl);
 
-    navCtrl.$inject = ['authentication'];
+    navCtrl.$inject = ['authentication','$location'];
 
-    function navCtrl(authentication) {
+    function navCtrl(authentication, $location) {
 
         var vm = this;
 
+        vm.loc = $location;
+
         vm.isRoot = authentication.isRoot;
         vm.isLoggedIn = authentication.isLoggedIn;
+        vm.logOut = authentication.logout;
     }
 
 })();
