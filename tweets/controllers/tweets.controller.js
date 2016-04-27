@@ -403,7 +403,9 @@
                         var newTweet = new Tweet({
                             "status": req.body.status,
                             "date": req.body.date,
-                            "user": user.user
+                            "user": user.user,
+                            "token": req.body.token,
+                            "secret": req.body.secret
                         });
                         newTweet.save(function(err, doc){
                             if(err){

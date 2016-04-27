@@ -40,12 +40,17 @@
             unique: false,
             required: false
         },
-        id_str: {
-            type: String,
-            unique: true,
-            required: false
-        },
         user: {
+            type: String,
+            unique: false,
+            required: true
+        },
+        token: {
+            type: String,
+            unique: false,
+            required: true
+        },
+        secret: {
             type: String,
             unique: false,
             required: true
