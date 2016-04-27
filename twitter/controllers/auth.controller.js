@@ -49,26 +49,10 @@
                 newTwitter.save(function(err){
                     if(err){
                         // Error updating user
-                        res.status(500).json({
-                            "error": true,
-                            "data": {
-                                "token" : req.user.token,
-                                "tokenSecret": req.user.tokenSecret,
-                                "errorMessage": err,
-                                "url": "http://localhost:3000/twitter"
-                            }
-                        });
+                        res.redirect("/");
                     } else {
                         // Successful authentication
-                        res.json({
-                            "error": false,
-                            "data": {
-                                "token" : req.user.token,
-                                "tokenSecret": req.user.tokenSecret,
-                                "email": payload.email,
-                                "url": "http://localhost:3000/twitter"
-                            }
-                        });
+                        res.redirect("/twitterAccounts");
                     }
                 });
             });

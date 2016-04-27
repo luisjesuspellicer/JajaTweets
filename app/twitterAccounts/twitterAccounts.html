@@ -1,26 +1,33 @@
 <div class="caption" style="text-align: center"><h3>Twitter Accounts list</h3></div>
+<div class="col-md-12 text-center center-block button-add-account">
+    <button type="button" class="btn btn-success" ng-click="acc.add()">
+        <span class="glyphicon glyphicon-plus"></span>Add a new Twitter account
+    </button>
+</div>
 <table class="table table-responsive table-bordered" style="max-width: 1240px; margin: auto;">
     <tr>
-        <th></th>
-        <th>Email</th>
+        <th>Actions</th>
         <th>Name</th>
         <th>Screen name</th>
-        <th>In app tweets</th>
-        <th>Total tweets</th>
-        <th>Last access</th>
-        <th>Subscribed</th>
+        <th>Tweets</th>
+        <th>Followers</th>
+        <th>Following</th>
+        <th>Description (Bio)</th>
     </tr>
     <tr ng-repeat="user in acc.users">
         <td>
-            <button ng-hide="user.email == 'test@test'" class="btn btn-default" ng-click="acc.delete(user._id)">
+            <button ng-hide="user.email == 'test@test'" class="btn btn-danger" ng-click="acc.delete(user.id_str)">
                 <span class="glyphicon glyphicon-trash"></span>
-            </button></td>
-        <td><h4><a ng-href="#/edit?id={{user._id}}">{{user.user}}</a></h4></td>
-        <td>{{user.name}}</td>
-        <td>@{{user.screen_name}}</td>
-        <td>{{user.tweet_app?user.tweet_app:0}}</td>
-        <td>{{user.tweet_total?user.tweet_total:0}}</td>
-        <td>{{user.lastAccess}}</td>
-        <td><span ng-repeat="hashtag in users.subscribed">{{hashtag}}</span></td>
+            </button>
+            <button ng-hide="user.email == 'test@test'" class="btn btn-info" ng-click="acc.update(user.id_str)">
+                <span class="glyphicon glyphicon-refresh"></span>
+            </button>
+        </td>
+        <td><img ng-src="{{user.profile_image_url}}" class="horizontal" orientable >&nbsp;{{user.name}}</td>
+        <td><a ng-href="https://twitter.com/{{user.screen_name}}" target="_blank">@{{user.screen_name}}</a></td>
+        <td>{{user.statuses_count}}</td>
+        <td>{{user.followers_count}}</td>
+        <td>{{user.friends_count}}</td>
+        <td>{{user.description}}</td>
     </tr>
 </table>

@@ -12,19 +12,18 @@ angular.module('myApp.twitterAccounts', ['ngRoute'])
 
     .controller('twAccountsCtrl', twAccountsCtrl);
 
-twAccountsCtrl.$inject = ['$http','authentication'];
+twAccountsCtrl.$inject = ['$window', '$http','authentication'];
 
-function twAccountsCtrl($http, authentication) {
+function twAccountsCtrl($window, $http, authentication) {
 
     var vm = this;
-vm.id=0;
+    vm.id=0;
     $http.get('http://localhost:3000/twitter',{
         headers: {
             'Authorization': 'Bearer ' + authentication.getToken()
         }
     }).then(function(data) {
         vm.users = data.data.data.content;
-        console.log(vm.users);
     });
 
     vm.delete = function(id) {
@@ -41,6 +40,26 @@ vm.id=0;
                 vm.users = data.data.data.content;
             });
         });
-    }
+    };
+
+    vm.update = function(id) {
+        $http.get('http://localhost:3000/twitter/'+id+'/update',{
+            headers: {
+                'Authorization': 'Bearer ' + authentication.getToken()
+            }
+        }).then(function() {
+            $http.get('http://localhost:3000/twitter',{
+                headers: {
+                    'Authorization': 'Bearer ' + authentication.getToken()
+                }
+            }).then(function(data) {
+                vm.users = data.data.data.content;
+            });
+        });
+    };
+
+    vm.add = function() {
+        $window.location.href = '/auth/twitter';
+    };
 
 }
