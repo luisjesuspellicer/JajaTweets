@@ -8,7 +8,8 @@ angular.module('myApp', [
     'myApp.signup',
     'myApp.version',
     'myApp.graphs',
-    'myApp.accounts'
+    'myApp.accounts',
+    'myApp.twitterAccounts'
 ]).
 config(['$routeProvider', function($routeProvider) {
   $routeProvider.otherwise({redirectTo: '/signin'});
