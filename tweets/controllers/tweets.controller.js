@@ -246,13 +246,11 @@
          */
         function updateStatistics(user, id, num_app){
             getUserInfo(user, id, function(result){
-                getUserInfo(user, id, function(result){
-                    Twitter.findOneAndUpdate({user: user.user}, {$set: {statuses_count: result.statuses_count},
-                        $inc: { tweet_app: num_app }}, function(err, doc){
-                        if(err) {
-                            console.log(err);
-                        }
-                    });
+                Twitter.findOneAndUpdate({user: user.user}, {$set: {statuses_count: result.statuses_count},
+                    $inc: { tweet_app: num_app }}, function(err, doc){
+                    if(err) {
+                        console.log(err);
+                    }
                 });
             });
         }
