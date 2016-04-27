@@ -17,15 +17,15 @@
     var methodOverride = require('method-override');
     var _ = require('lodash');
     var passport = require('passport');
-
+    var CronJob = require('cron').CronJob;
     // Create the application.
     var app = express();
-
+    var request = require('request');
     // Add Middleware necessary for REST API's
     app.use(bodyParser.urlencoded({extended: true}));
     app.use(bodyParser.json());
     app.use(methodOverride('X-HTTP-Method-Override'));
-
+    var OAuth = require('oauth').OAuth;
     // Connect to MongoDB, selects between environment variable (Heroku DB) or other (custom DB)
     mongoose.connect(process.env.MONGODB_URI || 'mongodb://admin:mongomongo1@ds013981.mlab.com:13981/heroku_vw307h03');
     mongoose.connection.once('open', function() {
@@ -67,7 +67,57 @@
         console.log('Listening on port 3000...');
         // Listen in the port specified, environment variable for Heroku, or custom on localhost
         app.listen(process.env.PORT || 3000);
+        var date = new Date();
+        var Tweet = mongoose.model('tweets');
+        new CronJob('00,20,40 * * * * *', function() {
+            Tweet.find({},function (err,result){
+                for (var tweet in result){
+                    if(result[tweet].date < date){
+                        console.log(result[tweet].token);
+                        var oa = new OAuth(
+                            "https://twitter.com/oauth/request_token"
+                            , "https://twitter.com/oauth/access_token"
+                            , process.env.TWITTER_CONSUMER_KEY
+                            , process.env.TWITTER_CONSUMER_SECRET
+                            , "1.0A"
+                            , "http://localhost:3000/auth/twitter/callback"
+                            , "HMAC-SHA1"
+                        );
+                        oa.post(
+                            "https://api.twitter.com/1.1/statuses/update.json"
+                            , result[tweet].token
+                            , result[tweet].secret
+                            // Tweet content
+                            , {
+                                "status": result[tweet].status,
+                            }
+                            , function (error, data, response) {
+                                if (error){
+                                    console.log(error);
+                                } else {
+                                    console.log(JSON.parse(data));
+                                }
+                            }
+                        );
+                        
+                        // Enviar tweet con el token.
+                        // Eliminar el tweet de la bd.
+                        Tweet.findOneAndRemove({_id: result[tweet].id, user: result[tweet].user}, function (err, tweet) {
+                            if (err) {
+                                console.log("message Cannot delete pending tweet");
 
+                            } else if(tweet==null){
+                                console.log("This pending tweet doesn't exists");
+
+                            } else {
+                                console.log("Successful delete");
+
+                            }
+                        });
+                    }
+                }
+            });
+        }, null, true, 'Europe/Madrid');
     });
 
 })();

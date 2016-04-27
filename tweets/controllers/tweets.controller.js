@@ -397,6 +397,7 @@
          * (Checked)
          */
         app.post('/tweets', user_required.before, function(req, res, next) {
+            console.log("SII");
             getUserFromJWT(req, function(user) {
                 if(user==null) {
                     next();
@@ -475,6 +476,7 @@
          * (Checked)
          */
         app.get('/tweets/:id', user_required.before, function(req, res, next) {
+            console.log(req.params.id);
             if(req.params.id == "own" || req.params.id == "pending"){
                 next();
             } else {
