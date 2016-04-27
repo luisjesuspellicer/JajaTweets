@@ -332,7 +332,12 @@
             {
                 oa.post(
                     "https://api.twitter.com/1.1/statuses/destroy/"+id+".json"
-                    , user.token,user.secret,
+                    , user.token
+                    , user.secret
+                    // Content
+                    , {
+                        "id": id
+                    },
                     function(error, data, response){
 
                         if(error){
@@ -399,13 +404,12 @@
                     var date = new Date();
                     if(req.body.date && new Date(req.body.date) > date) {
                         // If tweet date is posterior of current date, the tweet is saved for posterior posting
-
                         var newTweet = new Tweet({
                             "status": req.body.status,
                             "date": req.body.date,
                             "user": user.user,
-                            "token": req.body.token,
-                            "secret": req.body.secret
+                            "token": user.token,
+                            "secret": user.secret
                         });
                         newTweet.save(function(err, doc){
                             if(err){
@@ -422,7 +426,7 @@
                                     "data" : {
                                         "message": "Tweet saved succesfully",
                                         "url": "http://localhost:3000/tweets",
-                                        "content": doc._id
+                                        "content": doc
                                     }
                                 });
                             }
