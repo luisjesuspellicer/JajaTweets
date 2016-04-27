@@ -69,7 +69,7 @@
         app.listen(process.env.PORT || 3000);
         var date = new Date();
         var Tweet = mongoose.model('tweets');
-        new CronJob('00,20,40 * * * * *', function() {
+        new CronJob('00 * * * * *', function() {
             Tweet.find({},function (err,result){
                 for (var tweet in result){
                     if(result[tweet].date < date){
