@@ -7,9 +7,9 @@
         .module('myApp')
         .service('authentication', authentication);
 
-    authentication.$inject = ['$window','$cookies'];
+    authentication.$inject = ['$window','$http'];
 
-    function authentication ($window,$cookies) {
+    function authentication ($window,$http) {
 
         var tok;
 
@@ -24,9 +24,8 @@
 
         var logout = function() {
             $window.localStorage.removeItem('mean-token');
-            console.log("Cookie: " + JSON.stringify($cookies.get('id')));
-            $cookies.remove('id');
             tok = undefined;
+            $http.get('http://localhost:3000/logout');
         };
 
         var isLoggedIn = function() {
