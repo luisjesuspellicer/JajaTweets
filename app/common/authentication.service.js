@@ -7,9 +7,9 @@
         .module('myApp')
         .service('authentication', authentication);
 
-    authentication.$inject = ['$window'];
+    authentication.$inject = ['$window','$cookies'];
 
-    function authentication ($window) {
+    function authentication ($window,$cookies) {
 
         var tok;
 
@@ -24,6 +24,7 @@
 
         var logout = function() {
             $window.localStorage.removeItem('mean-token');
+            $cookies.remove('id');
             tok = undefined;
         };
 
