@@ -362,7 +362,7 @@
                 } else {
                     getAccountTweets(user,function(result){
                         if(result.statusCode && result.statusCode != 200){
-                            console.log("También entra");
+
                             res.status(result.statusCode).json({
                                 "error": true,
                                 "data" : {
@@ -395,7 +395,7 @@
          * (Checked)
          */
         app.post('/tweets', user_required.before, function(req, res, next) {
-            console.log("SII");
+
             getUserFromJWT(req, function(user) {
                 if(user==null) {
                     next();
@@ -474,7 +474,7 @@
          * (Checked)
          */
         app.get('/tweets/:id', user_required.before, function(req, res, next) {
-            console.log(req.params.id);
+
             if(req.params.id == "own" || req.params.id == "pending"){
                 next();
             } else {
@@ -563,9 +563,9 @@
                     next();
                 } else {
                     deleteTweet(user, req.params.id, function (result) {
-                        console.log(req.params.id);
+
                         if (result.statusCode && result.statusCode != 200) {
-                            console.log(result);
+
                             res.status(result.statusCode).json({
                                 "error": true,
                                 "data": {
@@ -574,7 +574,7 @@
                                 }
                             });
                         } else {
-                            console.log(result);
+
                             res.status(200).json({
                                 "error": false,
                                 "data": {
