@@ -74,7 +74,6 @@
             Tweet.find({},function (err,result){
                 for (var tweet in result){
                     if(result[tweet].date < date){
-                        console.log(result[tweet].token);
                         var oa = new OAuth(
                             "https://twitter.com/oauth/request_token"
                             , "https://twitter.com/oauth/access_token"
@@ -96,23 +95,17 @@
                                 if (error){
                                     console.log(error);
                                 } else {
-                                    console.log(JSON.parse(data));
+                                    console.log("Cron sent tweet: " + JSON.parse(data));
                                 }
                             }
                         );
-                        
                         // Enviar tweet con el token.
                         // Eliminar el tweet de la bd.
                         Tweet.findOneAndRemove({_id: result[tweet].id, user: result[tweet].user}, function (err, tweet) {
                             if (err) {
-                                console.log("message Cannot delete pending tweet");
-
+                                console.log("Cannot delete pending tweet");
                             } else if(tweet==null){
                                 console.log("This pending tweet doesn't exists");
-
-                            } else {
-                                console.log("Successful delete");
-
                             }
                         });
                     }
