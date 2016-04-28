@@ -396,36 +396,53 @@
          */
         app.post('/tweets', user_required.before, function(req, res, next) {
 
+origin/master
             getUserFromJWT(req, function(user) {
                 if(user==null) {
                     next();
                 } else {
                     var date = new Date();
                     if(req.body.date && new Date(req.body.date) > date) {
-                        // If tweet date is posterior of current date, the tweet is saved for posterior posting
-                        var newTweet = new Tweet({
-                            "status": req.body.status,
-                            "date": req.body.date,
-                            "user": user.user,
-                            "token": user.token,
-                            "secret": user.secret
-                        });
-                        newTweet.save(function(err, doc){
-                            if(err){
+                        Twitter.findOne({user: user.user, in_use: true}, function(err, doc){
+                            if (err){
                                 res.status(500).json({
                                     "error": true,
                                     "data" : {
-                                        "message": "Could not save tweet in database",
+                                        "message": "Could not obtain user info from database",
                                         "url": "http://localhost:3000/"
                                     }
                                 });
                             } else {
-                                res.status(200).json({
-                                    "error": false,
-                                    "data" : {
-                                        "message": "Tweet saved succesfully",
-                                        "url": "http://localhost:3000/tweets",
-                                        "content": doc
+                                // If tweet date is posterior of current date, the tweet is saved for posterior posting
+                                var newTweet = new Tweet({
+                                    "status": req.body.status,
+                                    "date": req.body.date,
+                                    "user": user.user,
+                                    "token": user.token,
+                                    "secret": user.secret,
+                                    "id_str": user.id_str,
+                                    "profile_image_url": user.profile_image_url,
+                                    "screen_name": user.screen_name
+
+                                });
+                                newTweet.save(function (err, doc) {
+                                    if (err) {
+                                        res.status(500).json({
+                                            "error": true,
+                                            "data": {
+                                                "message": "Could not save tweet in database",
+                                                "url": "http://localhost:3000/"
+                                            }
+                                        });
+                                    } else {
+                                        res.status(200).json({
+                                            "error": false,
+                                            "data": {
+                                                "message": "Tweet saved succesfully",
+                                                "url": "http://localhost:3000/tweets",
+                                                "content": doc
+                                            }
+                                        });
                                     }
                                 });
                             }

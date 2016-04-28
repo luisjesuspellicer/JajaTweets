@@ -215,7 +215,7 @@
          */
         app.get('/twitter/notUse', user_required.before, function(req, res, next) {
             getUserFromJWT(req, function(user){
-                Twitter.update({user: user.email}, {$set: {in_use: false}}, function(err){
+                Twitter.update({user: user.email}, {$set: {in_use: false}}, {multi: true}, function(err){
                     if(err){
                         res.status(500).json({
                             "error": true,

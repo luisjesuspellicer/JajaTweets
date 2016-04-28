@@ -45,6 +45,21 @@
             unique: false,
             required: true
         },
+        id_str: {
+            type: String,
+            unique: false,
+            required: true
+        },
+        profile_image_url: {
+            type: String,
+            unique: false,
+            required: true
+        },
+        screen_name: {
+            type: String,
+            unique: false,
+            required: true
+        },
         token: {
             type: String,
             unique: false,
