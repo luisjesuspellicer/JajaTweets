@@ -1,7 +1,6 @@
-<link href="./signin.css" rel="stylesheet">
-<body>
+<link href="../styles/signin.css" rel="stylesheet">
     <div class="container">
-        <form class="form-signin" ng-submit="signin.onSubmit()" style="max-width: 330px; margin: auto">
+        <form class="form-signin" ng-submit="signin.onSubmit()">
             <h2 class="form-signin-heading">Please sign in</h2>
             <label for="email" class="sr-only">Email address</label>
             <input type="email" id="email" class="form-control" placeholder="Email address" required autofocus ng-model="signin.credentials.email">
@@ -16,4 +15,3 @@
         </form>
 
     </div> <!-- /container -->
-</body>
