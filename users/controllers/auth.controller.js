@@ -14,6 +14,7 @@
 
         app.get('/logout', function(req,res,next) {
            req.session = null;
+            res.status(200).json({error: false});
         });
 
         /**
