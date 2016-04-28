@@ -44,6 +44,7 @@
             resave: false,
             saveUninitialized: true,
             name: "id",
+            jwt: null,
             secret: process.env.MY_SECRET
         }));
         app.use(cookieParser());

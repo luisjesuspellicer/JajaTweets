@@ -24,7 +24,7 @@
             passport.authenticate('twitter', { failureRedirect: '/login' }),
             function(req, res) {
                 // Gets jwt from authorization header
-                var payload = req.headers.authorization.split('.')[1];
+                var payload = req.session.jwt.split('.')[1];
                 payload = atob(payload);
                 payload = JSON.parse(payload);
                 var mainContent = req.user.profile._json;
@@ -52,7 +52,7 @@
                         res.redirect("/");
                     } else {
                         // Successful authentication
-                        res.redirect("/twitterAccounts");
+                        res.redirect("http://localhost:3000/#/twitterAccounts");
                     }
                 });
             });

@@ -42,20 +42,12 @@
             <ul class="nav navbar-nav navbar-left">
                 <li ng-show="nav.isRoot()"><a href="#/graphs"><span class="glyphicon glyphicon-stats" aria-hidden="true"></span>&nbsp;Graphs</a></li>
                 <li ng-show="nav.isRoot()"><a href="#/accounts"><span class="glyphicon glyphicon-user" aria-hidden="true"></span>&nbsp;Users</a></li>
-                <li ng-show="nav.isLoggedIn()" class="dropdown">
-                    <a href="#/twitterAccounts" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
-                        <i class="fa fa-twitter fa-lg" aria-hidden="true"></i>&nbsp;Twitter Accounts
-                        <span class="caret"></span>
-                    </a>
-                    <ul ng-controller="twAccountsCtrl" class="dropdown-menu" ng-repeat="user in acc.users">
-                        <li><a href="#">{{user.screen_name}}</a></li>
-                    </ul>
-                </li>
+                <li ng-show="nav.isLoggedIn()"><a href="#/twitterAccounts"><i class="fa fa-twitter fa-lg" aria-hidden="true"></i>&nbsp;Twitter Accounts</a></li>
                 <li ng-show="nav.isLoggedIn()"><a href="#/dashboard"><span class="glyphicon glyphicon-tasks" aria-hidden="true"></span>&nbsp;Twitter Dashboard</a></li>
             </ul>
             <ul class="nav navbar-nav navbar-right">
                 <li ng-hide="nav.isLoggedIn()"><a href="#/signin"><i class="fa fa-sign-in fa-lg" aria-hidden="true"></i>&nbsp;Sign in</a></li>
-                <li ng-show="nav.isLoggedIn()"><a href="" ng-click="nav.logOut();nav.loc.path('signin')"><i class="fa fa-sign-out fa-lg" aria-hidden="true"></i>&nbsp;Log out</a></li>
+                <li ng-show="nav.isLoggedIn()"><a href="" ng-click="nav.logOut();console.log('foo');nav.loc.path('signin')"><i class="fa fa-sign-out fa-lg" aria-hidden="true"></i>&nbsp;Log out</a></li>
                 <li ng-show="nav.isRoot()"><a href="#/signup"><i class="fa fa-user-plus fa-lg" aria-hidden="true"></i>&nbsp;Sign up</a></li>
             </ul>
         </div><!-- /.navbar-collapse -->
@@ -91,6 +83,7 @@
 <script src="common/authentication.service.js"></script>
 <script src="common/errors.service.js"></script>
 <script src="common/nav.controller.js"></script>
+<script src="bower_components/angular-cookies/angular-cookies.min.js"></script>
 <script src="bower_components/jquery/dist/jquery.min.js"></script>
 <script src="bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
 </body>

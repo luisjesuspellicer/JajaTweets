@@ -24,6 +24,7 @@
 
         var logout = function() {
             $window.localStorage.removeItem('mean-token');
+            console.log("Cookie: " + JSON.stringify($cookies.get('id')));
             $cookies.remove('id');
             tok = undefined;
         };

@@ -6,7 +6,7 @@ angular.module('myApp.twitterAccounts', ['ngRoute'])
         $routeProvider.when('/twitterAccounts', {
             templateUrl: 'twitterAccounts/twitterAccounts.html',
             controller: 'twAccountsCtrl',
-            controllerAs: 'acc'
+            controllerAs: 'twAcc'
         });
     }])
 

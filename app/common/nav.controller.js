@@ -18,7 +18,10 @@
 
         vm.isRoot = authentication.isRoot;
         vm.isLoggedIn = authentication.isLoggedIn;
-        vm.logOut = authentication.logout;
+        vm.logOut = function() {
+            console.log('Called!');
+            authentication.logout();
+        }
     }
 
 })();
