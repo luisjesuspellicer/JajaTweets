@@ -31,7 +31,6 @@
 
         var index_options = _.cloneDeep(admin_required);
         index_options.after.push(function(req, res, next) {
-            console.log(JSON.stringify(res.resource.item));
             if (res.resource.item) {
                 res.resource.item.forEach(function(user) {
                     user.url = 'http://localhost:3000/users/'+user._id
