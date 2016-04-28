@@ -46,11 +46,18 @@
         </div>
         <div class="col-md-4 col-lg-4 btn-warning"  style="hight: 100%;overflow: scroll;">
             <h3>Pending tweets</h3>
-            <div class="media" ng-repeat="pendingTweets in dashboard.pendingTweets">
+            <div class="media" ng-repeat="pending in dashboard.pendingTweets">
+                <div class="media-left">
+                    <img class="media-object img-rounded"
+                         ng-src="{{pending.profile_image_url}}"
+                         alt="{{pending.user.name}}"
+                         width="50"
+                         height="50">
+                </div>
 
                 <div class="media-body">
-                    <h4 class="media-heading">{{pendingTweets.user}}</h4>
-                    <p>{{pendingTweets.status}}</p>
+                    <h4 class="media-heading">{{pending.user}}</h4>
+                    <p>{{pending.status}}</p>
                 </div>
             </div>
         </div>

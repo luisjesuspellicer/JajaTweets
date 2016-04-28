@@ -4,7 +4,6 @@
 
 // Own tweets, pending tweets and account tweets.
 'use strict';
-
 angular.module('myApp.dashboard', ['ngRoute','chart.js'])
 
     .config(['$routeProvider', function ($routeProvider) {
@@ -31,8 +30,8 @@ function dashboardCtrl($http, authentication, $location, errorsService) {
         }
     }).then(function (data) {
 
-        self.pendingTweets = data.data.content;
-
+        self.pendingTweets = data.data.data.content;
+        console.log(data.data.data.content);
     });
 
     $http.get('http://localhost:3000/tweets/own', {
@@ -42,7 +41,7 @@ function dashboardCtrl($http, authentication, $location, errorsService) {
     }).then(function (data) {
 
         self.ownTweets = data.data.data.content;
-        console.log(self.ownTweets);
+
     });
     $http.get('http://localhost:3000/tweets',{
         headers: {
