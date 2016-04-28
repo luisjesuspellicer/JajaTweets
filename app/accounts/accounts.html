@@ -14,7 +14,7 @@
             <button ng-hide="user.email == 'test@test'" class="btn btn-default" ng-click="acc.delete(user._id)">
                 <span class="glyphicon glyphicon-trash"></span>
             </button></td>
-        <td><h4><a ng-href="#/edit?id={{user._id}}">{{user.email}}</a></h4></td>
+        <td><h4>{{user.email}}</h4></td>
         <td>{{user.name}}</td>
         <td>{{user.tweet_app?user.tweet_app:0}}</td>
         <td>{{user.tweet_total?user.tweet_total:0}}</td>

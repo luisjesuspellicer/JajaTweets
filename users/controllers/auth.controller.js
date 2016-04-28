@@ -33,6 +33,7 @@
                     user.lastAccess = new Date();
                     user.save();
                     res.status(200);
+                    req.session.jwt = token;
                     res.json({
                         "error": false,
                         "data": {
