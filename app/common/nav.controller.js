@@ -8,9 +8,9 @@
         .module('myApp')
         .controller('navCtrl',navCtrl);
 
-    navCtrl.$inject = ['authentication','$location'];
+    navCtrl.$inject = ['authentication','$location','$http'];
 
-    function navCtrl(authentication, $location) {
+    function navCtrl(authentication, $location, $http) {
 
         var vm = this;
 
@@ -20,6 +20,7 @@
         vm.isLoggedIn = authentication.isLoggedIn;
         vm.logOut = function() {
             console.log('Called!');
+            $http.get('http://loaclhost:3000/logout');
             authentication.logout();
         }
     }

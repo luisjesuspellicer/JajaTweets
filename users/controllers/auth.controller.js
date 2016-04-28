@@ -12,12 +12,16 @@
 
     module.exports = function(app) {
 
+        app.get('/logout', function(req,res,next) {
+           req.session = null;
+        });
+
         /**
          * Offers the endpoint POST /login
          * Uses passport to authenticate the user
          * and returns a valid JWT.
          */
-        app.post('/login',function(req, res, err) {
+        app.post('/login',function(req, res, next) {
             passport.authenticate('local', function(err, user, info){
                 var token;
 
