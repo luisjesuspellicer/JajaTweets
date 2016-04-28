@@ -17,7 +17,7 @@
     var methodOverride = require('method-override');
     var _ = require('lodash');
     var passport = require('passport');
-    var CronJob = require('cron').CronJob;
+    var Cron = require('./common/cron');
     // Create the application.
     var app = express();
     var request = require('request');
@@ -65,53 +65,13 @@
         // Static content
         app.use(express.static('app'));
 
-        console.log('Listening on port 3000...');
         // Listen in the port specified, environment variable for Heroku, or custom on localhost
         app.listen(process.env.PORT || 3000);
-        var date = new Date();
-        var Tweet = mongoose.model('tweets');
-        new CronJob('00 * * * * *', function() {
-            Tweet.find({},function (err,result){
-                for (var tweet in result){
-                    if(result[tweet].date < date){
-                        var oa = new OAuth(
-                            "https://twitter.com/oauth/request_token"
-                            , "https://twitter.com/oauth/access_token"
-                            , process.env.TWITTER_CONSUMER_KEY
-                            , process.env.TWITTER_CONSUMER_SECRET
-                            , "1.0A"
-                            , "http://localhost:3000/auth/twitter/callback"
-                            , "HMAC-SHA1"
-                        );
-                        oa.post(
-                            "https://api.twitter.com/1.1/statuses/update.json"
-                            , result[tweet].token
-                            , result[tweet].secret
-                            // Tweet content
-                            , {
-                                "status": result[tweet].status,
-                            }
-                            , function (error, data, response) {
-                                if (error){
-                                    console.log(error);
-                                } else {
-                                    console.log("Cron sent tweet: " + JSON.parse(data));
-                                }
-                            }
-                        );
-                        // Enviar tweet con el token.
-                        // Eliminar el tweet de la bd.
-                        Tweet.findOneAndRemove({_id: result[tweet].id, user: result[tweet].user}, function (err, tweet) {
-                            if (err) {
-                                console.log("Cannot delete pending tweet");
-                            } else if(tweet==null){
-                                console.log("This pending tweet doesn't exists");
-                            }
-                        });
-                    }
-                }
-            });
-        }, null, true, 'Europe/Madrid');
+        console.log('Server has started...');
+
+        // Starts cron process for pending tweets
+        Cron.startCron();
+        
     });
 
 })();

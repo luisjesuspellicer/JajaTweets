@@ -37,7 +37,7 @@
     passport.use(new TwitterStrategy({
             consumerKey: process.env.TWITTER_CONSUMER_KEY,
             consumerSecret: process.env.TWITTER_CONSUMER_SECRET,
-            callbackURL: "http://localhost:3000/auth/twitter/callback"
+            callbackURL: process.env.CURRENT_DOMAIN + "/auth/twitter/callback"
         },
         function(token, tokenSecret, profile, cb) {
             return cb(null, {"token": token, "tokenSecret": tokenSecret, "profile": profile});

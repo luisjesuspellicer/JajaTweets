@@ -136,7 +136,7 @@
                     done();
                 });
         });
-
+/*
         // #8 should get subscriptions from a valid user (with authorization)
         it("GET /subscriptions => Gets twitter hashtags subscriptions from user", function(done) {
             server
@@ -204,6 +204,7 @@
                 });
         });
 
+*/
         // #12 should get mention tweets from a valid user (with authorization)
         it("GET /mentions => Gets mention tweets from user", function(done) {
             server
@@ -260,7 +261,10 @@
                 .set("Authorization", "Bearer " + admin_token)
                 .send({
                     "status": "Test@" + date1.toString(),
-                    "date": date1.toString()
+                    "date": date1.toString(),
+                    "id_str": "723944231954427904",
+                    "profile_image_url": "http://pbs.twimg.com/profile_images/725686225814847489/AEWH7BFR_normal.jpg",
+                    "screen_name": "test_jaja"
                 })
                 .expect("Content-type",/json/)
                 .expect(200)
@@ -269,7 +273,7 @@
                     JSON.parse(res.text).error.should.be.exactly(false);
                     JSON.parse(res.text).data.should.have.property("content");
                     JSON.parse(res.text).data.message.should.be.exactly("Tweet saved succesfully");
-                    tweetId = JSON.parse(res.text).data.content;
+                    tweetId = JSON.parse(res.text).data.content._id;
                     done();
                 });
         });

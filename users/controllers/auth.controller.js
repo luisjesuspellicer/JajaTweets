@@ -47,7 +47,7 @@
                         "error": false,
                         "data": {
                             "token" : token,
-                            "url": "http://localhost:3000/tweets"
+                            "url": process.env.CURRENT_DOMAIN + "/tweets"
                         }
                     });
                 } else {

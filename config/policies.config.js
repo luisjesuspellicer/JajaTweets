@@ -40,7 +40,7 @@
                     "error": false,
                     "data": {
                         "message": "Insufficient privileges.",
-                        "url": "http://localhost:3000/login"
+                        "url": process.env.CURRENT_DOMAIN + "/login"
                     }
                 })
         } else {
@@ -61,7 +61,7 @@
                 "error": false,
                 "data": {
                     "message": "Authentication required.",
-                    "url": "http://localhost:3000/login"
+                    "url": process.env.CURRENT_DOMAIN + "/login"
                 }
             })
         } else {
@@ -84,7 +84,7 @@
                         "error": false,
                         "data": {
                             "message": "Insufficient privileges.",
-                            "url": "http://localhost:3000/login"
+                            "url": process.env.CURRENT_DOMAIN + "/login"
                         }
                     })
             } else {

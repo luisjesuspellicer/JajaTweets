@@ -19,7 +19,7 @@
             "error": true,
             "data": {
                 "message": "Internal error.",
-                "url": "http://localhost:3000/data"
+                "url": process.env.CURRENT_DOMAIN + "/data"
             }
         }
     };
@@ -51,7 +51,7 @@
                                 "error": false,
                                 "data": {
                                     "chart": data,
-                                    "url": "http://localhost:3000/data"
+                                    "url": process.env.CURRENT_DOMAIN + "/data"
                                 }
                             });
                             break;
@@ -79,7 +79,7 @@
                                             "error": false,
                                             "data": {
                                                 "chart": JSON.parse(result),
-                                                "url": "http://localhost:3000/data"
+                                                "url": process.env.CURRENT_DOMAIN + "/data"
                                             }
                                         }
 
@@ -116,7 +116,7 @@
                                             "error": false,
                                             "data": {
                                                 "chart": data,
-                                                "url": "http://localhost:3000/data"
+                                                "url": process.env.CURRENT_DOMAIN + "/data"
                                             }
                                         }
 
@@ -144,13 +144,12 @@
                                             "error": false,
                                             "data": {
                                                 "chart": JSON.parse(result),
-                                                "url": "http://localhost:3000/data"
+                                                "url": process.env.CURRENT_DOMAIN + "/data"
                                             }
                                         }
 
                                     }, next);
                                 })
-
                             }).end();
                             break;
                     }
@@ -200,7 +199,7 @@
                                     "error": false,
                                     "data": {
                                         "message": "Restarted.",
-                                        "url": "http://localhost:3000/data"
+                                        "url": process.env.CURRENT_DOMAIN + "/data"
                                     }
                                 }
 

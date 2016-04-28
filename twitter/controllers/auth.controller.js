@@ -49,10 +49,10 @@
                 newTwitter.save(function(err){
                     if(err){
                         // Error updating user
-                        res.redirect("/");
+                        res.redirect(process.env.CURRENT_DOMAIN);
                     } else {
                         // Successful authentication
-                        res.redirect("http://localhost:3000/#/twitterAccounts");
+                        res.redirect(process.env.CURRENT_DOMAIN + "/#/twitterAccounts");
                     }
                 });
             });

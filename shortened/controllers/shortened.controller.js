@@ -51,7 +51,7 @@
                             "error": true,
                             "data" : {
                                 "message": "Could get shortened links of user",
-                                "url": "http://localhost:3000/"
+                                "url": process.env.CURRENT_DOMAIN
                             }
                         });
                         next();
@@ -60,7 +60,7 @@
                             "error": false,
                             "data" : {
                                 "message": "Shortened links obtained successfully",
-                                "url": "http://localhost:3000/shortened",
+                                "url": process.env.CURRENT_DOMAIN + "/shortened",
                                 "content": doc
                             }
                         });
@@ -85,7 +85,7 @@
                             "error": true,
                             "data" : {
                                 "message": "Could shorten given link: " + req.body.link,
-                                "url": "http://localhost:3000/"
+                                "url": process.env.CURRENT_DOMAIN
                             }
                         });
                         next();
@@ -94,7 +94,7 @@
                             "error": true,
                             "data" : {
                                 "message": "URL already shortened by user: " + req.body.link,
-                                "url": "http://localhost:3000/",
+                                "url": process.env.CURRENT_DOMAIN,
                                 "content": doc
                             }
                         });
@@ -111,7 +111,7 @@
                                     "error": true,
                                     "data" : {
                                         "message": "Could shorten given link: " + req.body.link,
-                                        "url": "http://localhost:3000/"
+                                        "url": process.env.CURRENT_DOMAIN
                                     }
                                 });
                                 next();
@@ -120,8 +120,8 @@
                                     "error": false,
                                     "data" : {
                                         "message": "URL successfully shortened",
-                                        "url": "http://localhost:3000/shortened/" + newHash,
-                                        "direct_url": "http://localhost:3000/" + newHash,
+                                        "url": process.env.CURRENT_DOMAIN + "/shortened/" + newHash,
+                                        "direct_url": process.env.CURRENT_DOMAIN + "/s/" + newHash,
                                         "content": newShortened
                                     }
                                 });
@@ -146,7 +146,7 @@
                         "error": true,
                         "data" : {
                             "message": "Could not get the URL of that hash",
-                            "url": "http://localhost:3000/"
+                            "url": process.env.CURRENT_DOMAIN
                         }
                     });
                     next();
@@ -155,7 +155,7 @@
                         "error": true,
                         "data" : {
                             "message": "The hash doesn't exists",
-                            "url": "http://localhost:3000/"
+                            "url": process.env.CURRENT_DOMAIN
                         }
                     });
                     next();
@@ -186,7 +186,7 @@
                         "error": true,
                         "data" : {
                             "message": "Could not delete the shortened URL",
-                            "url": "http://localhost:3000/"
+                            "url": process.env.CURRENT_DOMAIN
                         }
                     });
                     next();
@@ -195,7 +195,7 @@
                         "error": true,
                         "data" : {
                             "message": "Could not found the shortened URL",
-                            "url": "http://localhost:3000/shortened"
+                            "url": process.env.CURRENT_DOMAIN + "/shortened"
                         }
                     });
                     next();
@@ -204,7 +204,7 @@
                         "error": false,
                         "data" : {
                             "message": "Shortened URL deleted successfully",
-                            "url": "http://localhost:3000/shortened",
+                            "url": process.env.CURRENT_DOMAIN + "/shortened",
                             "content": doc
                         }
                     });
@@ -226,7 +226,7 @@
                         "error": true,
                         "data" : {
                             "message": "Could not get the URL of that hash",
-                            "url": "http://localhost:3000/"
+                            "url": process.env.CURRENT_DOMAIN
                         }
                     });
                     next();

@@ -33,7 +33,7 @@
         index_options.after.push(function(req, res, next) {
             if (res.resource.item) {
                 res.resource.item.forEach(function(user) {
-                    user.url = 'http://localhost:3000/users/'+user._id
+                    user.url = process.env.CURRENT_DOMAIN + '/users/' + user._id
                 })
             }
             next();
@@ -80,7 +80,7 @@
                             "error": false,
                             "data": {
                                 "token": token,
-                                "url": "http://localhost:3000/login"
+                                "url": process.env.CURRENT_DOMAIN + "/login"
                             }
                         }
                     }, next);
