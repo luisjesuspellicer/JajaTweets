@@ -1,8 +1,7 @@
-<link href="./signup.css" rel="stylesheet">
-<body>
+<link href="../styles/signup.css" rel="stylesheet">
 <h2>{{ signup.token }}</h2>
 <div class="container">
-    <form class="form-signup" ng-submit="signup.onSubmit()" style="max-width: 330px; margin: auto">
+    <form class="form-signup" ng-submit="signup.onSubmit()">
         <h2 class="form-signup-heading">Register new user</h2>
         <label for="name" class="sr-only">User name</label>
         <input type="text" id="name" class="form-control" placeholder="Name" required autofocus ng-model="signup.credentials.name">
@@ -19,4 +18,3 @@
     </form>
 
 </div> <!-- /container -->
-</body>

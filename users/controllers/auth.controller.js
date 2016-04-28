@@ -13,7 +13,11 @@
     module.exports = function(app) {
 
         app.get('/logout', function(req,res,next) {
-           req.session = null;
+            req.session.cookie.expires = new Date(1);
+            req.session.cookie.maxAge = 1;
+            req.session.destroy(function(err) {
+                // cannot access session here
+            });
             res.status(200).json({error: false});
         });
 
