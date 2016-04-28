@@ -1,0 +1,52 @@
+
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-offset-2 col-md-8 bg-success">
+
+            <h2 align="center">DASH BOARD</h2>
+
+        </div>
+    </div>
+    <div class="row"><p></p></div>
+    <div class="row">
+        <div class="col-md-4 col-lg-4 btn-success"  style="hight: 100%;overflow: scroll;">
+            <h3>Own tweets</h3>
+            <div class="media" ng-repeat="own in dashboard.ownTweets">
+                <div class="media-left">
+                    <img class="media-object img-rounded"
+                         ng-src="{{own.user.profile_image_url}}"
+                         alt="{{own.user.name}}"
+                         width="50"
+                         height="50">
+                </div>
+
+                <div class="media-body">
+                    <h4 class="media-heading">{{own.user.name}}</h4>
+                    <p>{{own.text}}</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 col-lg-4 btn-info"  style="hight: 100%;overflow: scroll;">
+            <h3>Home</h3>
+            <div class="media" ng-repeat="accountTweets in dashboard.accountTweets">
+                <div class="media-left">
+                    <img class="media-object img-rounded"
+                         ng-src="{{accountTweets.user.profile_image_url}}"
+                         alt="{{accountTweets.user.name}}"
+                         width="50"
+                         height="50">
+                </div>
+
+                <div class="media-body">
+                    <h4 class="media-heading">{{accountTweets.user.name}}</h4>
+                    <p>{{accountTweets.text}}</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 col-lg-4">
+            <p>Ayer fue un Pleno emocionante en defensa de la libertad de los presos políticos en Venezuela @PPopular Se oponen los radicales de siempre</p>
+
+        </div>
+    </div>
+</div>

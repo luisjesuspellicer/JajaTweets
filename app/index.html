@@ -20,6 +20,7 @@
     <link rel="stylesheet" href="app.css">
     <link rel="stylesheet" href="styles/twitterAccounts.css">
     <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="styles/dashboard.css">
     <script src="bower_components/html5-boilerplate/dist/js/vendor/modernizr-2.8.3.min.js"></script>
 </head>
 <body>
@@ -50,7 +51,7 @@
                         <li><a href="#">{{user.screen_name}}</a></li>
                     </ul>
                 </li>
-                <li ng-show="nav.isLoggedIn()"><a href="#/twitterDashboard"><span class="glyphicon glyphicon-tasks" aria-hidden="true"></span>&nbsp;Twitter Dashboard</a></li>
+                <li ng-show="nav.isLoggedIn()"><a href="#/dashboard"><span class="glyphicon glyphicon-tasks" aria-hidden="true"></span>&nbsp;Twitter Dashboard</a></li>
             </ul>
             <ul class="nav navbar-nav navbar-right">
                 <li ng-hide="nav.isLoggedIn()"><a href="#/signin"><i class="fa fa-sign-in fa-lg" aria-hidden="true"></i>&nbsp;Sign in</a></li>
@@ -84,6 +85,7 @@
 <script src="accounts/accounts.js"></script>
 <script src="twitterAccounts/twitterAccounts.js"></script>
 <script src="components/version/version.js"></script>
+<script src="dashboard/dashboard.js"></script>
 <script src="components/version/version-directive.js"></script>
 <script src="components/version/interpolate-filter.js"></script>
 <script src="common/authentication.service.js"></script>
