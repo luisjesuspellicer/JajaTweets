@@ -44,9 +44,15 @@
                 </div>
             </div>
         </div>
-        <div class="col-md-4 col-lg-4">
-            <p>Ayer fue un Pleno emocionante en defensa de la libertad de los presos políticos en Venezuela @PPopular Se oponen los radicales de siempre</p>
+        <div class="col-md-4 col-lg-4 btn-warning"  style="hight: 100%;overflow: scroll;">
+            <h3>Pending tweets</h3>
+            <div class="media" ng-repeat="pendingTweets in dashboard.pendingTweets">
 
+                <div class="media-body">
+                    <h4 class="media-heading">{{pendingTweets.user}}</h4>
+                    <p>{{pendingTweets.status}}</p>
+                </div>
+            </div>
         </div>
     </div>
 </div>
