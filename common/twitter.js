@@ -61,7 +61,25 @@
         });
     }
 
+    /**
+     * Function that sets status of all twitter accounts (of current user) to "in_use" false.
+     * @param req is the received request.
+     * @param callback is the callback object (can contain update error).
+     */
+    function notUseAnyAccount(req, callback){
+        getUserFromJWT(req, function(user){
+            Twitter.update({user: user.email}, {$set: {in_use: false}}, {multi: true}, function(err){
+                if(err){
+                    callback(err);
+                } else {
+                    callback();
+                }
+            });
+        });
+    }
+
     exports.updateStatistics = updateStatistics;
     exports.getUserFromJWT = getUserFromJWT;
+    exports.notUseAnyAccount = notUseAnyAccount;
 
 })();

@@ -3,9 +3,18 @@
     <button type="button" class="btn btn-success" ng-click="twAcc.add()">
         <span class="glyphicon glyphicon-plus"></span>Add a new Twitter account
     </button>
+    <spinner class="custom-spinner" name="loadingSpinner" img-src="spinner.gif"></spinner>
 </div>
+
+<div ng-show="twAcc.users.length==0" class="alert alert-warning alert-dismissible text-center center-block twitter-alert" role="alert">
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+    <strong>Oh! You don't have any twitter accounts...</strong><br/>
+    Try adding one with the above button!
+</div>
+
 <table class="table table-responsive table-bordered" style="max-width: 1240px; margin: auto;">
     <tr>
+        <th>Using</th>
         <th>Actions</th>
         <th>Name</th>
         <th>Screen name</th>
@@ -16,11 +25,17 @@
     </tr>
     <tr ng-repeat="user in twAcc.users">
         <td>
-            <button ng-hide="user.email == 'test@test'" class="btn btn-danger" ng-click="twAcc.delete(user.id_str)">
+            <span class="glyphicon glyphicon-ok" ng-show="user.in_use"></span>
+        </td>
+        <td>
+            <button ng-hide="user.email == 'test@test'" type="button" class="btn btn-danger" ng-click="twAcc.delete(user.id_str)">
                 <span class="glyphicon glyphicon-trash"></span>
             </button>
-            <button ng-hide="user.email == 'test@test'" class="btn btn-info" ng-click="twAcc.update(user.id_str)">
+            <button ng-hide="user.email == 'test@test'" type="button" class="btn btn-info" ng-click="twAcc.update(user.id_str)">
                 <span class="glyphicon glyphicon-refresh"></span>
+            </button>
+            <button ng-hide="user.email == 'test@test'" type="button" class="btn btn-success" ng-disabled="user.in_use" ng-click=" twAcc.use(user.id_str)">
+                Use
             </button>
         </td>
         <td><img ng-src="{{user.profile_image_url}}" class="horizontal" orientable >&nbsp;{{user.name}}</td>

@@ -120,28 +120,24 @@
          * (Checked)
          */
         app.get('/twitter/notUse', user_required.before, function(req, res, next) {
-            TwitterCommons.getUserFromJWT(req, function(user){
-                Twitter.update({user: user.email}, {$set: {in_use: false}}, {multi: true}, function(err){
-                    if(err){
-                        res.status(500).json({
-                            "error": true,
-                            "data" : {
-                                "message": "Cannot change use status of twitter accounts",
-                                "url": process.env.CURRENT_DOMAIN
-                            }
-                        });
-                        next();
-                    } else {
-                        res.json({
-                            "error": false,
-                            "data" : {
-                                "message": "Now not using any twitter account of user",
-                                "url": process.env.CURRENT_DOMAIN + "/twitter"
-                            }
-                        });
-                        next();
-                    }
-                });
+            TwitterCommons.notUseAnyAccount(req, function(err){
+                if(err){
+                    res.json({
+                        "error": true,
+                        "data" : {
+                            "message": "Cannot change the status of any twitter account of user",
+                            "url": process.env.CURRENT_DOMAIN + "/twitter"
+                        }
+                    });
+                } else {
+                    res.json({
+                        "error": false,
+                        "data" : {
+                            "message": "Now not using any twitter account of user",
+                            "url": process.env.CURRENT_DOMAIN + "/twitter"
+                        }
+                    });
+                }
             });
         }, user_required.after);
 
@@ -184,69 +180,87 @@
 
         /**
          * Set to use one twitter accounts of current user (by unique id).
+         * Also set to not use any other possible twitter accounts of current user.
          * Local user authentication required.
          *
          * (Checked)
          */
         app.get('/twitter/:id/use', user_required.before, function(req, res, next) {
             TwitterCommons.getUserFromJWT(req, function(user){
-                Twitter.findOneAndUpdate({user: user.email, id_str: req.params.id}, {$set: {in_use: true}},
-                    {new: true}, function(err, doc){
-                        if(err){
-                            res.status(500).json({
-                                "error": true,
-                                "data" : {
-                                    "message": "Cannot change use status of this twitter account",
-                                    "url": process.env.CURRENT_DOMAIN
-                                }
-                            });
-                            next();
-                        } else if(doc==null){
-                            res.status(400).json({
-                                "error": true,
-                                "data" : {
-                                    "message": "Cannot change use status of this twitter account",
-                                    "url": process.env.CURRENT_DOMAIN
-                                }
-                            });
-                            next();
-                        } else {
-                            var twitterDoc = doc;
-                            User.findOneAndUpdate({email: user.email}, {$set: {tweet_app: twitterDoc.tweet_app,
-                                tweet_total: doc.statuses_count}}, function(err, doc){
-                                if(err){
+                TwitterCommons.notUseAnyAccount(req, function (err){
+                    if (err){
+                        res.json({
+                            "error": true,
+                            "data" : {
+                                "message": "Cannot change the status of any twitter account of user",
+                                "url": process.env.CURRENT_DOMAIN + "/twitter"
+                            }
+                        });
+                    } else {
+                        Twitter.findOneAndUpdate({user: user.email, id_str: req.params.id}, {$set: {in_use: true}},
+                            {new: true}, function (err, doc) {
+                                if (err) {
                                     res.status(500).json({
                                         "error": true,
-                                        "data" : {
-                                            "message": "Cannot update statistics of this twitter account on change",
+                                        "data": {
+                                            "message": "Cannot change use status of this twitter account",
                                             "url": process.env.CURRENT_DOMAIN
                                         }
                                     });
                                     next();
-                                } else if(doc==null) {
+                                } else if (doc == null) {
                                     res.status(400).json({
                                         "error": true,
-                                        "data" : {
-                                            "message": "Cannot update statistics of this twitter account on change " +
-                                            "(User doesn't exists)",
+                                        "data": {
+                                            "message": "Cannot change use status of this twitter account",
                                             "url": process.env.CURRENT_DOMAIN
                                         }
                                     });
                                     next();
                                 } else {
-                                    res.json({
-                                        "error": false,
-                                        "data" : {
-                                            "message": "Now using twitter account: " + twitterDoc.screen_name,
-                                            "url": process.env.CURRENT_DOMAIN + "/twitter",
-                                            "content": twitterDoc
+                                    var twitterDoc = doc;
+                                    User.findOneAndUpdate({email: user.email}, {
+                                        $set: {
+                                            tweet_app: twitterDoc.tweet_app,
+                                            tweet_total: doc.statuses_count
+                                        }
+                                    }, function (err, doc) {
+                                        if (err) {
+                                            res.status(500).json({
+                                                "error": true,
+                                                "data": {
+                                                    "message": "Cannot update statistics of this twitter account on " +
+                                                        "change",
+                                                    "url": process.env.CURRENT_DOMAIN
+                                                }
+                                            });
+                                            next();
+                                        } else if (doc == null) {
+                                            res.status(400).json({
+                                                "error": true,
+                                                "data": {
+                                                    "message": "Cannot update statistics of this twitter account on " +
+                                                        "change (User doesn't exists)",
+                                                    "url": process.env.CURRENT_DOMAIN
+                                                }
+                                            });
+                                            next();
+                                        } else {
+                                            res.json({
+                                                "error": false,
+                                                "data": {
+                                                    "message": "Now using twitter account: " + twitterDoc.screen_name,
+                                                    "url": process.env.CURRENT_DOMAIN + "/twitter",
+                                                    "content": twitterDoc
+                                                }
+                                            });
+                                            next();
                                         }
                                     });
-                                    next();
                                 }
                             });
-                        }
-                    });
+                    }
+                });
             });
         }, user_required.after);
 

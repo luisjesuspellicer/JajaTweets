@@ -4,6 +4,7 @@
 angular.module('myApp', [
     'ngRoute',
     'ngCookies',
+    'angularSpinners',
     'myApp.signin',
     'myApp.errors',
     'myApp.signup',
@@ -11,7 +12,9 @@ angular.module('myApp', [
     'myApp.graphs',
     'myApp.accounts',
     'myApp.twitterAccounts',
-    'myApp.dashboard'
+    'myApp.dashboard',
+    'myApp.twitterSubscriptions',
+    'myApp.shortener'
 ]).
 config(['$routeProvider', function($routeProvider) {
   $routeProvider.otherwise({redirectTo: '/signin'});

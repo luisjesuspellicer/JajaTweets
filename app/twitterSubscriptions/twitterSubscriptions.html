@@ -1,0 +1,51 @@
+<div class="caption" style="text-align: center"><h3>Subscriptions list</h3></div>
+
+<div id="todo-form" class="row">
+    <div class="col-sm-8 col-sm-offset-2 text-center">
+        <form>
+            <div class="form-group">
+                <input type="text" class="form-control input-lg text-center" placeholder="#Twitter" ng-model="formData.hashtag">
+            </div>
+
+            <button type="submit" class="btn btn-primary btn-lg" ng-click="subsAcc.add()">Add subscription</button>
+        </form>
+        <spinner class="custom-spinner" name="loadingSpinner" img-src="spinner.gif"></spinner>
+    </div>
+</div>
+
+<div ng-show="!subsAcc.subscriptions || subsAcc.subscriptions.length==0" class="alert alert-warning alert-dismissible text-center center-block twitter-alert" role="alert">
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+    <strong>Oh! You don't have any subscription...</strong><br/>
+    Try adding one with the above form!
+</div>
+
+
+<div class="container">
+    <div class="row"><p></p></div>
+    <div class="row">
+        <div class="col-md-4 col-lg-4" ng-repeat="sub in subsAcc.subscriptions" style="hight: 100%;overflow: scroll;">
+            <div class="row">
+                <h3>{{sub.hashtag.replace("%23","#")}}</h3>
+                <button ng-hide="user.email == 'test@test'" type="button" class="btn btn-danger" ng-click="subsAcc.delete(sub.hashtag)">
+                    <span class="glyphicon glyphicon-trash"></span>
+                </button>
+                <button ng-hide="user.email == 'test@test'" type="button" class="btn btn-info" ng-click="subsAcc.update(sub.hashtag)">
+                    <span class="glyphicon glyphicon-refresh"></span>
+                </button>
+            </div>
+            <div class="media" ng-repeat="current in subs[sub.hashtag]">
+                <div class="media-left">
+                    <img class="media-object img-rounded"
+                         ng-src="{{current.user.profile_image_url}}"
+                         alt="{{current.user.name}}"
+                         width="50"
+                         height="50">
+                </div>
+                <div class="media-body">
+                    <h4 class="media-heading">{{current.user.name}}</h4>
+                    <p>{{current.text}}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

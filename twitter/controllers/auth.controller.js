@@ -23,38 +23,42 @@
         app.get('/auth/twitter/callback',
             passport.authenticate('twitter', { failureRedirect: '/login' }),
             function(req, res) {
-                // Gets jwt from authorization header
-                var payload = req.session.jwt.split('.')[1];
-                payload = atob(payload);
-                payload = JSON.parse(payload);
-                var mainContent = req.user.profile._json;
-                var newTwitter = new Twitter({
-                    "user": payload.email,
-                    "in_use": false,
-                    "token": req.user.token,
-                    "secret": req.user.tokenSecret,
-                    "description": mainContent.description,
-                    "screen_name": mainContent.screen_name,
-                    "name": mainContent.name,
-                    "id_str": mainContent.id_str,
-                    "location": mainContent.location,
-                    "url": mainContent.url,
-                    "followers_count": mainContent.followers_count,
-                    "friends_count": mainContent.friends_count,
-                    "favourites_count": mainContent.favourites_count,
-                    "statuses_count": mainContent.statuses_count,
-                    "profile_image_url": mainContent.profile_image_url,
-                    "tweet_app": 0
-                });
-                newTwitter.save(function(err){
-                    if(err){
-                        // Error updating user
-                        res.redirect(process.env.CURRENT_DOMAIN);
-                    } else {
-                        // Successful authentication
-                        res.redirect(process.env.CURRENT_DOMAIN + "/#/twitterAccounts");
-                    }
-                });
+                if(req.session.jwt) {
+                    // Gets jwt from authorization header
+                    var payload = req.session.jwt.split('.')[1];
+                    payload = atob(payload);
+                    payload = JSON.parse(payload);
+                    var mainContent = req.user.profile._json;
+                    var newTwitter = new Twitter({
+                        "user": payload.email,
+                        "in_use": false,
+                        "token": req.user.token,
+                        "secret": req.user.tokenSecret,
+                        "description": mainContent.description,
+                        "screen_name": mainContent.screen_name,
+                        "name": mainContent.name,
+                        "id_str": mainContent.id_str,
+                        "location": mainContent.location,
+                        "url": mainContent.url,
+                        "followers_count": mainContent.followers_count,
+                        "friends_count": mainContent.friends_count,
+                        "favourites_count": mainContent.favourites_count,
+                        "statuses_count": mainContent.statuses_count,
+                        "profile_image_url": mainContent.profile_image_url,
+                        "tweet_app": 0
+                    });
+                    newTwitter.save(function (err) {
+                        if (err) {
+                            // Error updating user
+                            res.redirect(process.env.CURRENT_DOMAIN);
+                        } else {
+                            // Successful authentication
+                            res.redirect(process.env.CURRENT_DOMAIN + "/#/twitterAccounts");
+                        }
+                    });
+                } else {
+                    res.redirect(process.env.CURRENT_DOMAIN);
+                }
             });
 
         // Return middleware.

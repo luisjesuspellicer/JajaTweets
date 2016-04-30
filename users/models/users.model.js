@@ -27,7 +27,6 @@
         token: String,
         secret: String,
         lastAccess: Date,
-        subscribed: Object,
         tweet_app: Number,
         tweet_total: Number,
         url: String
