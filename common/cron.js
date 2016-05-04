@@ -5,7 +5,7 @@
 
     var mongoose = require('mongoose');
     var CronJob = require('cron').CronJob;
-    var OAuth = require('./oauth');
+    var OAuth = require('./OAuth');
     var date = new Date();
 
     function startCron() {

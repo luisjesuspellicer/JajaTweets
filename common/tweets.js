@@ -4,7 +4,7 @@
 
 (function () {
 
-    var OAuth = require('./oauth');
+    var OAuth = require('./OAuth');
     var mongoose = require('mongoose');
     var Twitter = mongoose.model('twitter');
     var passport = require('passport');
