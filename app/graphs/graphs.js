@@ -18,7 +18,7 @@ function graphsCtrl($http, authentication, $location, errorsService) {
 
     var vm = this;
 
-    vm.labels = ["Subscriptions", "Unsibscriptions"];
+    vm.labels = ["Subscriptions", "Unsubscriptions"];
     vm.labels1 = ["App","Twitter"];
     var tw_id=0, la_id=0, el_id=0;
 
