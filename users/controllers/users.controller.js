@@ -66,8 +66,10 @@
             user.name = req.body.name;
             user.email = req.body.email;
             user.lastAccess = new Date();
+            var password = make_passwd(13, 'qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM1234567890');
+            console.log(password);
 
-            user.setPassword(req.body.password);
+            user.setPassword(password);
 
             user.save(function (err) {
                 var token;
@@ -79,13 +81,18 @@
                         item: {
                             "error": false,
                             "data": {
-                                "token": token,
+                                "password": password,
                                 "url": process.env.CURRENT_DOMAIN + "/login"
                             }
                         }
                     }, next);
             });
         }
+
+        make_passwd = function(n, a) {
+            var index = (Math.random() * (a.length - 1)).toFixed(0);
+            return n > 0 ? a[index] + make_passwd(n - 1, a) : '';
+        };
 
         // Return middleware.
         return function (req, res, next) {

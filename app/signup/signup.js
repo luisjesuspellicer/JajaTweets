@@ -20,11 +20,19 @@ function signupCtrl($http, errorsService, $location, authentication) {
 
     vm.credentials = {
         'name': "",
-        'email': "",
-        'password': ""
+        'email': ""
     };
 
+    vm.password = 'Password';
+
     vm.onSubmit = onSubmit;
+
+    if (!authentication.isRoot()) {
+        console.log('unauth');
+        errorsService.errorCode = 401;
+        errorsService.errorMessage = "Unauthorized operation.";
+        $location.path('errors');
+    }
 
     ///////////
 
@@ -35,7 +43,7 @@ function signupCtrl($http, errorsService, $location, authentication) {
             }
         })
             .then(function(data) {
-                $location.path('signin');
+                vm.password = data.data.data.password;
             }, function(err){
                 errorsService.errorCode = err.status;
                 errorsService.errorMessage = err.data.data.message;

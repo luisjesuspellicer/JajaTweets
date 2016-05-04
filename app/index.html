@@ -39,8 +39,9 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
-            <a ng-hide="nav.isRoot()" class="navbar-brand" href="#/dashboard">JajaTweets</a>
+            <a ng-show="nav.isLoggedIn() && !nav.isRoot()" class="navbar-brand" href="#/dashboard">JajaTweets</a>
             <a ng-show="nav.isRoot()" class="navbar-brand" href="#/graphs">JajaTweets</a>
+            <a ng-show="!nav.isRoot() && !nav.isLoggedIn()" class="navbar-brand" href="#">JajaTweets</a>
         </div>
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
             <ul class="nav navbar-nav navbar-left">

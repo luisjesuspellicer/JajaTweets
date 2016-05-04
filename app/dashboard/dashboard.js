@@ -23,6 +23,12 @@ function dashboardCtrl($http, authentication, $location, errorsService) {
 
     var self = this;
 
+    if (!authentication.isLoggedIn()) {
+        console.log('unauth');
+        errorsService.errorCode = 401;
+        errorsService.errorMessage = "Unauthorized operation.";
+        $location.path('errors');
+    }
 
     $http.get('http://localhost:3000/tweets/pending', {
         headers: {

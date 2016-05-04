@@ -12,12 +12,19 @@ angular.module('myApp.accounts', ['ngRoute'])
 
     .controller('accountsCtrl', accountsCtrl);
 
-accountsCtrl.$inject = ['$http','authentication'];
+accountsCtrl.$inject = ['$http','authentication','errorsService','$location'];
 
-function accountsCtrl($http, authentication) {
+function accountsCtrl($http, authentication, errorsService, $location) {
 
     var vm = this;
 vm.id=0;
+    if (!authentication.isLoggedIn()) {
+        console.log('unauth');
+        errorsService.errorCode = 401;
+        errorsService.errorMessage = "Unauthorized operation.";
+        $location.path('errors');
+    }
+
     $http.get('http://localhost:3000/users',{
         headers: {
             'Authorization': 'Bearer ' + authentication.getToken()

@@ -12,13 +12,20 @@ angular.module('myApp.shortener', ['ngRoute', 'angularSpinners'])
 
     .controller('shortCtrl', shortCtrl);
 
-shortCtrl.$inject = ['$http','authentication', '$scope', 'spinnerService'];
+shortCtrl.$inject = ['$http','authentication', '$scope', 'spinnerService', 'errorsService', '$location'];
 
-function shortCtrl($http, authentication, $scope, spinnerService) {
+function shortCtrl($http, authentication, $scope, spinnerService, errorsService, $location) {
 
     var self = this;
     $scope.formData = {};
     $scope.result = null;
+
+    if (!authentication.isLoggedIn()) {
+        console.log('unauth');
+        errorsService.errorCode = 401;
+        errorsService.errorMessage = "Unauthorized operation.";
+        $location.path('errors');
+    }
 
     self.add = function() {
         spinnerService.show('loadingSpinner');

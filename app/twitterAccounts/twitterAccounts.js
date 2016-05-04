@@ -12,12 +12,20 @@ angular.module('myApp.twitterAccounts', ['ngRoute', 'angularSpinners'])
 
     .controller('twAccountsCtrl', twAccountsCtrl);
 
-twAccountsCtrl.$inject = ['$window', '$http','authentication', 'spinnerService'];
+twAccountsCtrl.$inject = ['$window', '$http','authentication', 'spinnerService','errorsService','$location'];
 
-function twAccountsCtrl($window, $http, authentication, spinnerService) {
+function twAccountsCtrl($window, $http, authentication, spinnerService, errorsService, $location) {
 
     var vm = this;
     vm.id=0;
+
+    if (!authentication.isLoggedIn()) {
+        console.log('unauth');
+        errorsService.errorCode = 401;
+        errorsService.errorMessage = "Unauthorized operation.";
+        $location.path('errors');
+    }
+
     $http.get('http://localhost:3000/twitter',{
         headers: {
             'Authorization': 'Bearer ' + authentication.getToken()

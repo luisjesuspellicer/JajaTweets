@@ -12,13 +12,20 @@ angular.module('myApp.twitterSubscriptions', ['ngRoute', 'angularSpinners'])
 
     .controller('subsCtrl', subsCtrl);
 
-subsCtrl.$inject = ['$http','authentication', '$scope', 'spinnerService'];
+subsCtrl.$inject = ['$http','authentication', '$scope', 'spinnerService', 'errorsService', '$location'];
 
-function subsCtrl($http, authentication, $scope, spinnerService) {
+function subsCtrl($http, authentication, $scope, spinnerService, errorsService, $location) {
 
     var self = this;
     $scope.subs = {};
     $scope.formData = {};
+
+    if (!authentication.isLoggedIn()) {
+        console.log('unauth');
+        errorsService.errorCode = 401;
+        errorsService.errorMessage = "Unauthorized operation.";
+        $location.path('errors');
+    }
 
     $http.get('http://localhost:3000/subscriptions', {
         headers: {
