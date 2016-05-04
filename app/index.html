@@ -39,16 +39,16 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
-            <a ng-show="nav.isLoggedIn() && !nav.isRoot()" class="navbar-brand" href="#/dashboard">JajaTweets</a>
-            <a ng-show="nav.isRoot()" class="navbar-brand" href="#/graphs">JajaTweets</a>
-            <a ng-show="!nav.isRoot() && !nav.isLoggedIn()" class="navbar-brand" href="#">JajaTweets</a>
+            <a ng-if="nav.isLoggedIn() && !nav.isRoot()" class="navbar-brand" href="#/dashboard">JajaTweets</a>
+            <a ng-if="nav.isRoot()" class="navbar-brand" href="#/graphs">JajaTweets</a>
+            <a ng-if="!nav.isRoot() && !nav.isLoggedIn()" class="navbar-brand" href="#">JajaTweets</a>
         </div>
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
             <ul class="nav navbar-nav navbar-left">
-                <li ng-show="nav.isRoot()"><a href="#/graphs"><span class="glyphicon glyphicon-stats" aria-hidden="true"></span>&nbsp;Graphs</a></li>
-                <li ng-show="nav.isRoot()"><a href="#/accounts"><span class="glyphicon glyphicon-user" aria-hidden="true"></span>&nbsp;Users</a></li>
-                <li ng-show="nav.isLoggedIn()"><a href="#/twitterAccounts"><i class="fa fa-twitter fa-lg" aria-hidden="true"></i>&nbsp;Twitter Accounts</a></li>
-                <li ng-show="nav.isLoggedIn()" class="dropdown">
+                <li ng-if="nav.isRoot()"><a href="#/graphs"><span class="glyphicon glyphicon-stats" aria-hidden="true"></span>&nbsp;Graphs</a></li>
+                <li ng-if="nav.isRoot()"><a href="#/accounts"><span class="glyphicon glyphicon-user" aria-hidden="true"></span>&nbsp;Users</a></li>
+                <li ng-if="nav.isLoggedIn()"><a href="#/twitterAccounts"><i class="fa fa-twitter fa-lg" aria-hidden="true"></i>&nbsp;Twitter Accounts</a></li>
+                <li ng-if="nav.isLoggedIn()" class="dropdown">
                     <a href="" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
                         <span class="glyphicon glyphicon-tasks" aria-hidden="true"></span>&nbsp;Twitter Dashboard&nbsp;<span class="caret"></span>
                     </a>
@@ -61,9 +61,9 @@
 
             </ul>
             <ul class="nav navbar-nav navbar-right">
-                <li ng-hide="nav.isLoggedIn()"><a href="#/signin"><i class="fa fa-sign-in fa-lg" aria-hidden="true"></i>&nbsp;Sign in</a></li>
-                <li ng-show="nav.isLoggedIn()"><a href="" ng-click="nav.logOut();console.log('foo');nav.loc.path('signin')"><i class="fa fa-sign-out fa-lg" aria-hidden="true"></i>&nbsp;Log out</a></li>
-                <li ng-show="nav.isRoot()"><a href="#/signup"><i class="fa fa-user-plus fa-lg" aria-hidden="true"></i>&nbsp;Sign up</a></li>
+                <li ng-if="!nav.isLoggedIn()"><a href="#/signin"><i class="fa fa-sign-in fa-lg" aria-hidden="true"></i>&nbsp;Sign in</a></li>
+                <li ng-if="nav.isLoggedIn()"><a href="" ng-click="nav.logOut();console.log('foo');nav.loc.path('signin')"><i class="fa fa-sign-out fa-lg" aria-hidden="true"></i>&nbsp;Log out</a></li>
+                <li ng-if="nav.isRoot()"><a href="#/signup"><i class="fa fa-user-plus fa-lg" aria-hidden="true"></i>&nbsp;Sign up</a></li>
             </ul>
         </div><!-- /.navbar-collapse -->
     </div>
