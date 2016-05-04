@@ -14,7 +14,8 @@ angular.module('myApp', [
     'myApp.twitterAccounts',
     'myApp.dashboard',
     'myApp.twitterSubscriptions',
-    'myApp.shortener'
+    'myApp.shortener',
+    'myApp.profile'
 ]).
 config(['$routeProvider', function($routeProvider) {
   $routeProvider.otherwise({redirectTo: '/signin'});

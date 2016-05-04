@@ -1,0 +1,19 @@
+<link href="../styles/signup.css" rel="stylesheet">
+<div ng-show="prof.changed" class="alert alert-warning alert-dismissible text-center center-block twitter-alert" role="alert">
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+    <strong>Profile changed!</strong><br/>
+    Your profile has been changed. Don't forget your new credentials.
+</div>
+
+<div class="container">
+    <form class="form-signup" ng-submit="prof.onSubmit()">
+        <h2 class="form-signup-heading">Change user profile</h2>
+        <label for="name" class="sr-only">User name</label>
+        <input type="text" id="name" class="form-control" placeholder="Name" required autofocus ng-model="prof.credentials.name">
+        <label for="email" class="sr-only">Email address</label>
+        <input type="email" id="email" class="form-control" placeholder="Email address" required autofocus ng-model="prof.credentials.email">
+        <label for="password" class="sr-only">Password</label>
+        <input type="password" id="password" class="form-control" placeholder="New password" required autofocus ng-model="prof.credentials.password">
+        <button class="btn btn-lg btn-primary btn-block" type="submit">Change profile</button>
+    </form>
+</div> <!-- /container -->

@@ -67,7 +67,6 @@
             user.email = req.body.email;
             user.lastAccess = new Date();
             var password = make_passwd(13, 'qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM1234567890');
-            console.log(password);
 
             user.setPassword(password);
 

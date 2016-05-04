@@ -63,7 +63,8 @@
             <ul class="nav navbar-nav navbar-right">
                 <li ng-if="!nav.isLoggedIn()"><a href="#/signin"><i class="fa fa-sign-in fa-lg" aria-hidden="true"></i>&nbsp;Sign in</a></li>
                 <li ng-if="nav.isLoggedIn()"><a href="" ng-click="nav.logOut();console.log('foo');nav.loc.path('signin')"><i class="fa fa-sign-out fa-lg" aria-hidden="true"></i>&nbsp;Log out</a></li>
-                <li ng-if="nav.isRoot()"><a href="#/signup"><i class="fa fa-user-plus fa-lg" aria-hidden="true"></i>&nbsp;Sign up</a></li>
+                <li ng-if="nav.isLoggedIn()"><a href="#/profile"><i class="fa fa-user fa-lg" aria-hidden="true"></i>&nbsp;Profile</a></li>
+                <li ng-if="nav.isRoot()"><a href="#/signup"><i class="fa fa-sign-in fa-lg" aria-hidden="true"></i>&nbsp;Sign up</a></li>
             </ul>
         </div><!-- /.navbar-collapse -->
     </div>
@@ -89,6 +90,7 @@
 <script src="errors/errors.js"></script>
 <script src="signup/signup.js"></script>
 <script src="graphs/graphs.js"></script>
+<script src="profile/profile.js"></script>
 <script src="accounts/accounts.js"></script>
 <script src="twitterAccounts/twitterAccounts.js"></script>
 <script src="components/version/version.js"></script>

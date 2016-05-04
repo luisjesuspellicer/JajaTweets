@@ -28,6 +28,21 @@
             $http.get('http://localhost:3000/logout');
         };
 
+        var getId = function() {
+            var token = getToken();
+            var payload;
+
+            if(token){
+                payload = token.split('.')[1];
+                payload = $window.atob(payload);
+                payload = JSON.parse(payload);
+
+                return payload._id;
+            } else {
+                return null;
+            }
+        };
+
         var isLoggedIn = function() {
             var token = getToken();
             var payload;
@@ -63,7 +78,8 @@
             getToken : getToken,
             logout : logout,
             isLoggedIn: isLoggedIn,
-            isRoot: isRoot
+            isRoot: isRoot,
+            getId: getId
         };
     }
 
