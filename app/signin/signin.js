@@ -31,11 +31,15 @@ function signinCtrl($http, authentication, $location, errorsService) {
             .then(function (data) {
                 authentication.saveToken(data.data.data.token);
                 if (vm.credentials.email == "test@test") {
+                    console.log('->graphs');
                     $location.path('graphs');
+                } else {
+                    console.log('->dashboard');
+                    $location.path('dashboard');
                 }
             }, function (err) {
                 errorsService.errorCode = err.status;
-                errorsService.errorMessage = err.data.message;
+                errorsService.errorMessage = err.data.message || "Undefined error";
                 $location.path('errors');
             });
 

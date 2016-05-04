@@ -480,28 +480,40 @@
             if(req.params.pending != "pending"){
                 next();
             } else {
-                TweetCommons.getUserFromJWT(req, function(user){
-                    Tweet.find({user: user.user}, function (err, tweets) {
-                        if (err) {
-                            res.status(500).json({
-                                "error": true,
-                                "data": {
-                                    "message": "Cannot found pending tweets",
-                                    "url": process.env.CURRENT_DOMAIN
+                TweetCommons.getUserFromJWT(req, function(user) {
+                    if (user) {
+                        Tweet.find({user: user.user}, function (err, tweets) {
+                            if (err) {
+                                res.status(500).json({
+                                    "error": true,
+                                    "data": {
+                                        "message": "Cannot found pending tweets",
+                                        "url": process.env.CURRENT_DOMAIN
 
-                                }
-                            });
-                        } else {
-                            res.status(200).json({
-                                "error": false,
-                                "data": {
-                                    "message": "Successful search",
-                                    "url": process.env.CURRENT_DOMAIN,
-                                    "content": tweets
-                                }
-                            });
-                        }
-                    });
+                                    }
+                                });
+                            } else {
+                                res.status(200).json({
+                                    "error": false,
+                                    "data": {
+                                        "message": "Successful search",
+                                        "url": process.env.CURRENT_DOMAIN,
+                                        "content": tweets
+                                    }
+                                });
+                            }
+                        });
+                    } else {
+                        res.status(500).json({
+                            "error": true,
+                            "data": {
+                                "message": "Cannot found pending tweets",
+                                "url": process.env.CURRENT_DOMAIN
+
+                            }
+                        })
+                    }
+
                 });
             }
         }, user_required.after);

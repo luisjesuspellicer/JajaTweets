@@ -237,6 +237,7 @@
     function getUserFromJWT(req, callback){
         var payload = req.headers.authorization.split('.')[1];
         payload = atob(payload);
+        console.log(payload);
         payload = JSON.parse(payload);
         Twitter.findOne({user: payload.email, in_use: true}, function(err, doc){
             if(err) {

@@ -25,37 +25,48 @@
          */
         app.get('/subscriptions', user_required.before, function(req, res, next) {
             TweetCommons.getUserFromJWT(req, function(user){
-                Twitter.findOne({user: user.user, in_use: true}, function(err, doc){
-                    if (err){
-                        res.status(500).json({
-                            "error": true,
-                            "data" : {
-                                "message": "Cannot obtain subscribed terms for this user",
-                                "url": process.env.CURRENT_DOMAIN
-                            }
-                        });
-                        next();
-                    } else if(!doc.subscribed) {
-                        res.status(404).json({
-                            "error": true,
-                            "data" : {
-                                "message": "No subscriptions for current user",
-                                "url": process.env.CURRENT_DOMAIN
-                            }
-                        });
-                        next();
-                    } else {
-                        res.json({
-                            "error": false,
-                            "data" : {
-                                "message": "Obtaining subscribed terms succesful",
-                                "url":  process.env.CURRENT_DOMAIN + "/tweets",
-                                "content": doc.subscribed
-                            }
-                        });
-                        next();
-                    }
-                });
+                if (user) {
+                    Twitter.findOne({user: user.user, in_use: true}, function(err, doc){
+                        if (err){
+                            res.status(500).json({
+                                "error": true,
+                                "data" : {
+                                    "message": "Cannot obtain subscribed terms for this user",
+                                    "url": process.env.CURRENT_DOMAIN
+                                }
+                            });
+                            next();
+                        } else if(!doc.subscribed) {
+                            res.status(404).json({
+                                "error": true,
+                                "data" : {
+                                    "message": "No subscriptions for current user",
+                                    "url": process.env.CURRENT_DOMAIN
+                                }
+                            });
+                            next();
+                        } else {
+                            res.json({
+                                "error": false,
+                                "data" : {
+                                    "message": "Obtaining subscribed terms succesful",
+                                    "url":  process.env.CURRENT_DOMAIN + "/tweets",
+                                    "content": doc.subscribed
+                                }
+                            });
+                            next();
+                        }
+                    });
+                } else {
+                    res.status(500).json({
+                        "error": true,
+                        "data" : {
+                            "message": "Cannot obtain subscribed terms for this user",
+                            "url": process.env.CURRENT_DOMAIN
+                        }
+                    })
+                }
+
             });
         }, user_required.after);
 
