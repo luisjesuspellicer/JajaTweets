@@ -15,6 +15,8 @@
         var vm = this;
 
         vm.loc = $location;
+        vm.email = authentication.getEmail;
+        vm.id = authentication.getId;
 
         vm.isRoot = authentication.isRoot;
         vm.isLoggedIn = authentication.isLoggedIn;

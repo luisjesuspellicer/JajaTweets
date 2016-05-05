@@ -1,17 +1,28 @@
 <link href="../styles/signin.css" rel="stylesheet">
-    <div class="container">
-        <form class="form-signin" ng-submit="signin.onSubmit()">
-            <h2 class="form-signin-heading">Please sign in</h2>
-            <label for="email" class="sr-only">Email address</label>
-            <input type="email" id="email" class="form-control" placeholder="Email address" required autofocus ng-model="signin.credentials.email">
-            <label for="password" class="sr-only">Password</label>
-            <input type="password" id="password" class="form-control" placeholder="Password" required ng-model="signin.credentials.password">
-            <div class="checkbox">
-                <label>
-                    <input type="checkbox" value="remember-me"> Remember me
-                </label>
-            </div>
-            <button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
-        </form>
 
-    </div> <!-- /container -->
+<div ng-if="signin.wrong" class="alert alert-warning alert-dismissible text-center center-block twitter-alert"
+     role="alert">
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span>
+    </button>
+    <strong>Wrong user/password</strong><br/>
+    There is not an user with the given password in our system.
+</div>
+
+<div class="container">
+    <form class="form-signin" ng-submit="signin.onSubmit()">
+        <h2 class="form-signin-heading">Please sign in</h2>
+        <label for="email" class="sr-only">Email address</label>
+        <input type="email" id="email" class="form-control" placeholder="Email address" required autofocus
+               ng-model="signin.credentials.email">
+        <label for="password" class="sr-only">Password</label>
+        <input type="password" id="password" class="form-control" placeholder="Password" required
+               ng-model="signin.credentials.password">
+        <div class="checkbox">
+            <label>
+                <input type="checkbox" value="remember-me"> Remember me
+            </label>
+        </div>
+        <button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
+    </form>
+
+</div> <!-- /container -->

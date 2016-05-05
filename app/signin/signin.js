@@ -18,15 +18,20 @@ function signinCtrl($http, authentication, $location, errorsService) {
 
     var vm = this;
 
+    vm.wrong = false;
     vm.credentials = {
         'email': "",
         'password': ""
     };
 
+    if (authentication.isLoggedIn()) {
+        $location.path('dashboard');
+    }
+
     ///////
 
     vm.onSubmit = function () {
-
+        vm.wrong = false;
         $http.post('http://localhost:3000/login', vm.credentials)
             .then(function (data) {
                 authentication.saveToken(data.data.data.token);
@@ -38,9 +43,17 @@ function signinCtrl($http, authentication, $location, errorsService) {
                     $location.path('dashboard');
                 }
             }, function (err) {
-                errorsService.errorCode = err.status;
-                errorsService.errorMessage = err.data.message || "Undefined error";
-                $location.path('errors');
+                if (err.status==401 && err.data.message=="User not found") {
+                    vm.wrong = true;
+                    vm.credentials = {
+                        'email': "",
+                        'password': ""
+                    };
+                } else {
+                    errorsService.errorCode = err.status;
+                    errorsService.errorMessage = err.data.message || "Undefined error";
+                    $location.path('errors');
+                }
             });
 
     }

@@ -45,8 +45,16 @@
         </div>
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
             <ul class="nav navbar-nav navbar-left">
-                <li ng-if="nav.isRoot()"><a href="#/graphs"><span class="glyphicon glyphicon-stats" aria-hidden="true"></span>&nbsp;Graphs</a></li>
-                <li ng-if="nav.isRoot()"><a href="#/accounts"><span class="glyphicon glyphicon-user" aria-hidden="true"></span>&nbsp;Users</a></li>
+                <li ng-if="nav.isRoot()" class="dropdown">
+                    <a href="" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
+                        <span class="glyphicon glyphicon-lock" aria-hidden="true"></span>&nbsp;Admin tools&nbsp;<span class="caret"></span>
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li ng-if="nav.isRoot()"><a href="#/graphs">&nbsp;Graphs</a></li>
+                        <li ng-if="nav.isRoot()"><a href="#/accounts">&nbsp;Users</a></li>
+                    </ul>
+                </li>
+
                 <li ng-if="nav.isLoggedIn()"><a href="#/twitterAccounts"><i class="fa fa-twitter fa-lg" aria-hidden="true"></i>&nbsp;Twitter Accounts</a></li>
                 <li ng-if="nav.isLoggedIn()" class="dropdown">
                     <a href="" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
@@ -61,10 +69,17 @@
 
             </ul>
             <ul class="nav navbar-nav navbar-right">
-                <li ng-if="!nav.isLoggedIn()"><a href="#/signin"><i class="fa fa-sign-in fa-lg" aria-hidden="true"></i>&nbsp;Sign in</a></li>
-                <li ng-if="nav.isLoggedIn()"><a href="" ng-click="nav.logOut();console.log('foo');nav.loc.path('signin')"><i class="fa fa-sign-out fa-lg" aria-hidden="true"></i>&nbsp;Log out</a></li>
-                <li ng-if="nav.isLoggedIn()"><a href="#/profile"><i class="fa fa-user fa-lg" aria-hidden="true"></i>&nbsp;Profile</a></li>
-                <li ng-if="nav.isRoot()"><a href="#/signup"><i class="fa fa-sign-in fa-lg" aria-hidden="true"></i>&nbsp;Sign up</a></li>
+            <li ng-if="nav.isLoggedIn()" class="dropdown">
+                <a href="" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
+                    <span class="fa fa-user fa-lg" aria-hidden="true"></span>&nbsp;{{ nav.email() }}&nbsp;<span class="caret"></span>
+                </a>
+                <ul class="dropdown-menu">
+                    <li ng-if="!nav.isLoggedIn()"><a href="#/signin"><i class="fa fa-sign-in fa-lg" aria-hidden="true"></i>&nbsp;Sign in</a></li>
+                    <li ng-if="nav.isLoggedIn()"><a href="" ng-click="nav.logOut();console.log('foo');nav.loc.path('signin')"><i class="fa fa-sign-out fa-lg" aria-hidden="true"></i>&nbsp;Log out</a></li>
+                    <li ng-if="nav.isLoggedIn()"><a ng-href="#/profile/{{nav.id()}}"><i class="fa fa-user fa-lg" aria-hidden="true"></i>&nbsp;Profile</a></li>
+                    <li ng-if="nav.isRoot()"><a href="#/signup"><i class="fa fa-sign-in fa-lg" aria-hidden="true"></i>&nbsp;Sign up</a></li>
+                </ul>
+            </li>
             </ul>
         </div><!-- /.navbar-collapse -->
     </div>

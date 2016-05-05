@@ -11,9 +11,13 @@
     </tr>
     <tr ng-repeat="user in acc.users">
         <td>
-            <button ng-hide="user.email == 'test@test'" class="btn btn-default" ng-click="acc.delete(user._id)">
+            <button ng-if="user.email != 'test@test'" class="btn btn-default" ng-click="acc.delete(user._id)">
                 <span class="glyphicon glyphicon-trash"></span>
-            </button></td>
+            </button>
+            <a class="btn btn-default" ng-href="#/profile/{{user._id}}">
+                <span class="glyphicon glyphicon-user"></span>
+            </a>
+        </td>
         <td><h4>{{user.email}}</h4></td>
         <td>{{user.name}}</td>
         <td>{{user.tweet_app?user.tweet_app:0}}</td>
