@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('myApp.graphs', ['ngRoute','chart.js'])
+angular.module('myApp.graphs', ['ngRoute','chart.js','angularSpinners'])
 
     .config(['$routeProvider', function ($routeProvider) {
         $routeProvider.when('/graphs', {
@@ -12,9 +12,9 @@ angular.module('myApp.graphs', ['ngRoute','chart.js'])
 
     .controller('graphsCtrl', graphsCtrl);
 
-graphsCtrl.$inject = ['$http', 'authentication', '$location', 'errorsService'];
+graphsCtrl.$inject = ['$http', 'authentication', '$location', 'errorsService', 'spinnerService'];
 
-function graphsCtrl($http, authentication, $location, errorsService) {
+function graphsCtrl($http, authentication, $location, errorsService, spinnerService) {
 
     var vm = this;
 
@@ -22,6 +22,7 @@ function graphsCtrl($http, authentication, $location, errorsService) {
     vm.labels1 = ["App","Twitter"];
     var tw_id=0, la_id=0, el_id=0;
 
+    spinnerService.showAll();
     $http.get('http://localhost:3000/data', {
         headers: {
             'Authorization': 'Bearer ' + authentication.getToken()
@@ -40,6 +41,7 @@ function graphsCtrl($http, authentication, $location, errorsService) {
                 vm.tweets = chart.chart;
                 el_id = chart._id;
             }
+            spinnerService.hideAll();
         });
 
         $http.get('http://localhost:3000/data/'+tw_id,{
