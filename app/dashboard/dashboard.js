@@ -24,7 +24,7 @@ function dashboardCtrl($http, authentication, $location, errorsService) {
     var self = this;
     console.log("User: Token: "+authentication.getToken());
 
-    $http.get('http://localhost:3000/tweets/pending', {
+    $http.get('/tweets/pending', {
         headers: {
             'Authorization': 'Bearer ' + authentication.getToken()
         }
@@ -34,7 +34,7 @@ function dashboardCtrl($http, authentication, $location, errorsService) {
         console.log(data.data.data.content);
     });
 
-    $http.get('http://localhost:3000/tweets/own', {
+    $http.get('/tweets/own', {
         headers: {
             'Authorization': 'Bearer ' + authentication.getToken()
         }
@@ -43,7 +43,7 @@ function dashboardCtrl($http, authentication, $location, errorsService) {
         self.ownTweets = data.data.data.content;
 
     });
-    $http.get('http://localhost:3000/tweets',{
+    $http.get('/tweets',{
         headers: {
             'Authorization': 'Bearer ' + authentication.getToken()
         }

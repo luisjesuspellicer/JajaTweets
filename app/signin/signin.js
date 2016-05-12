@@ -32,7 +32,7 @@ function signinCtrl($http, authentication, $location, errorsService) {
 
     vm.onSubmit = function () {
         vm.wrong = false;
-        $http.post('http://localhost:3000/login', vm.credentials)
+        $http.post('/login', vm.credentials)
             .then(function (data) {
                 authentication.saveToken(data.data.data.token);
                 if (vm.credentials.email == "test@test") {

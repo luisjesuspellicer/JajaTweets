@@ -37,7 +37,7 @@ function signupCtrl($http, errorsService, $location, authentication) {
     ///////////
 
     function onSubmit() {
-        $http.post('http://localhost:3000/users',vm.credentials,{
+        $http.post('/users',vm.credentials,{
             headers: {
                 'Authorization': 'Bearer ' + authentication.getToken()
             }

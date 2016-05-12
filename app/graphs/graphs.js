@@ -23,7 +23,7 @@ function graphsCtrl($http, authentication, $location, errorsService, spinnerServ
     var tw_id=0, la_id=0, el_id=0;
 
     spinnerService.showAll();
-    $http.get('http://localhost:3000/data', {
+    $http.get('/data', {
         headers: {
             'Authorization': 'Bearer ' + authentication.getToken()
         }
@@ -44,7 +44,7 @@ function graphsCtrl($http, authentication, $location, errorsService, spinnerServ
             spinnerService.hideAll();
         });
 
-        $http.get('http://localhost:3000/data/'+tw_id,{
+        $http.get('/data/'+tw_id,{
             headers: {
                 'Authorization': 'Bearer ' + authentication.getToken()
             }
@@ -53,7 +53,7 @@ function graphsCtrl($http, authentication, $location, errorsService, spinnerServ
             vm.data[0]++; vm.data[1]++;
         });
 
-        $http.get('http://localhost:3000/data/'+la_id,{
+        $http.get('/data/'+la_id,{
             headers: {
                 'Authorization': 'Bearer ' + authentication.getToken()
             }
@@ -61,7 +61,7 @@ function graphsCtrl($http, authentication, $location, errorsService, spinnerServ
             vm.accesses = data.data.data.chart;
         });
 
-        $http.get('http://localhost:3000/data/'+el_id,{
+        $http.get('/data/'+el_id,{
             headers: {
                 'Authorization': 'Bearer ' + authentication.getToken()
             }

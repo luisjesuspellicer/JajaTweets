@@ -27,7 +27,7 @@ function subsCtrl($http, authentication, $scope, spinnerService, errorsService, 
         $location.path('errors');
     }
 
-    $http.get('http://localhost:3000/subscriptions', {
+    $http.get('/subscriptions', {
         headers: {
             'Authorization': 'Bearer ' + authentication.getToken()
         }
@@ -36,7 +36,7 @@ function subsCtrl($http, authentication, $scope, spinnerService, errorsService, 
     });
 
     self.search = function(id) {
-        $http.get('http://localhost:3000/subscriptions/'+id,{
+        $http.get('/subscriptions/'+id,{
             headers: {
                 'Authorization': 'Bearer ' + authentication.getToken()
             }
@@ -47,13 +47,13 @@ function subsCtrl($http, authentication, $scope, spinnerService, errorsService, 
 
     self.add = function() {
         spinnerService.show('loadingSpinner');
-        $http.post('http://localhost:3000/subscriptions/', $scope.formData, {
+        $http.post('/subscriptions/', $scope.formData, {
             headers: {
                 'Authorization': 'Bearer ' + authentication.getToken()
             }
         }).then(function() {
             $scope.formData = {}; // clear the form so our user is ready to enter another
-            $http.get('http://localhost:3000/subscriptions', {
+            $http.get('/subscriptions', {
                 headers: {
                     'Authorization': 'Bearer ' + authentication.getToken()
                 }
@@ -73,7 +73,7 @@ function subsCtrl($http, authentication, $scope, spinnerService, errorsService, 
 
     self.update = function(hashtag) {
         spinnerService.show('loadingSpinner');
-        $http.get('http://localhost:3000/subscriptions/' + hashtag,{
+        $http.get('/subscriptions/' + hashtag,{
             headers: {
                 'Authorization': 'Bearer ' + authentication.getToken()
             }
@@ -85,12 +85,12 @@ function subsCtrl($http, authentication, $scope, spinnerService, errorsService, 
 
     self.delete = function(id) {
         spinnerService.show('loadingSpinner');
-        $http.delete('http://localhost:3000/subscriptions/' + id,{
+        $http.delete('/subscriptions/' + id,{
             headers: {
                 'Authorization': 'Bearer ' + authentication.getToken()
             }
         }).then(function(data) {
-            $http.get('http://localhost:3000/subscriptions', {
+            $http.get('/subscriptions', {
                 headers: {
                     'Authorization': 'Bearer ' + authentication.getToken()
                 }

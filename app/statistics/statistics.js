@@ -24,7 +24,7 @@ function statisticsCtrl($http, authentication, $location, errorsService, spinner
     vm.data1 = [1,1];
 
 
-        $http.get('http://localhost:3000/users/'+authentication.getId(),{
+        $http.get('/users/'+authentication.getId(),{
             headers: {
                 'Authorization': 'Bearer ' + authentication.getToken()
             }

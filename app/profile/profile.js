@@ -30,7 +30,7 @@ function profileCtrl($http, authentication, errorsService, $location, $routePara
 
     console.log($routeParams.id);
 
-    $http.get('http://localhost:3000/users/'+$routeParams.id,{
+    $http.get('/users/'+$routeParams.id,{
         headers: {
             'Authorization': 'Bearer ' + authentication.getToken()
         }
@@ -41,7 +41,7 @@ function profileCtrl($http, authentication, errorsService, $location, $routePara
     });
 
     function onSubmit() {
-        $http.put('http://localhost:3000/users/'+$routeParams.id, vm.newUser, {
+        $http.put('/users/'+$routeParams.id, vm.newUser, {
                 headers : {
                     'Authorization': 'Bearer ' + authentication.getToken()
                 }

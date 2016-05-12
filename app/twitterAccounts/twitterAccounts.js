@@ -26,7 +26,7 @@ function twAccountsCtrl($window, $http, authentication, spinnerService, errorsSe
         $location.path('errors');
     }
 
-    $http.get('http://localhost:3000/twitter',{
+    $http.get('/twitter',{
         headers: {
             'Authorization': 'Bearer ' + authentication.getToken()
         }
@@ -36,12 +36,12 @@ function twAccountsCtrl($window, $http, authentication, spinnerService, errorsSe
 
     vm.delete = function(id) {
         spinnerService.show('loadingSpinner');
-        $http.delete('http://localhost:3000/twitter/'+id,{
+        $http.delete('/twitter/'+id,{
             headers: {
                 'Authorization': 'Bearer ' + authentication.getToken()
             }
         }).then(function() {
-            $http.get('http://localhost:3000/twitter',{
+            $http.get('/twitter',{
                 headers: {
                     'Authorization': 'Bearer ' + authentication.getToken()
                 }
@@ -54,12 +54,12 @@ function twAccountsCtrl($window, $http, authentication, spinnerService, errorsSe
 
     vm.update = function(id) {
         spinnerService.show('loadingSpinner');
-        $http.get('http://localhost:3000/twitter/'+id+'/update',{
+        $http.get('/twitter/'+id+'/update',{
             headers: {
                 'Authorization': 'Bearer ' + authentication.getToken()
             }
         }).then(function() {
-            $http.get('http://localhost:3000/twitter',{
+            $http.get('/twitter',{
                 headers: {
                     'Authorization': 'Bearer ' + authentication.getToken()
                 }
@@ -72,12 +72,12 @@ function twAccountsCtrl($window, $http, authentication, spinnerService, errorsSe
 
     vm.use = function(id) {
         spinnerService.show('loadingSpinner');
-        $http.get('http://localhost:3000/twitter/'+id+'/use',{
+        $http.get('/twitter/'+id+'/use',{
             headers: {
                 'Authorization': 'Bearer ' + authentication.getToken()
             }
         }).then(function() {
-            $http.get('http://localhost:3000/twitter',{
+            $http.get('/twitter',{
                 headers: {
                     'Authorization': 'Bearer ' + authentication.getToken()
                 }

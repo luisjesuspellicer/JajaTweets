@@ -25,7 +25,7 @@ vm.id=0;
         $location.path('errors');
     }
 
-    $http.get('http://localhost:3000/users',{
+    $http.get('/users',{
         headers: {
             'Authorization': 'Bearer ' + authentication.getToken()
         }
@@ -34,12 +34,12 @@ vm.id=0;
     });
 
     vm.delete = function(id) {
-        $http.delete('http://localhost:3000/users/'+id,{
+        $http.delete('/users/'+id,{
             headers: {
                 'Authorization': 'Bearer ' + authentication.getToken()
             }
         }).then(function() {
-            $http.get('http://localhost:3000/users',{
+            $http.get('/users',{
                 headers: {
                     'Authorization': 'Bearer ' + authentication.getToken()
                 }

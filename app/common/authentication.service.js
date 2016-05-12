@@ -38,7 +38,7 @@
         function logout() {
             $window.localStorage.removeItem('mean-token');
             tok = undefined;
-            $http.get('http://localhost:3000/logout');
+            $http.get('/logout');
         }
 
         function getId() {

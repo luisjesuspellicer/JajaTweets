@@ -30,7 +30,7 @@ function shortCtrl($http, authentication, $scope, spinnerService, errorsService,
     self.add = function() {
         spinnerService.show('loadingSpinner');
         $scope.result = null;
-        $http.post('http://localhost:3000/shortened/', $scope.formData, {
+        $http.post('/shortened/', $scope.formData, {
             headers: {
                 'Authorization': 'Bearer ' + authentication.getToken()
             }
