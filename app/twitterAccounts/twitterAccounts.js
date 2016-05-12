@@ -30,6 +30,11 @@ function twAccountsCtrl($window, $http, authentication, spinnerService, errorsSe
         headers: {
             'Authorization': 'Bearer ' + authentication.getToken()
         }
+    }).error(function(data, status, headers, config) {
+        console.log("Twitter GET error");
+        errorsService.errorCode = status;
+        errorsService.errorMessage = data.data.message || "Undefined error";
+        $location.path('errors');
     }).then(function(data) {
         vm.users = data.data.data.content;
     });
@@ -40,7 +45,13 @@ function twAccountsCtrl($window, $http, authentication, spinnerService, errorsSe
             headers: {
                 'Authorization': 'Bearer ' + authentication.getToken()
             }
-        }).then(function() {
+        }).error(function(data, status, headers, config) {
+            console.log("Delete error");
+            errorsService.errorCode = status;
+            errorsService.errorMessage = data.data.message || "Undefined error";
+            $location.path('errors');
+        })
+        .then(function() {
             $http.get('/twitter',{
                 headers: {
                     'Authorization': 'Bearer ' + authentication.getToken()
@@ -58,6 +69,11 @@ function twAccountsCtrl($window, $http, authentication, spinnerService, errorsSe
             headers: {
                 'Authorization': 'Bearer ' + authentication.getToken()
             }
+        }).error(function(data, status, headers, config) {
+            console.log("Update error");
+            errorsService.errorCode = status;
+            errorsService.errorMessage = data.data.message || "Undefined error";
+            $location.path('errors');
         }).then(function() {
             $http.get('/twitter',{
                 headers: {
@@ -76,6 +92,11 @@ function twAccountsCtrl($window, $http, authentication, spinnerService, errorsSe
             headers: {
                 'Authorization': 'Bearer ' + authentication.getToken()
             }
+        }).error(function(data, status, headers, config) {
+            console.log("Use error");
+            errorsService.errorCode = status;
+            errorsService.errorMessage = data.data.message || "Undefined error";
+            $location.path('errors');
         }).then(function() {
             $http.get('/twitter',{
                 headers: {

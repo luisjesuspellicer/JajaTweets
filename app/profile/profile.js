@@ -38,6 +38,10 @@ function profileCtrl($http, authentication, errorsService, $location, $routePara
         vm.newUser = data.data;
         vm.credentials.name = data.data.name;
         vm.credentials.email = data.data.email;
+    }, function(error) {
+        errorsService.errorCode = error.code;
+        errorsService.errorMessage = error.data.data.message || "Undefined error";
+        $location.path('errors');
     });
 
     function onSubmit() {

@@ -24,10 +24,22 @@ function dashboardCtrl($http, authentication, $location, errorsService) {
     var self = this;
     console.log("User: Token: "+authentication.getToken());
 
+    if (!authentication.isLoggedIn()) {
+        console.log('unauth');
+        errorsService.errorCode = 401;
+        errorsService.errorMessage = "Unauthorized operation.";
+        $location.path('errors');
+    }
+
     $http.get('/tweets/pending', {
         headers: {
             'Authorization': 'Bearer ' + authentication.getToken()
         }
+    }).error(function(data, status, headers, config) {
+        console.log("GET pending tweets error");
+        errorsService.errorCode = status;
+        errorsService.errorMessage = data.data.message || "Undefined error";
+        $location.path('errors');
     }).then(function (data) {
 
         self.pendingTweets = data.data.data.content;
@@ -38,6 +50,11 @@ function dashboardCtrl($http, authentication, $location, errorsService) {
         headers: {
             'Authorization': 'Bearer ' + authentication.getToken()
         }
+    }).error(function(data, status, headers, config) {
+        console.log("GET own tweets error");
+        errorsService.errorCode = status;
+        errorsService.errorMessage = data.data.message || "Undefined error";
+        $location.path('errors');
     }).then(function (data) {
 
         self.ownTweets = data.data.data.content;
@@ -47,6 +64,11 @@ function dashboardCtrl($http, authentication, $location, errorsService) {
         headers: {
             'Authorization': 'Bearer ' + authentication.getToken()
         }
+    }).error(function(data, status, headers, config) {
+        console.log("GET timeline error");
+        errorsService.errorCode = status;
+        errorsService.errorMessage = data.data.message || "Undefined error";
+        $location.path('errors');
     }).then(function(data) {
         self.accountTweets = data.data.data.content;
     });

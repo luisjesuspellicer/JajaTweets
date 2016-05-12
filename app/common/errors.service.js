@@ -12,8 +12,8 @@
 
     function errorsService() {
 
-        var errorCode = 0;
-        var errorMessage = 'Error';
+        var errorCode = 500;
+        var errorMessage = 'Internal Error.';
 
         return {
             errorCode: errorCode,

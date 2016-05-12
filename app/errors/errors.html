@@ -1,2 +1,30 @@
-<h1>Error {{ errors.errorCode }}</h1>
-<p> {{ errors.errorMessage }} </p>
+<div class="container body-error">
+    <div class="col-lg-8 col-lg-offset-2 text-center">
+        <div class="logo">
+            <h1>Ouch, Error {{ errors.errorCode }} !</h1>
+            <h2> {{ errors.errorMessage }} </h2>
+        </div>
+        <div class="clearfix"></div>
+        <div class="clearfix"></div>
+        <br /><br />
+        <p class="text-muted">There is some error here, Please try again later. </p>
+        <div class="clearfix"></div>
+        <br /><br />
+        <div class="col-lg-6 col-lg-offset-3">
+        <img src="../images/error.png" height="150" width="150">
+        </div>
+
+        <div class="clearfix"></div>
+        <br />
+        <div class="col-lg-6  col-lg-offset-3">
+            <div class="btn-group btn-group-justified">
+                <a href="#/dashboard" class="btn btn-primary">Return to Dashboard</a>
+                <a href="#/twitterAccounts" class="btn btn-success">Return to Account management</a>
+            </div>
+
+        </div>
+
+    </div>
+
+
+</div>

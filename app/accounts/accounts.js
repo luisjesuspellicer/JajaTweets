@@ -17,7 +17,8 @@ accountsCtrl.$inject = ['$http','authentication','errorsService','$location'];
 function accountsCtrl($http, authentication, errorsService, $location) {
 
     var vm = this;
-vm.id=0;
+    vm.id=0;
+    
     if (!authentication.isLoggedIn()) {
         console.log('unauth');
         errorsService.errorCode = 401;
@@ -29,6 +30,11 @@ vm.id=0;
         headers: {
             'Authorization': 'Bearer ' + authentication.getToken()
         }
+    }).error(function(data, status, headers, config) {
+        console.log("GET users error");
+        errorsService.errorCode = status;
+        errorsService.errorMessage = data.data.message || "Undefined error";
+        $location.path('errors');
     }).then(function(data) {
         vm.users = data.data;
     });
@@ -38,6 +44,11 @@ vm.id=0;
             headers: {
                 'Authorization': 'Bearer ' + authentication.getToken()
             }
+        }).error(function(data, status, headers, config) {
+            console.log("Delete user error");
+            errorsService.errorCode = status;
+            errorsService.errorMessage = data.data.message || "Undefined error";
+            $location.path('errors');
         }).then(function() {
             $http.get('/users',{
                 headers: {

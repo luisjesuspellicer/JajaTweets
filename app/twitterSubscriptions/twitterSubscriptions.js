@@ -31,6 +31,11 @@ function subsCtrl($http, authentication, $scope, spinnerService, errorsService, 
         headers: {
             'Authorization': 'Bearer ' + authentication.getToken()
         }
+    }).error(function(data, status, headers, config) {
+        console.log("Subscriptions GET error");
+        errorsService.errorCode = status;
+        errorsService.errorMessage = data.data.message || "Undefined error";
+        $location.path('errors');
     }).then(function (data) {
         self.reload(data);
     });
@@ -40,6 +45,11 @@ function subsCtrl($http, authentication, $scope, spinnerService, errorsService, 
             headers: {
                 'Authorization': 'Bearer ' + authentication.getToken()
             }
+        }).error(function(data, status, headers, config) {
+            console.log("Search subscriptions error");
+            errorsService.errorCode = status;
+            errorsService.errorMessage = data.data.message || "Undefined error";
+            $location.path('errors');
         }).then(function(data) {
             $scope.subs[id] = data.data.data.content.statuses;
         });
@@ -51,6 +61,11 @@ function subsCtrl($http, authentication, $scope, spinnerService, errorsService, 
             headers: {
                 'Authorization': 'Bearer ' + authentication.getToken()
             }
+        }).error(function(data, status, headers, config) {
+            console.log("Add subscription error");
+            errorsService.errorCode = status;
+            errorsService.errorMessage = data.data.message || "Undefined error";
+            $location.path('errors');
         }).then(function() {
             $scope.formData = {}; // clear the form so our user is ready to enter another
             $http.get('/subscriptions', {
@@ -77,6 +92,11 @@ function subsCtrl($http, authentication, $scope, spinnerService, errorsService, 
             headers: {
                 'Authorization': 'Bearer ' + authentication.getToken()
             }
+        }).error(function(data, status, headers, config) {
+            console.log("Update subscription by hashtag error");
+            errorsService.errorCode = status;
+            errorsService.errorMessage = data.data.message || "Undefined error";
+            $location.path('errors');
         }).then(function(data) {
             $scope.subs[hashtag] = data.data.data.content.statuses;
             spinnerService.hide('loadingSpinner');
@@ -89,6 +109,11 @@ function subsCtrl($http, authentication, $scope, spinnerService, errorsService, 
             headers: {
                 'Authorization': 'Bearer ' + authentication.getToken()
             }
+        }).error(function(data, status, headers, config) {
+            console.log("Delete subscription error");
+            errorsService.errorCode = status;
+            errorsService.errorMessage = data.data.message || "Undefined error";
+            $location.path('errors');
         }).then(function(data) {
             $http.get('/subscriptions', {
                 headers: {

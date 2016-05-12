@@ -8,6 +8,7 @@
     var passport = require('passport');
     var mongoose = require('mongoose');
     var Twitter = mongoose.model('twitter');
+    var request = require('request');
     var atob = require('atob');
 
     // TODO: quit in production
@@ -50,14 +51,29 @@
                     newTwitter.save(function (err) {
                         if (err) {
                             // Error updating user
-                            res.redirect(process.env.CURRENT_DOMAIN);
+                            res.redirect(process.env.CURRENT_DOMAIN + '/#/errors');
                         } else {
                             // Successful authentication
-                            res.redirect(process.env.CURRENT_DOMAIN + "/#/twitterAccounts");
+                            // Now setting as active account (using)
+                            request({
+                                    url: process.env.CURRENT_DOMAIN + '/twitter/' + mainContent.id_str + '/use',
+                                    method: 'GET',
+                                    headers: {
+                                        'Authorization': 'Bearer ' + req.session.jwt
+                                    }
+                                },
+                                function (error, response, body) {
+                                if (!error && response.statusCode == 200) {
+                                    res.redirect(process.env.CURRENT_DOMAIN + "/#/twitterAccounts");
+                                } else {
+                                    console.log("[AuthTwitter] - Cannot set in use new account")
+                                    res.redirect(process.env.CURRENT_DOMAIN + '/#/errors');
+                                }
+                            });
                         }
                     });
                 } else {
-                    res.redirect(process.env.CURRENT_DOMAIN);
+                    res.redirect(process.env.CURRENT_DOMAIN + '/#/errors');
                 }
             });
 
