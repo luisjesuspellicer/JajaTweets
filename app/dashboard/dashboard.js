@@ -22,12 +22,7 @@ dashboardCtrl.$inject = ['$http', 'authentication', '$location', 'errorsService'
 function dashboardCtrl($http, authentication, $location, errorsService) {
 
     var self = this;
-
-    if (!authentication.isLoggedIn()) {
-        errorsService.errorCode = 401;
-        errorsService.errorMessage = "Unauthorized operation.";
-        $location.path('errors');
-    }
+    console.log("User: Token: "+authentication.getToken());
 
     $http.get('http://localhost:3000/tweets/pending', {
         headers: {

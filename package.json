@@ -32,8 +32,7 @@
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 0",
-    "start": "node index.js",
-    "postinstall": "cd app && ../node_modules/bower/bin/bower install"
+    "start": "node index.js"
   },
   "author": "",
   "license": "ISC"
