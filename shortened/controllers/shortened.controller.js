@@ -17,6 +17,7 @@
 
     module.exports = function(app) {
 
+
         /**
          * Converts a JWT in request to a JSON Object.
          * @param req is the request containing the JWT.
@@ -78,58 +79,72 @@
          */
         app.post('/shortened', user_required.before, function(req, res, next) {
             getUserFromJWT(req, function(user){
-                var newHash = hash(req.body.link);
-                Shortened.findOne({hash: newHash, user: user.user}, function(err,doc){
-                    if(err){
-                        res.status(500).json({
-                            "error": true,
-                            "data" : {
-                                "message": "Could shorten given link: " + req.body.link,
-                                "url": process.env.CURRENT_DOMAIN
-                            }
-                        });
-                        next();
-                    } else if(doc!=null){
-                        res.status(400).json({
-                            "error": true,
-                            "data" : {
-                                "message": "URL already shortened by user: " + req.body.link,
-                                "url": process.env.CURRENT_DOMAIN,
-                                "content": doc
-                            }
-                        });
-                        next();
-                    } else {
-                        var newShortened = new Shortened({
-                            "link": req.body.link,
-                            "hash": newHash,
-                            "user": user.user
-                        });
-                        newShortened.save(function(err){
-                            if(err){
-                                res.status(500).json({
-                                    "error": true,
-                                    "data" : {
-                                        "message": "Could shorten given link: " + req.body.link,
-                                        "url": process.env.CURRENT_DOMAIN
-                                    }
-                                });
-                                next();
-                            } else {
-                                res.json({
-                                    "error": false,
-                                    "data" : {
-                                        "message": "URL successfully shortened",
-                                        "url": process.env.CURRENT_DOMAIN + "/shortened/" + newHash,
-                                        "direct_url": process.env.CURRENT_DOMAIN + "/s/" + newHash,
-                                        "content": newShortened
-                                    }
-                                });
-                                next();
-                            }
-                        });
-                    }
-                });
+                var newHash;
+                try {
+                    newHash = hash(req.body.link);
+                } catch(ex){
+                    res.status(400).json({
+                        "error": true,
+                        "data": {
+                            "message": "Given link isn't a valid URL",
+                            "url": process.env.CURRENT_DOMAIN
+                        }
+                    });
+                    next();
+                }
+                if(newHash) {
+                    Shortened.findOne({hash: newHash, user: user.user}, function (err, doc) {
+                        if (err) {
+                            res.status(500).json({
+                                "error": true,
+                                "data": {
+                                    "message": "Could shorten given link: " + req.body.link,
+                                    "url": process.env.CURRENT_DOMAIN
+                                }
+                            });
+                            next();
+                        } else if (doc != null) {
+                            res.status(400).json({
+                                "error": true,
+                                "data": {
+                                    "message": "URL already shortened by user: " + req.body.link,
+                                    "url": process.env.CURRENT_DOMAIN,
+                                    "content": doc
+                                }
+                            });
+                            next();
+                        } else {
+                            var newShortened = new Shortened({
+                                "link": req.body.link,
+                                "hash": newHash,
+                                "user": user.user
+                            });
+                            newShortened.save(function (err) {
+                                if (err) {
+                                    res.status(500).json({
+                                        "error": true,
+                                        "data": {
+                                            "message": "Could shorten given link: " + req.body.link,
+                                            "url": process.env.CURRENT_DOMAIN
+                                        }
+                                    });
+                                    next();
+                                } else {
+                                    res.json({
+                                        "error": false,
+                                        "data": {
+                                            "message": "URL successfully shortened",
+                                            "url": process.env.CURRENT_DOMAIN + "/shortened/" + newHash,
+                                            "direct_url": process.env.CURRENT_DOMAIN + "/s/" + newHash,
+                                            "content": newShortened
+                                        }
+                                    });
+                                    next();
+                                }
+                            });
+                        }
+                    });
+                }
             });
         }, user_required.after);
 

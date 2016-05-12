@@ -32,10 +32,12 @@ function subsCtrl($http, authentication, $scope, spinnerService, errorsService, 
             'Authorization': 'Bearer ' + authentication.getToken()
         }
     }).error(function(data, status, headers, config) {
-        console.log("Subscriptions GET error");
-        errorsService.errorCode = status;
-        errorsService.errorMessage = data.data.message || "Undefined error";
-        $location.path('errors');
+        if(status!=404) {
+            console.log("Subscriptions GET error");
+            errorsService.errorCode = status;
+            errorsService.errorMessage = data.data.message || "Undefined error";
+            $location.path('errors');
+        }
     }).then(function (data) {
         self.reload(data);
     });

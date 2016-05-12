@@ -11,13 +11,17 @@ angular.module('myApp.errors', ['ngRoute'])
     }])
     .controller('errorsCtrl', errorsCtrl);
 
-errorsCtrl.$inject = ['errorsService'];
+errorsCtrl.$inject = ['errorsService', '$window'];
 
-function errorsCtrl(errorsService) {
+function errorsCtrl(errorsService, $window) {
 
     var vm = this;
 
     vm.errorCode = errorsService.errorCode;
     vm.errorMessage = errorsService.errorMessage;
+
+    vm.goBack = function(){
+        $window.history.back();
+    };
 
 }
