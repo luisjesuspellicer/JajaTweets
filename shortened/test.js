@@ -10,7 +10,7 @@
     var atob = require('atob');
 
     // This agent refers to PORT where program is runninng.
-    var server = supertest.agent("http://localhost:3000");
+    var server = supertest.agent("process.env.CURRENT_DOMAIN");
     var admin_token;
     var hash = 2387498318;
     var createdHash;
