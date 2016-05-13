@@ -12,7 +12,7 @@
 
     <div class="row">
         <div class="col-md-offset-2 col-md-8 ">
-            <form ng-submit="dashboard.newTweet()" name="tweet" align="center">
+            <form ng-submit="dashboard.newTweet()" name="tweet">
                 <textarea
                         ng-change="dashboard.countt()"
                         class="form-control"
@@ -20,35 +20,42 @@
                         ng-minlength="1"
                         ng-model="dashboard.tweet"
                         required >
-<!-- ng-maxlength="140" -->
+
                 </textarea>
 
                 <ng-switch on="dashboard.tweet.length">
                     <div ng-if="dashboard.tweet.length == 0">
-                        <p class="text-danger"> {{140 - dashboard.tweet.length}}</p>
+                        <p align="center" class="text-danger"> {{140 - dashboard.tweet.length}}</p>
                     </div>
                     <div ng-if="dashboard.tweet.length > 140">
-                        <p class="text-danger"> {{140 - dashboard.tweet.length}}</p>
+                        <p align="center" class="text-danger"> {{140 - dashboard.tweet.length}}</p>
                     </div>
                     <div ng-if="dashboard.tweet.length <= 140 && dashboard.tweet.length > 0">
-                        <p class="text-primary"> {{140- dashboard.tweet.length}}</p>
+                        <p align="center" class="text-primary"> {{140- dashboard.tweet.length}}</p>
                     </div>
                     <div ng-if="dashboard.num == 0">
-                        <p class="text-danger">{{140 - dashboard.tweet.length}}</p>
+                        <p align="center" class="text-danger">{{140 - dashboard.tweet.length}}</p>
                     </div>
                 </ng-switch>
-                <button class="btn btn-primary"
+                <h3>Delay publication</h3>
+                <div class="input-group col-md-1">
+                    <span class="input-group-addon">
+                        <input type="checkbox" aria-label="...">
+                     </span>
+
+                    <input type="datetime-local" class="form-control" aria-label="...">
+
+                </div><!-- /input-group -->
+                <br>
+
+
+                <button  class="btn btn-primary" align="right"
                         type="submit"
                         ng-disabled="dashboard.tweet.length == 0 ||
                         dashboard.tweet.length > 140 ||
                         dashboard.tweet == null ">
-                    Twittear
+                    Tweet
                 </button>
-               <!-- <button class="btn btn-primary"
-                        type="submit"
-                        ng-disabled="tweet.$invalid">
-                    Twittear
-                </button> -->
             </form>
         </div>
     </div>
@@ -102,6 +109,23 @@
                 <div class="media-body">
                     <h4 class="media-heading">{{pending.screen_name}}</h4>
                     <p>{{pending.status}}</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 col-lg-3 btn-info"  style="hight: 100%;overflow: scroll;">
+            <h3>Mentions</h3>
+            <div class="media" ng-repeat="mentions in dashboard.mentions">
+                <div class="media-left">
+                    <img class="media-object img-rounded"
+                         ng-src="{{mentions.user.profile_image_url}}"
+                         alt="{{mentions.user.name}}"
+                         width="50"
+                         height="50">
+                </div>
+
+                <div class="media-body">
+                    <h4 class="media-heading">{{mentions.user.screen_name}}</h4>
+                    <p>{{mentions.text}}</p>
                 </div>
             </div>
         </div>

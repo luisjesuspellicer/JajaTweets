@@ -43,9 +43,21 @@ function dashboardCtrl($http, authentication, $location, errorsService) {
     }).then(function (data) {
 
         self.pendingTweets = data.data.data.content;
-        console.log(data.data.data.content);
     });
-
+    $http.get('/mentions', {
+        headers: {
+            'Authorization': 'Bearer ' + authentication.getToken()
+        }
+    }).error(function(data, status, headers, config) {
+        console.log("GET mentions error");
+        errorsService.errorCode = status;
+        errorsService.errorMessage = data.data.message || "Undefined error";
+        $location.path('errors');
+    }).then(function (data) {
+        console.log(data.data.data.content);
+        self.mentions = data.data.data.content;
+        
+    });
     $http.get('/tweets/own', {
         headers: {
             'Authorization': 'Bearer ' + authentication.getToken()
