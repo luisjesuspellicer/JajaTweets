@@ -10,7 +10,6 @@
     </div>
     <br>
 
-
     <div class="row">
         <div class="col-md-offset-2 col-md-8 ">
             <form ng-submit="dashboard.newTweet()" name="tweet" align="center">
@@ -55,7 +54,7 @@
     </div>
     <div class="row"><p></p></div>
     <div class="row">
-        <div class="col-md-4 col-lg-4 btn-success"  style="hight: 100%;overflow: scroll;">
+        <div class="col-md-3 col-lg-3 btn-success"  style="hight: 100%;overflow: scroll;">
             <h3>Own tweets</h3>
             <div class="media" ng-repeat="own in dashboard.ownTweets">
                 <div class="media-left">
@@ -72,7 +71,7 @@
                 </div>
             </div>
         </div>
-        <div class="col-md-4 col-lg-4 btn-info"  style="hight: 100%;overflow: scroll;">
+        <div class="col-md-3 col-lg-3 btn-info"  style="hight: 100%;overflow: scroll;">
             <h3>Home</h3>
             <div class="media" ng-repeat="accountTweets in dashboard.accountTweets">
                 <div class="media-left">
@@ -89,7 +88,7 @@
                 </div>
             </div>
         </div>
-        <div class="col-md-4 col-lg-4 btn-warning"  style="hight: 100%;overflow: scroll;">
+        <div class="col-md-3 col-lg-3 btn-warning"  style="hight: 100%;overflow: scroll;">
             <h3>Pending tweets</h3>
             <div class="media" ng-repeat="pending in dashboard.pendingTweets">
                 <div class="media-left">

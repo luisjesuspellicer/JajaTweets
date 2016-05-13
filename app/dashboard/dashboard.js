@@ -76,9 +76,7 @@ function dashboardCtrl($http, authentication, $location, errorsService) {
     self.num = -1;
 
     self.newTweet = function(){
-        console.log("Texto:"+ self.tweet);
         self.dat = {"status": self.tweet,"date": new Date()};
-        console.log(self.data);
         $http({
             method  : 'POST',
             url     : '/tweets',
@@ -94,6 +92,7 @@ function dashboardCtrl($http, authentication, $location, errorsService) {
         }).then(function(data) {
             self.accountTweets = data.data.data.content;
         });
+        self.tweet="";
     }
     self.countt = function(){
         if(self.tweet != undefined){
