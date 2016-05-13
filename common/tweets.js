@@ -7,6 +7,7 @@
     var OAuth = require('./OAuth');
     var mongoose = require('mongoose');
     var Twitter = mongoose.model('twitter');
+    var User = mongoose.model('users');
     var passport = require('passport');
     var request = require('request');
     var atob = require('atob');
@@ -224,6 +225,12 @@
                 if(err) {
                     console.log(err);
                 }
+                User.findOneAndUpdate({email: user.user}, {$set: {tweet_total: result.statuses_count},
+                    $inc: { tweet_app: num_app }}, function(err, doc){
+                    if(err) {
+                        console.log(err);
+                    }
+                });
             });
         });
     }
