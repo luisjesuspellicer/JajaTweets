@@ -43,7 +43,8 @@ function subsCtrl($http, authentication, $scope, spinnerService, errorsService, 
     });
 
     self.search = function(id) {
-        $http.get('/subscriptions/'+id,{
+        var id_enc = encodeURIComponent(id).replace(/\(/g, "%28").replace(/\)/g, "%29");
+        $http.get('/subscriptions/'+id_enc,{
             headers: {
                 'Authorization': 'Bearer ' + authentication.getToken()
             }
@@ -90,7 +91,8 @@ function subsCtrl($http, authentication, $scope, spinnerService, errorsService, 
 
     self.update = function(hashtag) {
         spinnerService.show('loadingSpinner');
-        $http.get('/subscriptions/' + hashtag,{
+        var hashtag_enc = encodeURIComponent(hashtag).replace(/\(/g, "%28").replace(/\)/g, "%29");
+        $http.get('/subscriptions/' + hashtag_enc,{
             headers: {
                 'Authorization': 'Bearer ' + authentication.getToken()
             }
@@ -107,7 +109,8 @@ function subsCtrl($http, authentication, $scope, spinnerService, errorsService, 
 
     self.delete = function(id) {
         spinnerService.show('loadingSpinner');
-        $http.delete('/subscriptions/' + id,{
+        var id_enc = encodeURIComponent(id).replace(/\(/g, "%28").replace(/\)/g, "%29");
+        $http.delete('/subscriptions/' + id_enc,{
             headers: {
                 'Authorization': 'Bearer ' + authentication.getToken()
             }
@@ -124,6 +127,70 @@ function subsCtrl($http, authentication, $scope, spinnerService, errorsService, 
             }).then(function (data) {
                 self.reload(data);
             });
+        });
+    };
+
+    self.retweet = function(id, hashtag){
+        spinnerService.show('loadingSpinner');
+        $http.get('/tweets/' + id + '/retweet',{
+            headers: {
+                'Authorization': 'Bearer ' + authentication.getToken()
+            }
+        }).error(function(data, status, headers, config) {
+            console.log("Retweet error");
+            errorsService.errorCode = status;
+            errorsService.errorMessage = data.data.message || "Undefined error";
+            $location.path('errors');
+        }).then(function(data) {
+            self.update(hashtag);
+        });
+    };
+
+    self.unretweet = function(id, hashtag){
+        spinnerService.show('loadingSpinner');
+        $http.get('/tweets/' + id + '/unretweet',{
+            headers: {
+                'Authorization': 'Bearer ' + authentication.getToken()
+            }
+        }).error(function(data, status, headers, config) {
+            console.log("UnRetweet error");
+            errorsService.errorCode = status;
+            errorsService.errorMessage = data.data.message || "Undefined error";
+            $location.path('errors');
+        }).then(function(data) {
+            self.update(hashtag);
+        });
+    };
+
+    self.favorite = function(id, hashtag){
+        spinnerService.show('loadingSpinner');
+        $http.get('/tweets/' + id + '/favorite',{
+            headers: {
+                'Authorization': 'Bearer ' + authentication.getToken()
+            }
+        }).error(function(data, status, headers, config) {
+            console.log("Favorite error");
+            errorsService.errorCode = status;
+            errorsService.errorMessage = data.data.message || "Undefined error";
+            $location.path('errors');
+        }).then(function(data) {
+            self.update(hashtag);
+        });
+    };
+
+    self.unfavorite = function(id, hashtag){
+        spinnerService.show('loadingSpinner');
+        $http.get('/tweets/' + id + '/unfavorite',{
+            headers: {
+                'Authorization': 'Bearer ' + authentication.getToken()
+            }
+        }).error(function(data, status, headers, config) {
+            console.log("UnRetweet error");
+            errorsService.errorCode = status;
+            errorsService.errorMessage = data.data.message || "Undefined error";
+            $location.path('errors');
+        }).then(function(data) {
+            self.update(hashtag);
         });
     };
 

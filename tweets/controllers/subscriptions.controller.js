@@ -8,7 +8,6 @@
     var passport = require('passport');
     var mongoose = require('mongoose');
     var request = require('request');
-    var OAuth = require('oauth').OAuth;
     var atob = require('atob');
     var Twitter = mongoose.model('twitter');
     var user_required = require('../../config/policies.config').user_required;
@@ -78,9 +77,7 @@
         app.post('/subscriptions', user_required.before, function(req, res, next) {
             TweetCommons.getUserFromJWT(req, function(user){
                 if(req.body.hashtag) {
-                    // Encode hashtag symbol for URL parameter
-                    var bodyHashtag = req.body.hashtag.replace("#","%23");
-                    Twitter.findOne({user: user.user, in_use: true, subscribed: {hashtag: bodyHashtag}},
+                    Twitter.findOne({user: user.user, in_use: true, subscribed: {hashtag: req.body.hashtag}},
                         function (err, doc) {
                         if (err) {
                             res.status(500).json({
@@ -103,7 +100,7 @@
                             next();
                         } else {
                             Twitter.findOneAndUpdate({user: user.user, in_use: true}, {$push: {subscribed:
-                                {hashtag: bodyHashtag}}},
+                                {hashtag: req.body.hashtag}}},
                                 {new: true}, function (err, doc) {
                                     if (err) {
                                         res.status(500).json({
@@ -148,8 +145,8 @@
          */
         app.get('/subscriptions/:id', user_required.before, function(req, res, next) {
             TweetCommons.getUserFromJWT(req, function(user){
-                // Encode hashtag symbol for URL parameter
-                var id = req.params.id.replace("#","%23");
+                // Encode id for URL parameters
+                var id = encodeURIComponent(req.params.id).replace(/\(/g, "%28").replace(/\)/g, "%29");
                 TweetCommons.searchTweets(user, id, function(result){
                     if(result.statusCode && result.statusCode != 200){
                         res.status(result.statusCode).json({
@@ -182,8 +179,7 @@
          */
         app.delete('/subscriptions/:id', user_required.before, function(req, res, next) {
             TweetCommons.getUserFromJWT(req, function(user){
-                // Encode hashtag symbol for URL parameter
-                var id = req.params.id.replace("#","%23");
+                var id = decodeURIComponent(req.params.id);
                 Twitter.findOneAndUpdate({user: user.user, in_use: true}, {$pull: {subscribed: {hashtag: id}}},
                     {new: true},
                     function(err, doc){
