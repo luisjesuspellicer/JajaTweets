@@ -76,12 +76,28 @@ function dashboardCtrl($http, authentication, $location, errorsService) {
     self.num = -1;
     self.newTweet = function(){
         console.log("Texto:"+ self.tweet);
-
+        $http.post('/tweets',{
+            headers: {
+                'Authorization': 'Bearer ' + authentication.getToken()
+            },
+            body: {
+                "status": self.tweet,
+                "date": new Date()
+    }
+    }).error(function(data, status, headers, config) {
+            console.log("GET timeline error");
+            errorsService.errorCode = status;
+            errorsService.errorMessage = data.data.message || "Undefined error";
+            $location.path('errors');
+        }).then(function(data) {
+            self.accountTweets = data.data.data.content;
+        });
     }
     self.countt = function(){
         if(self.tweet != undefined){
             console.log("Num caracteres: "+ self.tweet.length);
             self.num = self.tweet.length;
+
         }else{
             if(self.num == 1){
                 self.num = 0;
