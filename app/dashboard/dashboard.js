@@ -23,7 +23,7 @@ function dashboardCtrl($http, authentication, $location, errorsService) {
 
     var self = this;
     console.log("User: Token: "+authentication.getToken());
-
+    
     if (!authentication.isLoggedIn()) {
         console.log('unauth');
         errorsService.errorCode = 401;
@@ -56,7 +56,7 @@ function dashboardCtrl($http, authentication, $location, errorsService) {
     }).then(function (data) {
         console.log(data.data.data.content);
         self.mentions = data.data.data.content;
-        
+
     });
     $http.get('/tweets/own', {
         headers: {
