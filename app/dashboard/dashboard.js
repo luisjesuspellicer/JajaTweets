@@ -74,17 +74,19 @@ function dashboardCtrl($http, authentication, $location, errorsService) {
     });
     self.tweet ="";
     self.num = -1;
+
     self.newTweet = function(){
         console.log("Texto:"+ self.tweet);
-        $http.post('/tweets',{
-            headers: {
-                'Authorization': 'Bearer ' + authentication.getToken()
-            },
-            body: {
-                "status": self.tweet,
-                "date": new Date()
-    }
-    }).error(function(data, status, headers, config) {
+        self.dat = {"status": self.tweet,"date": new Date()};
+        console.log(self.data);
+        $http({
+            method  : 'POST',
+            url     : '/tweets',
+            data    : self.dat, //forms user object
+            headers : {
+                'Authorization': 'Bearer ' + authentication.getToken(),
+                'Content-Type': 'application/json'}
+        }).error(function(data, status, headers, config) {
             console.log("GET timeline error");
             errorsService.errorCode = status;
             errorsService.errorMessage = data.data.message || "Undefined error";
@@ -95,14 +97,14 @@ function dashboardCtrl($http, authentication, $location, errorsService) {
     }
     self.countt = function(){
         if(self.tweet != undefined){
-            console.log("Num caracteres: "+ self.tweet.length);
+            
             self.num = self.tweet.length;
 
         }else{
             if(self.num == 1){
                 self.num = 0;
             }
-            console.log(self.tweet);
+            
            // self.tweet ="";
         }
 
