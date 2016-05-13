@@ -38,6 +38,7 @@
                     </div>
                 </ng-switch>
                 <h3>Delay publication</h3>
+
                 <div class="input-group col-md-1">
                     <span class="input-group-addon">
                         <input type="checkbox" aria-label="...">
@@ -47,7 +48,6 @@
 
                 </div><!-- /input-group -->
                 <br>
-
 
                 <button  class="btn btn-primary" align="right"
                         type="submit"
@@ -64,6 +64,7 @@
         <div class="col-md-3 col-lg-3 btn-success"  style="hight: 100%;overflow: scroll;">
             <h3>Own tweets</h3>
             <div class="media" ng-repeat="own in dashboard.ownTweets">
+
                 <div class="media-left">
                     <img class="media-object img-rounded"
                          ng-src="{{own.user.profile_image_url}}"
@@ -75,6 +76,36 @@
                 <div class="media-body">
                     <h4 class="media-heading">{{own.user.name}}</h4>
                     <p>{{own.text}}</p>
+                    <p>
+                        <i ng-click="dashboard.unretweet(own.id_str, sub.hashtag)"
+                           ng-if="own.retweeted"
+                           class="fa fa-retweet fa-lg"
+                           aria-hidden="true" style="color:greenyellow;">
+
+                        </i><b ng-if="own.retweeted">&nbsp;{{own.retweet_count}}&nbsp;</b>
+                        <i ng-click="dashboard.retweet(own.id_str, sub.hashtag)"
+                           ng-if="!own.retweeted" class="fa fa-retweet fa-lg"
+                           aria-hidden="true">
+
+                        </i><b ng-if="!own.retweeted">&nbsp;{{own.retweet_count}}&nbsp;</b>
+                        <i ng-click="dashboard.unfavorite(own.id_str, sub.hashtag)"
+                           ng-if="own.favorited"
+                           class="fa fa-heart fa-lg"
+                           aria-hidden="true"
+                           style="color:red;">
+
+                        </i><b ng-if="own.favorited">&nbsp;{{own.favorite_count}}</b>
+                        <i ng-click="dashboard.favorite(own.id_str, sub.hashtag)"
+                           ng-if="!own.favorited"
+                           class="fa fa-heart fa-lg"
+                           aria-hidden="true">
+
+                        </i><b ng-if="!own.favorited">&nbsp;{{own.favorite_count}}</b>
+
+                        <i ng-click="dashboard.destroy(own.id_str, sub.hashtag)"
+                           class="glyphicon glyphicon-trash"
+                           aria-hidden="true"></i>
+                    </p>
                 </div>
             </div>
         </div>
@@ -92,6 +123,32 @@
                 <div class="media-body">
                     <h4 class="media-heading">{{accountTweets.user.name}}</h4>
                     <p>{{accountTweets.text}}</p>
+                    <p>
+                        <i ng-click="dashboard.unretweet(accountTweets.id_str, sub.hashtag)"
+                           ng-if="accountTweets.retweeted"
+                           class="fa fa-retweet fa-lg"
+                           aria-hidden="true" style="color:greenyellow;">
+
+                        </i><b ng-if="accountTweets.retweeted">&nbsp;{{accountTweets.retweet_count}}&nbsp;</b>
+                        <i ng-click="dashboard.retweet(accountTweets.id_str, sub.hashtag)"
+                           ng-if="!accountTweets.retweeted" class="fa fa-retweet fa-lg"
+                           aria-hidden="true">
+
+                        </i><b ng-if="!accountTweets.retweeted">&nbsp;{{accountTweets.retweet_count}}&nbsp;</b>
+                        <i ng-click="dashboard.unfavorite(accountTweets.id_str, sub.hashtag)"
+                           ng-if="accountTweets.favorited"
+                           class="fa fa-heart fa-lg"
+                           aria-hidden="true"
+                           style="color:red;">
+
+                        </i><b ng-if="accountTweets.favorited">&nbsp;{{accountTweets.favorite_count}}</b>
+                        <i ng-click="dashboard.favorite(accountTweets.id_str, sub.hashtag)"
+                           ng-if="!accountTweets.favorited"
+                           class="fa fa-heart fa-lg"
+                           aria-hidden="true">
+
+                        </i><b ng-if="!accountTweets.favorited">&nbsp;{{accountTweets.favorite_count}}</b>
+                    </p>
                 </div>
             </div>
         </div>
@@ -109,6 +166,12 @@
                 <div class="media-body">
                     <h4 class="media-heading">{{pending.screen_name}}</h4>
                     <p>{{pending.status}}</p>
+                    <p>
+
+                        <i ng-click="dashboard.destroyPending(pending.id_str)"
+                           class="glyphicon glyphicon-trash"
+                           aria-hidden="true"></i>
+                    </p>
                 </div>
             </div>
         </div>
@@ -126,6 +189,32 @@
                 <div class="media-body">
                     <h4 class="media-heading">{{mentions.user.screen_name}}</h4>
                     <p>{{mentions.text}}</p>
+                    <p>
+                        <i ng-click="dashboard.unretweet(mentions.id_str, sub.hashtag)"
+                           ng-if="mentions.retweeted"
+                           class="fa fa-retweet fa-lg"
+                           aria-hidden="true" style="color:greenyellow;">
+
+                        </i><b ng-if="mentions.retweeted">&nbsp;{{mentions.retweet_count}}&nbsp;</b>
+                        <i ng-click="dashboard.retweet(mentions.id_str, sub.hashtag)"
+                           ng-if="!mentions.retweeted" class="fa fa-retweet fa-lg"
+                           aria-hidden="true">
+
+                        </i><b ng-if="!mentions.retweeted">&nbsp;{{mentions.retweet_count}}&nbsp;</b>
+                        <i ng-click="dashboard.unfavorite(mentions.id_str, sub.hashtag)"
+                           ng-if="mentions.favorited"
+                           class="fa fa-heart fa-lg"
+                           aria-hidden="true"
+                           style="color:red;">
+
+                        </i><b ng-if="mentions.favorited">&nbsp;{{mentions.favorite_count}}</b>
+                        <i ng-click="dashboard.favorite(mentions.id_str, sub.hashtag)"
+                           ng-if="!mentions.favorited"
+                           class="fa fa-heart fa-lg"
+                           aria-hidden="true">
+
+                        </i><b ng-if="!mentions.favorited">&nbsp;{{mentions.favorite_count}}</b>
+                    </p>
                 </div>
             </div>
         </div>
