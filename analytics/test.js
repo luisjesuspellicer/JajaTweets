@@ -11,7 +11,7 @@
     var atob = require('atob');
 
     // This agent refers to PORT where program is runninng.
-    var server = supertest.agent("process.env.CURRENT_DOMAIN");
+    var server = supertest.agent(process.env.CURRENT_DOMAIN);
     var admin_token, user_token, user_id, admin_id;
     var sub, unsub, subunsub_id;
     var last_id, tweets_id, tweetsx_id;

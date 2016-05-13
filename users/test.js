@@ -10,8 +10,8 @@
     var atob = require('atob');
 
     // This agent refers to PORT where program is runninng.
-    var server = supertest.agent("process.env.CURRENT_DOMAIN");
-    var admin_token, user_token, user_id, admin_id;
+    var server = supertest.agent(process.env.CURRENT_DOMAIN);
+    var admin_token, user_token, user_id, admin_id, user_password;
 
     // UNIT test begin
     describe("USERS api test",function(){
@@ -49,8 +49,9 @@
                 .expect(200)
                 .end(function(err, res){
                     res.status.should.equal(200);
-                    JSON.parse(res.text).data.should.have.property("token");
+                    JSON.parse(res.text).data.should.have.property("password");
                     JSON.parse(res.text).error.should.be.exactly(false);
+                    user_password = JSON.parse(res.text).data.password;
                     done();
                 });
         });
@@ -61,7 +62,7 @@
                 .post("/login")
                 .send({
                     "email":"user@user",
-                    "password":"user"
+                    "password": user_password
                 })
                 .expect("Content-type",/json/)
                 .expect(200)
