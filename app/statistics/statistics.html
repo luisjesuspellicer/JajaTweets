@@ -1,10 +1,10 @@
 <div class="col-md-6">
     <div class="thumbnail">
         <div class="caption" style="text-align: center">
-            <h3>Foo/Bar</h3>
+            <h3>Tweets per account associated</h3>
         </div>
-        <canvas id="doughnut" class="chart chart-doughnut"
-                chart-data="stats.data" chart-labels="stats.labels">
+        <canvas id="bar1" class="chart chart-bar"
+                chart-data="stats.data" chart-labels="stats.labels" chart-series="stats.series">
         </canvas>
         <spinner class="custom-spinner" name="loadingSpinnerGraphOne" img-src="spinner.gif"></spinner>
     </div>
@@ -21,4 +21,17 @@
         <spinner class="custom-spinner" name="loadingSpinnerGraphTwo" img-src="spinner.gif"></spinner>
     </div>
 </div>
+
+<div class="col-md-6">
+    <div class="thumbnail">
+        <div class="caption" style="text-align: center">
+            <h3>Following/Followers per account associated</h3>
+        </div>
+        <canvas id="bar2" class="chart chart-bar"
+                chart-data="stats.data2" chart-labels="stats.labels2" chart-series="stats.series2">
+        </canvas>
+        <spinner class="custom-spinner" name="loadingSpinnerGraphThree" img-src="spinner.gif"></spinner>
+    </div>
+</div>
+
 
