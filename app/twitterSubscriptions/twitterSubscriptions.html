@@ -25,7 +25,7 @@
     <div class="row">
         <div class="col-md-4 col-lg-4" ng-repeat="sub in subsAcc.subscriptions" style="hight: 100%;overflow: scroll;">
             <div class="row">
-                <h3>{{sub.hashtag.replace("%23","#")}}</h3>
+                <h3>{{sub.hashtag}}</h3>
                 <button ng-hide="user.email == 'test@test'" type="button" class="btn btn-danger" ng-click="subsAcc.delete(sub.hashtag)">
                     <span class="glyphicon glyphicon-trash"></span>
                 </button>
@@ -41,9 +41,15 @@
                          width="50"
                          height="50">
                 </div>
-                <div class="media-body">
+                <p class="media-body">
                     <h4 class="media-heading">{{current.user.name}}</h4>
                     <p>{{current.text}}</p>
+                    <p>
+                        <i ng-click="subsAcc.unretweet(current.id_str, sub.hashtag)" ng-if="current.retweeted" class="fa fa-retweet fa-lg" aria-hidden="true" style="color:greenyellow;"></i><b ng-if="current.retweeted">&nbsp;{{current.retweet_count}}&nbsp;</b>
+                        <i ng-click="subsAcc.retweet(current.id_str, sub.hashtag)" ng-if="!current.retweeted" class="fa fa-retweet fa-lg" aria-hidden="true"></i><b ng-if="!current.retweeted">&nbsp;{{current.retweet_count}}&nbsp;</b>
+                        <i ng-click="subsAcc.unfavorite(current.id_str, sub.hashtag)" ng-if="current.favorited" class="fa fa-heart fa-lg" aria-hidden="true" style="color:red;"></i><b ng-if="current.favorited">&nbsp;{{current.favorite_count}}</b>
+                        <i ng-click="subsAcc.favorite(current.id_str, sub.hashtag)" ng-if="!current.favorited" class="fa fa-heart fa-lg" aria-hidden="true"></i><b ng-if="!current.favorited">&nbsp;{{current.favorite_count}}</b>
+                    </p>
                 </div>
             </div>
         </div>
