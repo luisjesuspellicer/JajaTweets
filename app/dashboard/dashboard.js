@@ -72,5 +72,23 @@ function dashboardCtrl($http, authentication, $location, errorsService) {
     }).then(function(data) {
         self.accountTweets = data.data.data.content;
     });
-    
+    self.tweet ="";
+    self.num = -1;
+    self.newTweet = function(){
+        console.log("Texto:"+ self.tweet);
+
+    }
+    self.countt = function(){
+        if(self.tweet != undefined){
+            console.log("Num caracteres: "+ self.tweet.length);
+            self.num = self.tweet.length;
+        }else{
+            if(self.num == 1){
+                self.num = 0;
+            }
+            console.log(self.tweet);
+           // self.tweet ="";
+        }
+
+    }
 }

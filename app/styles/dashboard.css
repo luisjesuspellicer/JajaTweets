@@ -1,4 +1,4 @@
 .col-md-4 {
-    height: calc(75vh); // Set this height to the appropriate size
+    height: calc(30vh); // Set this height to the appropriate size
     overflow-y: scroll; // Only add scroll to vertical column
 }

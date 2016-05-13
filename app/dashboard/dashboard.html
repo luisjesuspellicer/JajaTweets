@@ -8,6 +8,51 @@
 
         </div>
     </div>
+    <br>
+
+
+    <div class="row">
+        <div class="col-md-offset-2 col-md-8 ">
+            <form ng-submit="dashboard.newTweet()" name="tweet" align="center">
+                <textarea
+                        ng-change="dashboard.countt()"
+                        class="form-control"
+
+                        ng-minlength="1"
+                        ng-model="dashboard.tweet"
+                        required >
+<!-- ng-maxlength="140" -->
+                </textarea>
+
+                <ng-switch on="dashboard.tweet.length">
+                    <div ng-if="dashboard.tweet.length == 0">
+                        <p class="text-danger"> {{140 - dashboard.tweet.length}}</p>
+                    </div>
+                    <div ng-if="dashboard.tweet.length > 140">
+                        <p class="text-danger"> {{140 - dashboard.tweet.length}}</p>
+                    </div>
+                    <div ng-if="dashboard.tweet.length <= 140 && dashboard.tweet.length > 0">
+                        <p class="text-primary"> {{140- dashboard.tweet.length}}</p>
+                    </div>
+                    <div ng-if="dashboard.num == 0">
+                        <p class="text-danger">{{140 - dashboard.tweet.length}}</p>
+                    </div>
+                </ng-switch>
+                <button class="btn btn-primary"
+                        type="submit"
+                        ng-disabled="dashboard.tweet.length == 0 ||
+                        dashboard.tweet.length > 140 ||
+                        dashboard.tweet == null ">
+                    Twittear
+                </button>
+               <!-- <button class="btn btn-primary"
+                        type="submit"
+                        ng-disabled="tweet.$invalid">
+                    Twittear
+                </button> -->
+            </form>
+        </div>
+    </div>
     <div class="row"><p></p></div>
     <div class="row">
         <div class="col-md-4 col-lg-4 btn-success"  style="hight: 100%;overflow: scroll;">
