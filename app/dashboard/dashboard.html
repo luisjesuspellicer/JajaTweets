@@ -42,12 +42,16 @@
                 <div class="input-group col-md-1">
                     <span class="input-group-addon">
                         <input type="checkbox"
-                               ng-true-value="dashboard.checked === 'YES'"
-                               ng-false-value="dashboard.cheked === 'NO'"
+                               ng-model="dashboard.checked"
+                               ng-true-value="'YES'"
+                               ng-false-value="'NO'"
                                aria-label="...">
                      </span>
 
-                    <input type="datetime-local" class="form-control" aria-label="...">
+                    <input type="datetime-local"
+                           class="form-control"
+                           aria-label="..."
+                           ng-model="dashboard.datePending">
 
                 </div><!-- /input-group -->
                 <br>

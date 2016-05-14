@@ -47,8 +47,23 @@ function dashboardCtrl($http, authentication, $location, errorsService, spinnerS
             }
         }
     }
-    self.destroy = function(id, index){
 
+    self.destroy = function(id, index){
+        // Refresh ownTweets and accountTweets
+        var aux1 = self.ownTweets[index];
+        var auxx =self.ownTweets.splice(index,1);
+        for(var  i = 0; i< self.accountTweets.length; i++){
+            if(self.accountTweets[i].id_str == aux1.id_str){
+                self.accountTweets.splice(i,1);
+                i = self.accountTweets.length;
+            }
+        }
+        for(var  i = 0; i< self.mentions.length; i++){
+            if(self.mentions[i].id_str == aux1.id_str){
+                self.mentions.splice(i,1);
+                i = self.mentions.length;
+            }
+        }
         $http.delete('/tweets/' + id, {
             headers: {
                 'Authorization': 'Bearer ' + authentication.getToken()
@@ -60,23 +75,10 @@ function dashboardCtrl($http, authentication, $location, errorsService, spinnerS
             $location.path('errors');
         }).then(function (data) {
 
-            // Refresh ownTweets and accountTweets
-            var aux1 = self.ownTweets[index];
-            var auxx =self.ownTweets.splice(index,1);
-            for(var  i = 0; i< self.accountTweets.length; i++){
-                if(self.accountTweets[i].id_str == aux1.id_str){
-                    self.accountTweets.splice(i,1);
-                    i = self.accountTweets.length;
-                }
-            }
-            for(var  i = 0; i< self.mentions.length; i++){
-                if(self.mentions[i].id_str == aux1.id_str){
-                    self.mentions.splice(i,1);
-                    i = self.mentions.length;
-                }
-            }
+
         });
     }
+
     self.destroyPending = function(id){
         $http.delete('/tweets/pending/'+ id, {
             headers: {
@@ -92,6 +94,7 @@ function dashboardCtrl($http, authentication, $location, errorsService, spinnerS
             self.pendingTweets = self.updatePending();
         });
     }
+
     self.retweet = function(id, hashtag){
         spinnerService.show('loadingSpinner');
         $http.get('/tweets/' + id + '/retweet',{
@@ -222,33 +225,54 @@ function dashboardCtrl($http, authentication, $location, errorsService, spinnerS
         });
     }
 
-    self.newTweet = function(){
-        if(self.checked == 'YES'){
-            console.log("Por fin");
-        }else {
+    self.sendTweet = function(validDate){
+        if(validDate != null){
+            self.dat = {"status": self.tweet, "date": validDate};
+        }else{
             self.dat = {"status": self.tweet, "date": new Date()};
-            $http({
-                method: 'POST',
-                url: '/tweets',
-                data: self.dat, //forms user object
-                headers: {
-                    'Authorization': 'Bearer ' + authentication.getToken(),
-                    'Content-Type': 'application/json'
-                }
-            }).error(function (data, status, headers, config) {
-                console.log("GET timeline error");
-                errorsService.errorCode = status;
-                errorsService.errorMessage = data.data.message || "Undefined error";
-                $location.path('errors');
-            }).then(function (data) {
-                self.tweet = "";
-                self.ownTweets = self.updateOwn()
-
-            });
-
         }
+
+        $http({
+            method: 'POST',
+            url: '/tweets',
+            data: self.dat, //forms user object
+            headers: {
+                'Authorization': 'Bearer ' + authentication.getToken(),
+                'Content-Type': 'application/json'
+            }
+        }).error(function (data, status, headers, config) {
+            console.log("GET timeline error");
+            errorsService.errorCode = status;
+            errorsService.errorMessage = data.data.message || "Undefined error";
+            $location.path('errors');
+        }).then(function (data) {
+            self.tweet = "";
+            self.ownTweets = self.updateOwn()
+
+        });
     }
 
+    self.newTweet = function(){
+        if(self.checked == 'YES'){
+            console.log("Con check");
+
+            console.log(self.datePending);
+            if(self.datePending == null){
+                console.log("Sin fecha");
+                self.sendTweet();
+            }else{
+                console.log("Con fecha");
+                // Date format
+                var aux2 = "" +  self.datePending;
+                var aux = aux2.split(" ")
+                aux2 = aux[1] +" " +  aux[2] + ", " + aux[3] + " " + aux[4];
+                console.log(aux2);
+                self.sendTweet(aux2);
+            }
+        }else {
+            self.sendTweet();
+        }
+    }
     self.updateOwn();
     self.updateHome();
     self.updateMentions();
