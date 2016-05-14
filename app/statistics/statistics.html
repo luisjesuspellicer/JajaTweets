@@ -25,7 +25,7 @@
 <div class="col-md-6">
     <div class="thumbnail">
         <div class="caption" style="text-align: center">
-            <h3>Following/Followers per account associated</h3>
+            <h3>Followers/Following per account associated</h3>
         </div>
         <canvas id="bar2" class="chart chart-bar"
                 chart-data="stats.data2" chart-labels="stats.labels2" chart-series="stats.series2">
@@ -34,4 +34,35 @@
     </div>
 </div>
 
+<div class="col-md-6">
+    <div class="thumbnail">
+        <div class="caption" style="text-align: center">
+            <h3>Mentions by day (when tweeted)</h3>
+        </div>
+        <canvas id="line" class="chart chart-line" chart-data="data3"
+                chart-labels="labels3" chart-legend="true" chart-series="series3"
+                chart-click="onClick" >
+        </canvas>
+        <spinner class="custom-spinner" name="loadingSpinnerGraphFour" img-src="spinner.gif"></spinner>
+    </div>
+</div>
+
+<div class="col-md-6">
+    <div class="caption" style="text-align: center"><h3>Average stats per day</h3></div>
+    <table class="table table-responsive table-bordered col-md-6">
+        <tr>
+            <th>Account</th>
+            <th>Average Tweets/Days</th>
+            <th>Average Retweets/Days</th>
+            <th>Average Favorites/Days</th>
+        </tr>
+        <tr ng-repeat="user in averages">
+            <td><a target="_blank" ng-href="http://twitter.com/{{user.account}}">@{{user.account}}</a></td>
+            <td>{{user.avgTweetsDay}}</td>
+            <td>{{user.avgRetweetsDay}}</td>
+            <td>{{user.avgFavoritesDay}}</td>
+        </tr>
+    </table>
+    <spinner class="custom-spinner" name="loadingSpinnerTableOne" img-src="spinner.gif"></spinner>
+</div>
 

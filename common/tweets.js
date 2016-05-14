@@ -225,11 +225,22 @@
                 if(err) {
                     console.log(err);
                 }
-                User.findOneAndUpdate({email: user.user}, {$set: {tweet_total: result.statuses_count},
-                    $inc: { tweet_app: num_app }}, function(err, doc){
-                    if(err) {
+                Twitter.find({user:user.user}, function(err,docs){
+                    if(err){
                         console.log(err);
                     }
+                    var totalTwitter = 0;
+                    var totalApp = 0;
+                    for(var doc in docs){
+                        totalTwitter = totalTwitter + docs[doc].statuses_count;
+                        totalApp = totalApp + docs[doc].tweet_app;
+                    }
+                    User.findOneAndUpdate({email: user.user}, {$set: {tweet_total: totalTwitter, tweet_app: totalApp}},
+                        function(err, doc){
+                        if(err) {
+                            console.log(err);
+                        }
+                    });
                 });
             });
         });
