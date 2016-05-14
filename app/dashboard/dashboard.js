@@ -126,7 +126,7 @@ function dashboardCtrl($http, authentication, $location, $sce,
         });
     };
 
-    self.favorite = function(id, hashtag){
+    self.favorite = function(id){
         spinnerService.show('loadingSpinner');
         $http.get('/tweets/' + id + '/favorite',{
             headers: {
@@ -138,7 +138,10 @@ function dashboardCtrl($http, authentication, $location, $sce,
             errorsService.errorMessage = data.data.message || "Undefined error";
             $location.path('errors');
         }).then(function(data) {
-            self.update(hashtag);
+            self.updateHome();
+            //self.updateMentions();
+            self.updateOwn();
+
         });
     };
 
@@ -175,9 +178,9 @@ function dashboardCtrl($http, authentication, $location, $sce,
             for (var i = 0;i<auxx.length; i++){
 
                 auxx[i].text = $sce.trustAsHtml(self.parse2(self.parse3(self.parse(auxx[i].text))));
-}
+            }
             self.ownTweets = auxx;
-
+            spinnerService.hide('loadingSpinner');
         });
     }
 
@@ -201,7 +204,7 @@ function dashboardCtrl($http, authentication, $location, $sce,
         });
     }
 
-     self.updatePending = function(){
+    self.updatePending = function(){
         $http.get('/tweets/pending', {
             headers: {
                 'Authorization': 'Bearer ' + authentication.getToken()
@@ -338,6 +341,17 @@ function dashboardCtrl($http, authentication, $location, $sce,
                     + '?src=hash' + '">' + user +' </a><span>';
             }) + '</span>';
     }
+    self.own = function(id){
+        var res = false;
+
+        for (var i = 0; i < self.ownTweets.length; i++) {
+            if (self.ownTweets[i].id_str == id) {
+                res = true;
+            }
+        }
+        return res;
+    }
+
     self.updateOwn();
     self.updateHome();
     self.updateMentions();
