@@ -12,9 +12,7 @@ angular.module('myApp.dashboard', ['ngRoute','chart.js', 'ngSanitize'])
             controller: 'dashboardCtrl',
             controllerAs: 'dashboard'
         });
-    }])
-
-    .controller('dashboardCtrl', dashboardCtrl);
+    }]).controller('dashboardCtrl', dashboardCtrl);
 
 
 dashboardCtrl.$inject = ['$http', 'authentication', '$location', '$sce',
@@ -174,11 +172,10 @@ function dashboardCtrl($http, authentication, $location, $sce,
             $location.path('errors');
         }).then(function (data) {
             var auxx = data.data.data.content;
-                for (var i = 0;i<auxx.length; i++){
-                    var a = $sce.trustAsHtml(self.parse(auxx[i].text));
+            for (var i = 0;i<auxx.length; i++){
 
-                auxx[i].text = $sce.trustAsHtml(self.parse(auxx[i].text));
-            }
+                auxx[i].text = $sce.trustAsHtml(self.parse2(self.parse3(self.parse(auxx[i].text))));
+}
             self.ownTweets = auxx;
 
         });
@@ -195,8 +192,12 @@ function dashboardCtrl($http, authentication, $location, $sce,
             errorsService.errorMessage = data.data.message || "Undefined error";
             $location.path('errors');
         }).then(function(data) {
-            self.accountTweets = data.data.data.content;
+            var auxx = data.data.data.content;
+            for (var i = 0;i<auxx.length; i++){
 
+                auxx[i].text = $sce.trustAsHtml(self.parse2(self.parse3(self.parse(auxx[i].text))));
+            }
+            self.accountTweets = auxx;
         });
     }
 
@@ -211,8 +212,12 @@ function dashboardCtrl($http, authentication, $location, $sce,
             errorsService.errorMessage = data.data.message || "Undefined error";
             $location.path('errors');
         }).then(function (data) {
+            var auxx = data.data.data.content;
+            for (var i = 0;i<auxx.length; i++){
 
-            self.pendingTweets = data.data.data.content;
+                auxx[i].status = $sce.trustAsHtml(self.parse2(self.parse3(self.parse(auxx[i].text))));
+            }
+            self.pendingTweets = auxx;
         });
     }
 
@@ -227,8 +232,13 @@ function dashboardCtrl($http, authentication, $location, $sce,
             errorsService.errorMessage = data.data.message || "Undefined error";
             $location.path('errors');
         }).then(function (data) {
+            var auxx = data.data.data.content;
+            for (var i = 0;i<auxx.length; i++){
 
-            self.mentions = data.data.data.content;
+                auxx[i].text = $sce.trustAsHtml(self.parse2(self.parse3(self.parse(auxx[i].text))));
+            }
+
+            self.mentions = auxx;
 
         });
     }
@@ -301,12 +311,30 @@ function dashboardCtrl($http, authentication, $location, $sce,
     }
 
     self.parse = function(oneTweet){
-        var regex = /(https?:\/\/[^\s]+)/g;
+        var regex =  /(https?:\/\/[^\s]+)/ig;
         return '<p>' + oneTweet.replace(regex, function(url) {
             return '</p> ' + '<a href="' + url + '">' + url +' </a><p>';
         }) + '</p>';
-        // or alternatively
-        // return text.replace(urlRegex, '<a href="$1">$1</a>')
+
+    }
+
+    self.parse2 = function(oneHashtag){
+        var regex2 = /(#[a-zA-Záéíúëïüöó0-9_\d]+)/ig;
+        var axu = ""+oneHashtag;
+        return '<p>' + axu.replace(regex2, function(hash) {
+                var aux5 = "" + hash;
+                return '</p> ' + '<a href="' + 'https://twitter.com/hashtag/' + aux5.substring(1)
+                    + '?src=hash' + '">' + hash +' </a><p>';
+            }) + '</p>';
+    }
+    self.parse3 = function(oneUser){
+        var regex3 = /(@[a-zA-Záéíúëïüöó0-9_\d]+)/ig;
+        var axu = ""+ oneUser;
+        return '<p>' + axu.replace(regex3, function(user) {
+                var aux6 = "" + user;
+                return '</p> ' + '<a href="' + 'https://twitter.com/' + aux6.substring(1)
+                    + '?src=hash' + '">' + user +' </a><p>';
+            }) + '</p>';
     }
     self.updateOwn();
     self.updateHome();

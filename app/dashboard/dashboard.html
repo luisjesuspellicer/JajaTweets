@@ -84,8 +84,7 @@
 
                 <div class="media-body">
                     <h4 class="media-heading">{{own.user.name}}</h4>
-                    <div ng-bind-html="own.text">
-                    </div>
+                    <div ng-bind-html="own.text"></div>
                     <p>
                         <i ng-click="dashboard.unretweet(own.id_str, sub.hashtag)"
                            ng-if="own.retweeted"
@@ -131,7 +130,7 @@
 
                 <div class="media-body">
                     <h4 class="media-heading">{{accountTweets.user.name}}</h4>
-                    <p>{{accountTweets.text}}</p>
+                    <div ng-bind-html="accountTweets.text"></div>
                     <p>
                         <i ng-click="dashboard.unretweet(accountTweets.id_str, sub.hashtag)"
                            ng-if="accountTweets.retweeted"
@@ -174,7 +173,7 @@
 
                 <div class="media-body">
                     <h5 class="media-heading">{{pending.date}}</h5>
-                    <p>{{pending.status}}</p>
+                    <div ng-bind-html="pending.status"></div>
                     <p>
 
                         <i ng-click="dashboard.destroyPending(pending._id, $index)"
@@ -197,7 +196,7 @@
 
                 <div class="media-body">
                     <h4 class="media-heading">{{mentions.user.screen_name}}</h4>
-                    <p>{{mentions.text}}</p>
+                    <div ng-bind-html="mentions.text"></div>
                     <p>
                         <i ng-click="dashboard.unretweet(mentions.id_str, sub.hashtag)"
                            ng-if="mentions.retweeted"
