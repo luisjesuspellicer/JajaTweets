@@ -41,7 +41,10 @@
 
                 <div class="input-group col-md-1">
                     <span class="input-group-addon">
-                        <input type="checkbox" aria-label="...">
+                        <input type="checkbox"
+                               ng-true-value="dashboard.checked === 'YES'"
+                               ng-false-value="dashboard.cheked === 'NO'"
+                               aria-label="...">
                      </span>
 
                     <input type="datetime-local" class="form-control" aria-label="...">
@@ -63,7 +66,7 @@
     <div class="row">
         <div class="col-md-3 col-lg-3 btn-success"  style="hight: 100%;overflow: scroll;">
             <h3>Own tweets</h3>
-            <div class="media" ng-repeat="own in dashboard.ownTweets">
+            <div class="media" ng-repeat="own in dashboard.ownTweets track by $index">
 
                 <div class="media-left">
                     <img class="media-object img-rounded"
@@ -102,7 +105,7 @@
 
                         </i><b ng-if="!own.favorited">&nbsp;{{own.favorite_count}}</b>
 
-                        <i ng-click="dashboard.destroy(own.id_str, sub.hashtag)"
+                        <i ng-click="dashboard.destroy(own.id_str,$index)"
                            class="glyphicon glyphicon-trash"
                            aria-hidden="true"></i>
                     </p>

@@ -22,6 +22,7 @@ dashboardCtrl.$inject = ['$http', 'authentication', '$location', 'errorsService'
 function dashboardCtrl($http, authentication, $location, errorsService, spinnerService) {
 
     var self = this;
+    self.checked = "NO";
     console.log("User: Token: "+authentication.getToken());
 
     if (!authentication.isLoggedIn()) {
@@ -46,7 +47,7 @@ function dashboardCtrl($http, authentication, $location, errorsService, spinnerS
             }
         }
     }
-    self.destroy = function(id){
+    self.destroy = function(id, index){
 
         $http.delete('/tweets/' + id, {
             headers: {
@@ -59,7 +60,9 @@ function dashboardCtrl($http, authentication, $location, errorsService, spinnerS
             $location.path('errors');
         }).then(function (data) {
 
-            self.ownTweets = self.updateOwn();
+            var auxx =self.ownTweets.splice(index,1);
+            var auxx2 = self.accountTweets.indexOf(auxx,0);
+            self.accountTweets.splice(auxx2,1);
         });
        // alert(self.ownTweets);
     }
@@ -209,24 +212,30 @@ function dashboardCtrl($http, authentication, $location, errorsService, spinnerS
     }
 
     self.newTweet = function(){
-        self.dat = {"status": self.tweet,"date": new Date()};
-        $http({
-            method  : 'POST',
-            url     : '/tweets',
-            data    : self.dat, //forms user object
-            headers : {
-                'Authorization': 'Bearer ' + authentication.getToken(),
-                'Content-Type': 'application/json'}
-        }).error(function(data, status, headers, config) {
-            console.log("GET timeline error");
-            errorsService.errorCode = status;
-            errorsService.errorMessage = data.data.message || "Undefined error";
-            $location.path('errors');
-        }).then(function(data) {
-            self.accountTweets = data.data.data.content;
-        });
-        self.tweet="";
-        self.updateOwn();
+        if(self.checked == 'YES'){
+
+        }else {
+            self.dat = {"status": self.tweet, "date": new Date()};
+            $http({
+                method: 'POST',
+                url: '/tweets',
+                data: self.dat, //forms user object
+                headers: {
+                    'Authorization': 'Bearer ' + authentication.getToken(),
+                    'Content-Type': 'application/json'
+                }
+            }).error(function (data, status, headers, config) {
+                console.log("GET timeline error");
+                errorsService.errorCode = status;
+                errorsService.errorMessage = data.data.message || "Undefined error";
+                $location.path('errors');
+            }).then(function (data) {
+                self.tweet = "";
+                self.ownTweets = self.updateOwn()
+
+            });
+
+        }
     }
 
     self.updateOwn();
