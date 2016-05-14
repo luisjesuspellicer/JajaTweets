@@ -60,11 +60,22 @@ function dashboardCtrl($http, authentication, $location, errorsService, spinnerS
             $location.path('errors');
         }).then(function (data) {
 
+            // Refresh ownTweets and accountTweets
+            var aux1 = self.ownTweets[index];
             var auxx =self.ownTweets.splice(index,1);
-            var auxx2 = self.accountTweets.indexOf(auxx,0);
-            self.accountTweets.splice(auxx2,1);
+            for(var  i = 0; i< self.accountTweets.length; i++){
+                if(self.accountTweets[i].id_str == aux1.id_str){
+                    self.accountTweets.splice(i,1);
+                    i = self.accountTweets.length;
+                }
+            }
+            for(var  i = 0; i< self.mentions.length; i++){
+                if(self.mentions[i].id_str == aux1.id_str){
+                    self.mentions.splice(i,1);
+                    i = self.mentions.length;
+                }
+            }
         });
-       // alert(self.ownTweets);
     }
     self.destroyPending = function(id){
         $http.delete('/tweets/pending/'+ id, {
@@ -213,7 +224,7 @@ function dashboardCtrl($http, authentication, $location, errorsService, spinnerS
 
     self.newTweet = function(){
         if(self.checked == 'YES'){
-
+            console.log("Por fin");
         }else {
             self.dat = {"status": self.tweet, "date": new Date()};
             $http({
