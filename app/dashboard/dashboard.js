@@ -4,7 +4,7 @@
 
 // Own tweets, pending tweets and account tweets.
 'use strict';
-angular.module('myApp.dashboard', ['ngRoute','chart.js'])
+angular.module('myApp.dashboard', ['ngRoute','chart.js', 'ngSanitize'])
 
     .config(['$routeProvider', function ($routeProvider) {
         $routeProvider.when('/dashboard', {
@@ -17,21 +17,21 @@ angular.module('myApp.dashboard', ['ngRoute','chart.js'])
     .controller('dashboardCtrl', dashboardCtrl);
 
 
-dashboardCtrl.$inject = ['$http', 'authentication', '$location', 'errorsService', 'spinnerService'];
+dashboardCtrl.$inject = ['$http', 'authentication', '$location', '$sce',
+    'errorsService', 'spinnerService'];
 
-function dashboardCtrl($http, authentication, $location, errorsService, spinnerService) {
+function dashboardCtrl($http, authentication, $location, $sce,
+                       errorsService, spinnerService) {
 
     var self = this;
     self.checked = "NO";
     console.log("User: Token: "+authentication.getToken());
-
     if (!authentication.isLoggedIn()) {
         console.log('unauth');
         errorsService.errorCode = 401;
         errorsService.errorMessage = "Unauthorized operation.";
         $location.path('errors');
     }
-
     self.tweet ="";
     self.num = -1;
 
@@ -68,7 +68,8 @@ function dashboardCtrl($http, authentication, $location, errorsService, spinnerS
             headers: {
                 'Authorization': 'Bearer ' + authentication.getToken()
             }
-        }).error(function(data, status, headers, config) {
+        }).error(function(data, status,
+                          headers, config) {
             console.log("DELETE own tweet error");
             errorsService.errorCode = status;
             errorsService.errorMessage = data.data.message || "Undefined error";
@@ -160,7 +161,8 @@ function dashboardCtrl($http, authentication, $location, errorsService, spinnerS
     };
 
     self.updateOwn = function(){
-        
+
+
         $http.get('/tweets/own', {
             headers: {
                 'Authorization': 'Bearer ' + authentication.getToken()
@@ -171,8 +173,13 @@ function dashboardCtrl($http, authentication, $location, errorsService, spinnerS
             errorsService.errorMessage = data.data.message || "Undefined error";
             $location.path('errors');
         }).then(function (data) {
+            var auxx = data.data.data.content;
+                for (var i = 0;i<auxx.length; i++){
+                    var a = $sce.trustAsHtml(self.parse(auxx[i].text));
 
-            self.ownTweets = data.data.data.content;
+                auxx[i].text = $sce.trustAsHtml(self.parse(auxx[i].text));
+            }
+            self.ownTweets = auxx;
 
         });
     }
@@ -189,6 +196,7 @@ function dashboardCtrl($http, authentication, $location, errorsService, spinnerS
             $location.path('errors');
         }).then(function(data) {
             self.accountTweets = data.data.data.content;
+
         });
     }
 
@@ -219,14 +227,16 @@ function dashboardCtrl($http, authentication, $location, errorsService, spinnerS
             errorsService.errorMessage = data.data.message || "Undefined error";
             $location.path('errors');
         }).then(function (data) {
-            console.log(data.data.data.content);
+
             self.mentions = data.data.data.content;
 
         });
     }
 
     self.sendTweet = function(validDate){
+
         if(validDate != null){
+
             self.dat = {"status": self.tweet, "date": validDate};
         }else{
             self.dat = {"status": self.tweet, "date": new Date()};
@@ -253,31 +263,54 @@ function dashboardCtrl($http, authentication, $location, errorsService, spinnerS
     }
 
     self.newTweet = function(){
+
         if(self.checked == 'YES'){
-            console.log("Con check");
+            //console.log("Con check");
 
             console.log(self.datePending);
             if(self.datePending == null){
-                console.log("Sin fecha");
+                //console.log("Sin fecha");
                 self.sendTweet();
             }else{
-                console.log("Con fecha");
+               // console.log("Con fecha");
                 // Date format
+
                 var aux2 = "" +  self.datePending;
-                var aux = aux2.split(" ")
-                aux2 = aux[1] +" " +  aux[2] + ", " + aux[3] + " " + aux[4];
-                console.log(aux2);
-                self.sendTweet(aux2);
+                var aux = aux2.split(", ")
+                var d = aux[0].split("/");
+                var t = aux[1].split(":");
+                if(aux.length ==2 && d.length == 3 && t.length == 2) {
+                    var day = d[0];
+                    var month = d[1];
+                    var year = d[2];
+
+                    var min = t[1];
+                    var hours = t[0];
+
+                    self.sendTweet(new Date(parseInt(year),parseInt(month),
+                        parseInt(day),parseInt(hours),parseInt(min),0,0));
+                }else {
+                    errorsService.errorCode = status;
+                    errorsService.errorMessage = data.data.message || "Undefined error";
+                    $location.path('errors');
+                }
             }
         }else {
             self.sendTweet();
         }
     }
+
+    self.parse = function(oneTweet){
+        var regex = /(https?:\/\/[^\s]+)/g;
+        return '<p>' + oneTweet.replace(regex, function(url) {
+            return '</p> ' + '<a href="' + url + '">' + url +' </a><p>';
+        }) + '</p>';
+        // or alternatively
+        // return text.replace(urlRegex, '<a href="$1">$1</a>')
+    }
     self.updateOwn();
     self.updateHome();
     self.updateMentions();
     self.updatePending();
-
-
 
 }

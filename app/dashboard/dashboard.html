@@ -38,17 +38,19 @@
                     </div>
                 </ng-switch>
                 <h3>Delay publication</h3>
-
-                <div class="input-group col-md-1">
+                <p>Format: DD/MM/AAAA, HH:MM</p>
+                <div class="input-group">
                     <span class="input-group-addon">
                         <input type="checkbox"
                                ng-model="dashboard.checked"
                                ng-true-value="'YES'"
                                ng-false-value="'NO'"
+
                                aria-label="...">
                      </span>
 
-                    <input type="datetime-local"
+                    <input type="text"
+                           value="01"
                            class="form-control"
                            aria-label="..."
                            ng-model="dashboard.datePending">
@@ -82,7 +84,8 @@
 
                 <div class="media-body">
                     <h4 class="media-heading">{{own.user.name}}</h4>
-                    <p>{{own.text}}</p>
+                    <div ng-bind-html="own.text">
+                    </div>
                     <p>
                         <i ng-click="dashboard.unretweet(own.id_str, sub.hashtag)"
                            ng-if="own.retweeted"
@@ -108,7 +111,6 @@
                            aria-hidden="true">
 
                         </i><b ng-if="!own.favorited">&nbsp;{{own.favorite_count}}</b>
-
                         <i ng-click="dashboard.destroy(own.id_str,$index)"
                            class="glyphicon glyphicon-trash"
                            aria-hidden="true"></i>
@@ -171,7 +173,7 @@
                 </div>
 
                 <div class="media-body">
-                    <h4 class="media-heading">{{pending.screen_name}}</h4>
+                    <h5 class="media-heading">{{pending.date}}</h5>
                     <p>{{pending.status}}</p>
                     <p>
 
