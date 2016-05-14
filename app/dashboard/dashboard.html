@@ -161,7 +161,7 @@
         </div>
         <div class="col-md-3 col-lg-3 btn-warning"  style="hight: 100%;overflow: scroll;">
             <h3>Pending tweets</h3>
-            <div class="media" ng-repeat="pending in dashboard.pendingTweets">
+            <div class="media" ng-repeat="pending in dashboard.pendingTweets track by $index">
                 <div class="media-left">
                     <img class="media-object img-rounded"
                          ng-src="{{pending.profile_image_url}}"
@@ -175,7 +175,7 @@
                     <p>{{pending.status}}</p>
                     <p>
 
-                        <i ng-click="dashboard.destroyPending(pending.id_str)"
+                        <i ng-click="dashboard.destroyPending(pending._id, $index)"
                            class="glyphicon glyphicon-trash"
                            aria-hidden="true"></i>
                     </p>

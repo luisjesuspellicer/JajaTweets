@@ -51,7 +51,7 @@ function dashboardCtrl($http, authentication, $location, errorsService, spinnerS
     self.destroy = function(id, index){
         // Refresh ownTweets and accountTweets
         var aux1 = self.ownTweets[index];
-        var auxx =self.ownTweets.splice(index,1);
+        self.ownTweets.splice(index,1);
         for(var  i = 0; i< self.accountTweets.length; i++){
             if(self.accountTweets[i].id_str == aux1.id_str){
                 self.accountTweets.splice(i,1);
@@ -79,7 +79,8 @@ function dashboardCtrl($http, authentication, $location, errorsService, spinnerS
         });
     }
 
-    self.destroyPending = function(id){
+    self.destroyPending = function(id, index){
+        self.pendingTweets.splice(index,1);
         $http.delete('/tweets/pending/'+ id, {
             headers: {
                 'Authorization': 'Bearer ' + authentication.getToken()
