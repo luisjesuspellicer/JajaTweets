@@ -94,20 +94,22 @@ function dashboardCtrl($http, authentication, $location, $sce,
         });
     }
 
-    self.retweet = function(id, hashtag){
-        spinnerService.show('loadingSpinner');
-        $http.get('/tweets/' + id + '/retweet',{
-            headers: {
-                'Authorization': 'Bearer ' + authentication.getToken()
-            }
-        }).error(function(data, status, headers, config) {
-            console.log("Retweet error");
-            errorsService.errorCode = status;
-            errorsService.errorMessage = data.data.message || "Undefined error";
-            $location.path('errors');
-        }).then(function(data) {
-            self.update(hashtag);
-        });
+    self.retweet = function(id){
+        if(self.own(id)) {
+            spinnerService.show('loadingSpinner');
+            $http.get('/tweets/' + id + '/retweet', {
+                headers: {
+                    'Authorization': 'Bearer ' + authentication.getToken()
+                }
+            }).error(function (data, status, headers, config) {
+                console.log("Retweet error");
+                errorsService.errorCode = status;
+                errorsService.errorMessage = data.data.message || "Undefined error";
+                $location.path('errors');
+            }).then(function (data) {
+                self.update(hashtag);
+            });
+        }
     };
 
     self.unretweet = function(id, hashtag){
@@ -127,22 +129,25 @@ function dashboardCtrl($http, authentication, $location, $sce,
     };
 
     self.favorite = function(id){
+
+
         spinnerService.show('loadingSpinner');
-        $http.get('/tweets/' + id + '/favorite',{
+        $http.get('/tweets/' + id + '/favorite', {
             headers: {
                 'Authorization': 'Bearer ' + authentication.getToken()
             }
-        }).error(function(data, status, headers, config) {
+        }).error(function (data, status, headers, config) {
             console.log("Favorite error");
             errorsService.errorCode = status;
             errorsService.errorMessage = data.data.message || "Undefined error";
             $location.path('errors');
-        }).then(function(data) {
+        }).then(function (data) {
             self.updateHome();
             //self.updateMentions();
             self.updateOwn();
 
         });
+
     };
 
     self.unfavorite = function(id, hashtag){

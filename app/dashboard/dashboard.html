@@ -122,20 +122,16 @@
                     <h4 class="media-heading">{{accountTweets.user.name}}</h4>
                     <div ng-bind-html="accountTweets.text"></div>
                     <p>
-                        <i ng-click="dashboard.unretweet(accountTweets.id_str, sub.hashtag)"
+                        <i ng-click="dashboard.unretweet(accountTweets.id_str)"
 
-                           ng-if="accountTweets.retweeted &&
-                         !dashboard.own(accountTweets.id_str)"
+                           ng-if="accountTweets.retweeted "
                            class="fa fa-retweet fa-lg"
                            aria-hidden="true" style="color:greenyellow;">
 
-                        </i><b
-
-                            ng-if="accountTweets.retweeted &&
-                         !dashboard.own(accountTweets.id_str)">&nbsp;{{accountTweets.retweet_count}}&nbsp;</b>
-                        <i ng-click="dashboard.retweet(accountTweets.id_str, sub.hashtag)"
-                           ng-if="!accountTweets.retweeted &&
-                         !dashboard.own(accountTweets.id_str)" class="fa fa-retweet fa-lg"
+                        </i><b ng-if="accountTweets.retweeted">&nbsp;{{accountTweets.retweet_count}}&nbsp;</b>
+                        <i ng-click="dashboard.retweet(accountTweets.id_str)"
+                           ng-if="!accountTweets.retweeted"
+                           class="fa fa-retweet fa-lg"
                            aria-hidden="true">
 
                         </i><b
