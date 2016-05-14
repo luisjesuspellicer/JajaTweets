@@ -92,7 +92,6 @@ function dashboardCtrl($http, authentication, $location, errorsService, spinnerS
             $location.path('errors');
         }).then(function (data) {
 
-            self.pendingTweets = self.updatePending();
         });
     }
 
