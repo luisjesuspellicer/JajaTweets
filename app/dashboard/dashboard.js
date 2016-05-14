@@ -201,7 +201,7 @@ function dashboardCtrl($http, authentication, $location, $sce,
         });
     }
 
-    self.updatePending = function(){
+     self.updatePending = function(){
         $http.get('/tweets/pending', {
             headers: {
                 'Authorization': 'Bearer ' + authentication.getToken()
@@ -311,30 +311,32 @@ function dashboardCtrl($http, authentication, $location, $sce,
     }
 
     self.parse = function(oneTweet){
-        var regex =  /(https?:\/\/[^\s]+)/ig;
-        return '<p>' + oneTweet.replace(regex, function(url) {
-            return '</p> ' + '<a href="' + url + '">' + url +' </a><p>';
-        }) + '</p>';
+        if(oneTweet != null) {
+            var regex = /(https?:\/\/[^\s]+)/ig;
+            return '<span>' + oneTweet.replace(regex, function (url) {
+                    return '</span> ' + '<a href="' + url + '">' + url + ' </a><span>';
+                }) + '</span>';
+        }else{return ""}
 
     }
 
     self.parse2 = function(oneHashtag){
         var regex2 = /(#[a-zA-Záéíúëïüöó0-9_\d]+)/ig;
         var axu = ""+oneHashtag;
-        return '<p>' + axu.replace(regex2, function(hash) {
+        return '<span>' + axu.replace(regex2, function(hash) {
                 var aux5 = "" + hash;
-                return '</p> ' + '<a href="' + 'https://twitter.com/hashtag/' + aux5.substring(1)
-                    + '?src=hash' + '">' + hash +' </a><p>';
-            }) + '</p>';
+                return '</span> ' + '<a href="' + 'https://twitter.com/hashtag/' + aux5.substring(1)
+                    + '?src=hash' + '">' + hash +' </a><span>';
+            }) + '</span>';
     }
     self.parse3 = function(oneUser){
         var regex3 = /(@[a-zA-Záéíúëïüöó0-9_\d]+)/ig;
         var axu = ""+ oneUser;
-        return '<p>' + axu.replace(regex3, function(user) {
+        return '<span>' + axu.replace(regex3, function(user) {
                 var aux6 = "" + user;
-                return '</p> ' + '<a href="' + 'https://twitter.com/' + aux6.substring(1)
-                    + '?src=hash' + '">' + user +' </a><p>';
-            }) + '</p>';
+                return '</span> ' + '<a href="' + 'https://twitter.com/' + aux6.substring(1)
+                    + '?src=hash' + '">' + user +' </a><span>';
+            }) + '</span>';
     }
     self.updateOwn();
     self.updateHome();
