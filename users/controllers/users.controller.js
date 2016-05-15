@@ -42,12 +42,13 @@
         // Setup the controller for REST
         var resource = Resource(app, '', route, app.models.users)
             .get(admin_or_self_required) // GET /users/:id
-            .put(admin_or_self_required)// PUT /users/:id
             .delete(delete_options) // DELETE /users/:id
             .index(index_options); // GET /users
 
         // POST /users must generate new JWT token
         resource.register(app, 'post', '/users', createUser, resource.respond.bind(resource), admin_required);
+        // PUT /users/:id updates user by id
+        resource.register(app, 'put', '/users/:id', updateUser,resource.respond.bind(resource), admin_or_self_required);
         // GET /users::last offers the last accesses
         resource.register(app, 'get', '/users::last', getLastUsers, resource.respond.bind(resource), admin_required);
         // GET /users::tweets offers users with more tweets
@@ -85,6 +86,54 @@
                             }
                         }
                     }, next);
+            });
+        }
+
+        /**
+         * Updates a user and returns a JWT token, token could be
+         * changed so /login required.
+         * @param req
+         * @param res
+         * @param next
+         */
+        function updateUser(req, res, next) {
+            var user = new User();
+
+            user.name = req.body.name;
+            user.email = req.body.email;
+            user.lastAccess = new Date();
+            var password = req.body.password;
+
+            user.setPassword(password);
+
+            User.update({email: req.body.oldEmail}, {$set: {email: user.email, name: user.name, hash: user.hash,
+                salt: user.salt, lastAccess: user.lastAccess}}, function (err, doc) {
+                    if(err){
+                        return resource.setResponse(res,
+                            {
+                                status: 500,
+                                item: {
+                                    "error": true,
+                                    "data": {
+                                        "message": "Cannot update this user",
+                                        "url": process.env.CURRENT_DOMAIN + "/users"
+                                    }
+                                }
+                            }, next);
+                    } else {
+                        return resource.setResponse(res,
+                            {
+                                status: 200,
+                                item: {
+                                    "error": false,
+                                    "data": {
+                                        "message": "Update user successful",
+                                        "password": password,
+                                        "url": process.env.CURRENT_DOMAIN + "/login"
+                                    }
+                                }
+                            }, next);
+                    }
             });
         }
 

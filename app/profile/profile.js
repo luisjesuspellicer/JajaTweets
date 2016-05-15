@@ -19,7 +19,7 @@ function profileCtrl($http, authentication, errorsService, $location, $routePara
     var vm = this;
 
     vm.onSubmit = onSubmit;
-    vm.credentials = { name: '', email: '', password: ''};
+    vm.credentials = { name: '', oldEmail: '', email: '', password: ''};
     vm.changed = false;
 
     if (!authentication.isLoggedIn()) {
@@ -38,6 +38,7 @@ function profileCtrl($http, authentication, errorsService, $location, $routePara
         vm.newUser = data.data;
         vm.credentials.name = data.data.name;
         vm.credentials.email = data.data.email;
+        vm.credentials.oldEmail = data.data.email;
     }, function(error) {
         errorsService.errorCode = error.code;
         errorsService.errorMessage = error.data.data.message || "Undefined error";
@@ -45,12 +46,15 @@ function profileCtrl($http, authentication, errorsService, $location, $routePara
     });
 
     function onSubmit() {
-        $http.put('/users/'+$routeParams.id, vm.newUser, {
+        console.log(vm.credentials);
+        if(vm.credentials.password=="" || !vm.credentials.password){
+            console.log("Form validation error");
+        } else {
+            $http.put('/users/'+$routeParams.id, vm.credentials, {
                 headers : {
                     'Authorization': 'Bearer ' + authentication.getToken()
                 }
-            })
-            .then(function() {
+            }).then(function() {
                 vm.credentials.password = '';
                 vm.changed = true;
             }, function(error) {
@@ -58,6 +62,7 @@ function profileCtrl($http, authentication, errorsService, $location, $routePara
                 errorsService.errorMessage = error.data.data.message || "Undefined error";
                 $location.path('errors');
             })
+        }
     }
 
 
