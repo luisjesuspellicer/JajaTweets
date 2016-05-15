@@ -129,6 +129,10 @@
                            class="fa fa-heart fa-lg"
                            aria-hidden="true"></i>
                         <b ng-if="!own.favorited">&nbsp;{{own.favorite_count}}</b>
+                        <i ng-click="dashboard.destroy(own.id_str, $index)"
+                           ng-if="!own.retweeted"
+                           class="glyphicon glyphicon-trash"
+                           aria-hidden="true"></i>
                     </p>
                 </div>
             </div>

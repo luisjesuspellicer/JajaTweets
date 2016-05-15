@@ -118,9 +118,7 @@ function dashboardCtrl($scope, $http, authentication, $location, $sce,
     }
 
     self.retweet = function(id, index, where){
-        spinnerService.show('ownSpinner');
-        spinnerService.show('homeSpinner');
-        spinnerService.show('mentionsSpinner');
+
         if(!self.own(id)) {
             spinnerService.show('ownSpinner');
             spinnerService.show('homeSpinner');
@@ -327,6 +325,8 @@ function dashboardCtrl($scope, $http, authentication, $location, $sce,
             errorsService.errorMessage = data.data.message || "Undefined error";
             $location.path('errors');
         }).then(function (data) {
+            spinnerService.hide('ownSpinner');
+            spinnerService.hide('homeSpinner');
             self.tweet = "";
             self.ownTweets = self.updateOwn()
 
@@ -334,7 +334,8 @@ function dashboardCtrl($scope, $http, authentication, $location, $sce,
     }
 
     self.newTweet = function(){
-
+        spinnerService.show('ownSpinner');
+        spinnerService.show('homeSpinner');
         if(self.checked == 'YES'){
             //console.log("Con check");
 
