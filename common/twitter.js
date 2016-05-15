@@ -34,6 +34,7 @@
      * @param user is the local user object.
      * @param id is the twitter id user.
      * @param num_app is the number to add to the local total tweets statistic.
+     * @param callback is the callback object
      */
     function updateStatistics(user, id, num_app, callback){
         TweetCommons.getUserInfo(user, id, function(result){

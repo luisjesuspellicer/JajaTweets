@@ -390,6 +390,30 @@
         });
     }
 
+    /**
+     * Gets followers list from Twitter.
+     * Requires user authentication.
+     * @param user is the twitter user.
+     * @param callback is the object callback, a user from database.
+     */
+    function getFollowersList(user, callback){
+        OAuth.initTwitterOauth(function(oa)
+        {
+            oa.get(
+                "https://api.twitter.com/1.1/followers/list.json?count=200&screen_name=" + user.screen_name
+                , user.token,user.secret,
+                function(error, data, response){
+                    if(error){
+                        callback(error);
+                    }else{
+                        callback(JSON.parse(data));
+                    }
+                }
+
+            )});
+
+    }
+
     exports.makeTweet = makeTweet;
     exports.getTweet = getTweet;
     exports.makeRetweet = makeRetweet;
@@ -404,5 +428,6 @@
     exports.deleteTweet = deleteTweet;
     exports.searchTweets = searchTweets;
     exports.searchMentions = searchMentions;
+    exports.getFollowersList = getFollowersList;
 
 })();

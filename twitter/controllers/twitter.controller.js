@@ -153,7 +153,7 @@
          */
         app.get('/twitter/:id', user_required.before, function(req, res, next) {
             if(req.params.id == "notUse" || req.params.id == "update" || req.params.id == "statsMentions" ||
-                req.params.id == "statsHour"){
+                req.params.id == "statsHour" || req.params.id == "followers"){
                 next();
             } else {
                 TwitterCommons.getUserFromJWT(req, function (user) {
@@ -224,44 +224,15 @@
                                     next();
                                 } else {
                                     var twitterDoc = doc;
-                                    User.findOneAndUpdate({email: user.email}, {
-                                        $set: {
-                                            tweet_app: twitterDoc.tweet_app,
-                                            tweet_total: doc.statuses_count
-                                        }
-                                    }, function (err, doc) {
-                                        if (err) {
-                                            res.status(500).json({
-                                                "error": true,
-                                                "data": {
-                                                    "message": "Cannot update statistics of this twitter account on " +
-                                                    "change",
-                                                    "url": process.env.CURRENT_DOMAIN
-                                                }
-                                            });
-                                            next();
-                                        } else if (doc == null) {
-                                            res.status(400).json({
-                                                "error": true,
-                                                "data": {
-                                                    "message": "Cannot update statistics of this twitter account on " +
-                                                    "change (User doesn't exists)",
-                                                    "url": process.env.CURRENT_DOMAIN
-                                                }
-                                            });
-                                            next();
-                                        } else {
-                                            res.json({
-                                                "error": false,
-                                                "data": {
-                                                    "message": "Now using twitter account: " + twitterDoc.screen_name,
-                                                    "url": process.env.CURRENT_DOMAIN + "/twitter",
-                                                    "content": twitterDoc
-                                                }
-                                            });
-                                            next();
+                                    res.json({
+                                        "error": false,
+                                        "data": {
+                                            "message": "Now using twitter account: " + twitterDoc.screen_name,
+                                            "url": process.env.CURRENT_DOMAIN + "/twitter",
+                                            "content": twitterDoc
                                         }
                                     });
+                                    next();
                                 }
                             });
                     }
@@ -280,7 +251,7 @@
                 next();
             } else {
                 TwitterCommons.getUserFromJWT(req, function (user) {
-                    TwitterCommons.updateStatistics(user, req.params.id, 1, function(){
+                    TwitterCommons.updateStatistics(user, req.params.id, 0, function(){
                         Twitter.findOne({user: user.email, id_str: req.params.id}, function (err, doc) {
                             if (err) {
                                 res.status(500).json({
@@ -302,105 +273,10 @@
                                 next();
                             } else {
                                 var twitterDoc = doc;
-                                User.findOneAndUpdate({email: user.email}, {
-                                    $set: {
-                                        tweet_app: doc.tweet_app,
-                                        tweet_total: doc.statuses_count
-                                    }
-                                }, function (err, doc) {
-                                    if (err) {
-                                        res.status(500).json({
-                                            "error": true,
-                                            "data": {
-                                                "message": "Cannot update statistics of this twitter account",
-                                                "url": process.env.CURRENT_DOMAIN
-                                            }
-                                        });
-                                        next();
-                                    } else if (doc == null) {
-                                        res.status(400).json({
-                                            "error": true,
-                                            "data": {
-                                                "message": "Cannot update statistics of this twitter account " +
-                                                "(User doesn't exists)",
-                                                "url": process.env.CURRENT_DOMAIN
-                                            }
-                                        });
-                                        next();
-                                    } else {
-                                        res.json({
-                                            "error": false,
-                                            "data": {
-                                                "message": "Updated statistics from twitter account: " +
-                                                twitterDoc.screen_name,
-                                                "url": process.env.CURRENT_DOMAIN + "/twitter",
-                                                "content": twitterDoc
-                                            }
-                                        });
-                                        next();
-                                    }
-                                });
-                            }
-                        });
-                    });
-                });
-            }
-        }, user_required.after);
-
-        /**
-         * Update statistics of in use twitter account of current user (by unique id).
-         * Local user authentication required.
-         *
-         * (Checked)
-         */
-        app.get('/twitter/update', user_required.before, function(req, res, next) {
-            TwitterCommons.getUserFromJWT(req, function(user){
-                Twitter.findOne({user: user.email, in_use: true}, function(err, doc){
-                    if(err){
-                        res.status(500).json({
-                            "error": true,
-                            "data" : {
-                                "message": "Cannot find this twitter account",
-                                "url": process.env.CURRENT_DOMAIN
-                            }
-                        });
-                        next();
-                    } else if(doc==null){
-                        res.status(400).json({
-                            "error": true,
-                            "data" : {
-                                "message": "This twitter account doesn't exists",
-                                "url": process.env.CURRENT_DOMAIN
-                            }
-                        });
-                        next();
-                    } else {
-                        var twitterDoc = doc;
-                        User.findOneAndUpdate({email: user.email}, {$set: {tweet_app: doc.tweet_app,
-                            tweet_total: doc.statuses_count}}, function(err, doc){
-                            if(err){
-                                res.status(500).json({
-                                    "error": true,
-                                    "data" : {
-                                        "message": "Cannot update statistics of this twitter account",
-                                        "url": process.env.CURRENT_DOMAIN
-                                    }
-                                });
-                                next();
-                            } else if(doc==null) {
-                                res.status(400).json({
-                                    "error": true,
-                                    "data" : {
-                                        "message": "Cannot update statistics of this twitter account " +
-                                        "(User doesn't exists)",
-                                        "url": process.env.CURRENT_DOMAIN
-                                    }
-                                });
-                                next();
-                            } else {
+                                TweetCommons.updateStatistics(doc, req.params.id, 0);
                                 res.json({
                                     "error": false,
-                                    "data" : {
+                                    "data": {
                                         "message": "Updated statistics from twitter account: " +
                                         twitterDoc.screen_name,
                                         "url": process.env.CURRENT_DOMAIN + "/twitter",
@@ -410,11 +286,10 @@
                                 next();
                             }
                         });
-                    }
+                    });
                 });
-            });
+            }
         }, user_required.after);
-
 
         /**
          * Set to not use one twitter accounts of current user (by unique id).
@@ -531,19 +406,15 @@
                                     var average = 0;
                                     var averageRetweets = 0;
                                     var averageFavorites = 0;
-                                    own.forEach(function (value) {
-                                        var date = new Date(value.created_at);
-                                        var day = date.getDate() + "/" + date.getMonth();
-                                        if (!object[day]) {
-                                            object[day] = 1;
-                                            retweets[day] = 0;
-                                            favorites[day] = 0;
-                                        } else {
-                                            object[day] = object[day] + 1;
-                                            retweets[day] = retweets[day] + value.retweet_count;
-                                            favorites[day] = favorites[day] + value.favorite_count;
+                                    for(var value in own){
+                                        if(own[value].user.id_str == req.params.id && own[value].retweeted == false) {
+                                            var date = new Date(own[value].created_at);
+                                            var day = date.getDate() + "/" + date.getMonth();
+                                            object[day] = (object[day] | 0) + 1;
+                                            retweets[day] = (retweets[day] | 0) + own[value].retweet_count;
+                                            favorites[day] = (favorites[day] | 0) + own[value].favorite_count;
                                         }
-                                    });
+                                    }
                                     var days = 0;
                                     for (var attribute in object) {
                                         days = days + 1;
@@ -655,8 +526,57 @@
                                             });
                                             next();
                                         }
-
                                     });
+                                }
+                            });
+                        }
+                    });
+                });
+            }
+        }, user_required.after);
+
+        /**
+         * Gets stats by date of one twitter account of current user by unique twitter account id.
+         * Including stats are based in mentions.
+         *
+         * (Checked)
+         */
+        app.get('/twitter/:followers/:id', user_required.before, function(req, res, next) {
+            if(req.params.followers!="followers"){
+                next();
+            } else {
+                TwitterCommons.getUserFromJWT(req, function (user) {
+                    Twitter.findOne({user: user.email, id_str: req.params.id}, function (err, account) {
+                        if (err) {
+                            res.status(500).json({
+                                "error": true,
+                                "data": {
+                                    "message": "Cannot retrieve Twitter followers",
+                                    "url": process.env.CURRENT_DOMAIN + "/"
+                                }
+                            });
+                            next();
+                        } else {
+                            TweetCommons.getFollowersList(account, function (results) {
+                                if (results.statusCode && results.statusCode != 200) {
+                                    res.status(results.statusCode).json({
+                                        "error": true,
+                                        "data": {
+                                            "message": "Cannot retrieve Twitter followers",
+                                            "url": process.env.CURRENT_DOMAIN + "/"
+                                        }
+                                    });
+                                    next();
+                                } else {
+                                    res.json({
+                                        "error": false,
+                                        "data": {
+                                            "message": "Twitter followers retrieved succesfully",
+                                            "url": process.env.CURRENT_DOMAIN + "/twitter",
+                                            "content": results.users
+                                        }
+                                    });
+                                    next();
                                 }
                             });
                         }

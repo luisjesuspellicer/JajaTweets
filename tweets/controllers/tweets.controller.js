@@ -249,9 +249,7 @@
                     next();
                 } else {
                     TweetCommons.deleteTweet(user, req.params.id, function (result) {
-
                         if (result.statusCode && result.statusCode != 200) {
-
                             res.status(result.statusCode).json({
                                 "error": true,
                                 "data": {

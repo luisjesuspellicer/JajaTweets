@@ -45,6 +45,14 @@ function statisticsCtrl($http, $scope, authentication, $location, errorsService,
     $scope.labels3 = [];
     $scope.series3 = [];
     $scope.data3 = [];
+    // Pie chart 1
+    $scope.labels4 = [];
+    $scope.data4 = [];
+    vm.accountsCount = 0;
+    vm.count = 0;
+    vm.count2 = 0;
+    vm.partialContent = [];
+    vm.array=[];
 
     lastDays();
 
@@ -55,6 +63,18 @@ function statisticsCtrl($http, $scope, authentication, $location, errorsService,
             $scope.labels3.push(d.getDate()+'/'+d.getMonth());
         }
     }
+
+    Array.prototype.getUnique = function(){
+        var u = {}, a = [];
+        for(var i = 0, l = this.length; i < l; ++i){
+            if(u.hasOwnProperty(this[i])) {
+                continue;
+            }
+            a.push(this[i]);
+            u[this[i]] = 1;
+        }
+        return a;
+    };
 
     if (!authentication.isLoggedIn()) {
         console.log('unauth');
@@ -96,9 +116,11 @@ function statisticsCtrl($http, $scope, authentication, $location, errorsService,
             vm.array11.push(value.followers_count);
             vm.array22.push(value.friends_count);
         });
+        vm.accountsCount = vm.accounts.length;
         angular.forEach(vm.accounts, function (value, key) {
             vm.createTable(value.id_str);
             vm.createPlot(value.id_str, value.screen_name);
+            vm.createPie(value.id_str);
         });
     });
 
@@ -149,5 +171,63 @@ function statisticsCtrl($http, $scope, authentication, $location, errorsService,
         });
     };
 
+    vm.createPie = function(id) {
+        $http.get('/twitter/followers/'+id,{
+            headers: {
+                'Authorization': 'Bearer ' + authentication.getToken()
+            }
+        }).error(function(data, status, headers, config) {
+            console.log("Create pie error");
+            errorsService.errorCode = status;
+            errorsService.errorMessage = data.data.message || "Undefined error";
+            $location.path('errors');
+        }).then(function(data) {
+            var content = data.data.data.content;
+            createLabelsForPie(content);
+            vm.partialContent.push(content);
+            vm.count = vm.count + 1;
+            if(vm.count == vm.accountsCount){
+                angular.forEach($scope.labels4, function(value, key){
+                    vm.array.push(0);
+                });
+                for(var partial in vm.partialContent){
+                    createDataForPie(vm.partialContent[partial]);
+                }
+            }
+        });
+    };
 
+    function createDataForPie(content){
+        var i = 0;
+        angular.forEach($scope.labels4, function(value, key){
+            var found = false;
+            for(var value2 in content){
+                if(value==content[value2].location || (content[value2].location == "" && value == "No location")){
+                    vm.array[i] += 1;
+                    found = true;
+                }
+            }
+            if(!found){
+                vm.array[i] += 0;
+            }
+            i++;
+        });
+        vm.count2 = vm.count2 + 1;
+        if(vm.count2==vm.accountsCount) {
+            $scope.data4 = vm.array;
+        }
+    }
+
+    function createLabelsForPie(content){
+        angular.forEach(content, function(value, key) {
+            if(value.location!=null) {
+                if(value.location==""){
+                    $scope.labels4.push("No location");
+                } else {
+                    $scope.labels4.push(value.location);
+                }
+            }
+        });
+        $scope.labels4 = $scope.labels4.getUnique();
+    }
 }
