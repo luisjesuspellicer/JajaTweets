@@ -22,6 +22,7 @@ function dashboardCtrl($scope, $http, authentication, $location, $sce,
                        errorsService, spinnerService) {
 
     var self = this;
+
     self.checked = "NO";
     console.log("User: Token: "+authentication.getToken());
     if (!authentication.isLoggedIn()) {
@@ -400,7 +401,7 @@ function dashboardCtrl($scope, $http, authentication, $location, $sce,
             errorsService.errorMessage = data.data.message || "Undefined error";
             $location.path('errors');
         }).then(function(data) {
-            self.link = null ; // clear the form so our user is ready to enter another
+            delete self.link ; // clear the form so our user is ready to enter another
             self.result = data.data.data.direct_url;
             spinnerService.hide('loadingSpinner');
         });
