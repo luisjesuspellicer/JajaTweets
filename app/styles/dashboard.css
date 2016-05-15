@@ -6,3 +6,15 @@
     height: calc(75vh); // Set this height to the appropriate size
     overflow-y: scroll; // Only add scroll to vertical column
 }
+
+.top {
+    border: 1px solid #ccc;
+}
+
+.border-left {
+    border-left: 1px solid #ccc;
+}
+
+.border-right {
+    border-right: 1px solid #ccc;
+}
