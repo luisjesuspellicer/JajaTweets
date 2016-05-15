@@ -76,7 +76,7 @@
          */
         app.post('/subscriptions', user_required.before, function(req, res, next) {
             TweetCommons.getUserFromJWT(req, function(user){
-                if(req.body.hashtag) {
+                if(req.body.hashtag && user) {
                     Twitter.findOne({user: user.user, in_use: true, subscribed: {hashtag: req.body.hashtag}},
                         function (err, doc) {
                         if (err) {
@@ -129,7 +129,7 @@
                     res.json({
                         "error": true,
                         "data": {
-                            "message": "Hashtag not provided (mandatory field)",
+                            "message": "Hashtag or user not provided (mandatory data)",
                             "url": process.env.CURRENT_DOMAIN
                         }
                     });
@@ -145,30 +145,41 @@
          */
         app.get('/subscriptions/:id', user_required.before, function(req, res, next) {
             TweetCommons.getUserFromJWT(req, function(user){
-                // Encode id for URL parameters
-                var id = encodeURIComponent(req.params.id).replace(/\(/g, "%28").replace(/\)/g, "%29");
-                TweetCommons.searchTweets(user, id, function(result){
-                    if(result.statusCode && result.statusCode != 200){
-                        res.status(result.statusCode).json({
-                            "error": true,
-                            "data" : {
-                                "message": "Cannot search with query: " + req.params.id,
-                                "url": process.env.CURRENT_DOMAIN
-                            }
-                        });
-                        next();
-                    } else {
-                        res.json({
-                            "error": false,
-                            "data" : {
-                                "message": "Search successful",
-                                "url": process.env.CURRENT_DOMAIN + "/tweets",
-                                "content": result
-                            }
-                        });
-                        next();
-                    }
-                });
+                if(user) {
+                    // Encode id for URL parameters
+                    var id = encodeURIComponent(req.params.id).replace(/\(/g, "%28").replace(/\)/g, "%29");
+                    TweetCommons.searchTweets(user, id, function (result) {
+                        if (result.statusCode && result.statusCode != 200) {
+                            res.status(result.statusCode).json({
+                                "error": true,
+                                "data": {
+                                    "message": "Cannot search with query: " + req.params.id,
+                                    "url": process.env.CURRENT_DOMAIN
+                                }
+                            });
+                            next();
+                        } else {
+                            res.json({
+                                "error": false,
+                                "data": {
+                                    "message": "Search successful",
+                                    "url": process.env.CURRENT_DOMAIN + "/tweets",
+                                    "content": result
+                                }
+                            });
+                            next();
+                        }
+                    });
+                } else {
+                    res.status(500).json({
+                        "error": true,
+                        "data": {
+                            "message": "Cannot get current user in use",
+                            "url": process.env.CURRENT_DOMAIN
+                        }
+                    });
+                    next();
+                }
             });
         }, user_required.after);
 
@@ -179,31 +190,42 @@
          */
         app.delete('/subscriptions/:id', user_required.before, function(req, res, next) {
             TweetCommons.getUserFromJWT(req, function(user){
-                var id = decodeURIComponent(req.params.id);
-                Twitter.findOneAndUpdate({user: user.user, in_use: true}, {$pull: {subscribed: {hashtag: id}}},
-                    {new: true},
-                    function(err, doc){
-                        if (err){
-                            res.status(500).json({
-                                "error": true,
-                                "data" : {
-                                    "message": "Cannot unsubscribe user from: " + req.params.id,
-                                    "url": process.env.CURRENT_DOMAIN
-                                }
-                            });
-                            next();
-                        } else {
-                            res.json({
-                                "error": false,
-                                "data" : {
-                                    "message": "User succesfully unsubscribed from: " + req.params.id,
-                                    "url": process.env.CURRENT_DOMAIN + "/tweets",
-                                    "content": doc.subscribed
-                                }
-                            });
-                            next();
+                if (user) {
+                    var id = decodeURIComponent(req.params.id);
+                    Twitter.findOneAndUpdate({user: user.user, in_use: true}, {$pull: {subscribed: {hashtag: id}}},
+                        {new: true},
+                        function (err, doc) {
+                            if (err) {
+                                res.status(500).json({
+                                    "error": true,
+                                    "data": {
+                                        "message": "Cannot unsubscribe user from: " + req.params.id,
+                                        "url": process.env.CURRENT_DOMAIN
+                                    }
+                                });
+                                next();
+                            } else {
+                                res.json({
+                                    "error": false,
+                                    "data": {
+                                        "message": "User succesfully unsubscribed from: " + req.params.id,
+                                        "url": process.env.CURRENT_DOMAIN + "/tweets",
+                                        "content": doc.subscribed
+                                    }
+                                });
+                                next();
+                            }
+                        });
+                } else {
+                    res.status(500).json({
+                        "error": true,
+                        "data": {
+                            "message": "Cannot get current user in use",
+                            "url": process.env.CURRENT_DOMAIN
                         }
                     });
+                    next();
+                }
             });
         }, user_required.after);
 

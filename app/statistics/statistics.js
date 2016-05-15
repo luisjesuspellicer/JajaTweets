@@ -93,8 +93,8 @@ function statisticsCtrl($http, $scope, authentication, $location, errorsService,
         errorsService.errorMessage = data.data.message || "Undefined error";
         $location.path('errors');
     }).then(function (data) {
-        vm.data1[0] = data.data.tweet_app;
-        vm.data1[1] = data.data.tweet_total;
+        vm.data1[0] = data.data.tweet_app | 0;
+        vm.data1[1] = data.data.tweet_total | 0;
     });
 
     $http.get('/twitter/', {
@@ -202,7 +202,7 @@ function statisticsCtrl($http, $scope, authentication, $location, errorsService,
         angular.forEach($scope.labels4, function(value, key){
             var found = false;
             for(var value2 in content){
-                if(value==content[value2].location || (content[value2].location == "" && value == "No location")){
+                if(value==content[value2].time_zone || (content[value2].time_zone == "" && value == "No time_zone")){
                     vm.array[i] += 1;
                     found = true;
                 }
@@ -220,11 +220,11 @@ function statisticsCtrl($http, $scope, authentication, $location, errorsService,
 
     function createLabelsForPie(content){
         angular.forEach(content, function(value, key) {
-            if(value.location!=null) {
-                if(value.location==""){
-                    $scope.labels4.push("No location");
+            if(value.time_zone!=null) {
+                if(value.time_zone==""){
+                    $scope.labels4.push("No time_zone");
                 } else {
-                    $scope.labels4.push(value.location);
+                    $scope.labels4.push(value.time_zone);
                 }
             }
         });

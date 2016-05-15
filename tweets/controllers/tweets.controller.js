@@ -13,9 +13,6 @@
     var user_required = require('../../config/policies.config').user_required;
     var TweetCommons = require('../../common/tweets');
 
-    // TODO: Quit in production
-    var util = require('util');
-
 
     module.exports = function(app) {
         
@@ -204,35 +201,45 @@
          */
         app.put('/tweets/:id', user_required.before, function(req, res, next) {
             TweetCommons.getUserFromJWT(req, function(user){
-                Tweet.findOneAndUpdate({"_id": req.params.id, user: user.user},
-                    {"date": req.body.date, "status": req.body.status}, {new: true}, function(err, result){
-                        if(err) {
-                            res.status(500).json({
-                                "error": true,
-                                "data": {
-                                    "message": "Cant't modify tweet",
-                                    "url": process.env.CURRENT_DOMAIN + "/tweets" + req.params.id
-                                }
-                            });
-                        } else if(result==null){
-                            res.status(404).json({
-                                "error": true,
-                                "data": {
-                                    "message": "Cant't modify tweet (doesn't exists)",
-                                    "url": process.env.CURRENT_DOMAIN + "/tweets" + req.params.id
-                                }
-                            });
-                        } else {
-                            res.status(200).json({
-                                "error": false,
-                                "data" : {
-                                    "message": "Tweet successfully changed",
-                                    "url": process.env.CURRENT_DOMAIN + "/tweets/" + req.params.id,
-                                    "content": result
-                                }
-                            });
+                if(user) {
+                    Tweet.findOneAndUpdate({"_id": req.params.id, user: user.user},
+                        {"date": req.body.date, "status": req.body.status}, {new: true}, function (err, result) {
+                            if (err) {
+                                res.status(500).json({
+                                    "error": true,
+                                    "data": {
+                                        "message": "Cannot modify tweet",
+                                        "url": process.env.CURRENT_DOMAIN + "/tweets" + req.params.id
+                                    }
+                                });
+                            } else if (result == null) {
+                                res.status(404).json({
+                                    "error": true,
+                                    "data": {
+                                        "message": "Cannot modify tweet (doesn't exists)",
+                                        "url": process.env.CURRENT_DOMAIN + "/tweets" + req.params.id
+                                    }
+                                });
+                            } else {
+                                res.status(200).json({
+                                    "error": false,
+                                    "data": {
+                                        "message": "Tweet successfully changed",
+                                        "url": process.env.CURRENT_DOMAIN + "/tweets/" + req.params.id,
+                                        "content": result
+                                    }
+                                });
+                            }
+                        });
+                } else {
+                    res.status(500).json({
+                        "error": true,
+                        "data": {
+                            "message": "Cannot modify tweet",
+                            "url": process.env.CURRENT_DOMAIN + "/tweets" + req.params.id
                         }
                     });
+                }
             });
         }, user_required.after);
 
@@ -526,35 +533,46 @@
                 next();
             } else {
                 TweetCommons.getUserFromJWT(req, function(user){
-                    Tweet.findOneAndRemove({_id: req.params.id, user: user.user}, function (err, tweet) {
-                        if (err) {
-                            res.status(500).json({
-                                "error": true,
-                                "data": {
-                                    "message": "Cannot delete pending tweet",
-                                    "url": process.env.CURRENT_DOMAIN
+                    if(user) {
+                        Tweet.findOneAndRemove({_id: req.params.id, user: user.user}, function (err, tweet) {
+                            if (err) {
+                                res.status(500).json({
+                                    "error": true,
+                                    "data": {
+                                        "message": "Cannot delete pending tweet",
+                                        "url": process.env.CURRENT_DOMAIN
 
-                                }
-                            });
-                        } else if(tweet==null){
-                            res.status(404).json({
-                                "error": true,
-                                "data": {
-                                    "message": "This pending tweet doesn't exists",
-                                    "url": process.env.CURRENT_DOMAIN
-                                }
-                            });
-                        } else {
-                            res.status(200).json({
-                                "error": false,
-                                "data": {
-                                    "message": "Successful delete",
-                                    "url": process.env.CURRENT_DOMAIN,
-                                    "content": tweet
-                                }
-                            });
-                        }
-                    });
+                                    }
+                                });
+                            } else if (tweet == null) {
+                                res.status(404).json({
+                                    "error": true,
+                                    "data": {
+                                        "message": "This pending tweet doesn't exists",
+                                        "url": process.env.CURRENT_DOMAIN
+                                    }
+                                });
+                            } else {
+                                res.status(200).json({
+                                    "error": false,
+                                    "data": {
+                                        "message": "Successful delete",
+                                        "url": process.env.CURRENT_DOMAIN,
+                                        "content": tweet
+                                    }
+                                });
+                            }
+                        });
+                    } else {
+                        res.status(500).json({
+                            "error": true,
+                            "data": {
+                                "message": "Cannot delete pending tweet",
+                                "url": process.env.CURRENT_DOMAIN
+
+                            }
+                        });
+                    }
                 });
             }
         }, user_required.after);

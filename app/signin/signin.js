@@ -39,8 +39,8 @@ function signinCtrl($http, authentication, $location, errorsService) {
                     console.log('->graphs');
                     $location.path('graphs');
                 } else {
-                    console.log('->dashboard');
-                    $location.path('dashboard');
+                    console.log('->accounts');
+                    $location.path('twitterAccounts');
                 }
             }, function (err) {
                 if (err.status==401 && err.data.message=="User not found") {
