@@ -2,16 +2,13 @@
 
 <div class="container">
     <div class="row">
-        <div class="col-md-offset-2 col-md-8 bg-success">
-
-            <h2 align="center">DASH BOARD</h2>
-
-        </div>
+        <div class="caption" style="text-align: center"><h3>Dashboard</h3></div>
     </div>
     <br>
 
     <div class="row">
-        <div class="col-md-offset-2 col-md-8 ">
+        <div class="col-md-6">
+            <div class="caption" style="text-align: center"><h4>Send a Tweet</h4></div>
             <form ng-submit="dashboard.newTweet()" name="tweet">
                 <textarea
                         ng-change="dashboard.countt()"
@@ -37,7 +34,8 @@
                         <p align="center" class="text-danger">{{140 - dashboard.tweet.length}}</p>
                     </div>
                 </ng-switch>
-                <h3>Delay publication</h3>
+
+                <h4 class="text-center">Delay publication</h4>
                 <div class="input-group">
                     <span class="input-group-addon">
                         <input type="checkbox"
@@ -56,22 +54,27 @@
 
                 </div><!-- /input-group -->
                 <br>
-                <button  class="btn btn-primary" align="right"
-                         type="submit"
-                         ng-disabled="dashboard.tweet.length == 0 ||
-                        dashboard.tweet.length > 140 ||
-                        dashboard.tweet == null ">
-                    Tweet
-                </button>
-
-            </form>
-            <br>
-            <form>
-                <div class="form-group">
-                    <input type="url" class="form-control input-lg text-center" placeholder="https://twitter.com/" ng-model="dashboard.link">
+                <div class="text-center">
+                    <button class="btn btn-primary btn-lg" align="right"
+                            type="submit"
+                            ng-disabled="dashboard.tweet.length == 0 ||
+                            dashboard.tweet.length > 140 ||
+                            dashboard.tweet == null ">
+                        Tweet
+                    </button>
                 </div>
 
-                <button type="submit" class="btn btn-primary btn-lg" ng-click="dashboard.add()">Short URL</button>
+            </form>
+        </div>
+        <div class="col-md-6">
+            <div class="caption" style="text-align: center"><h4>Short your URL</h4></div>
+            <form>
+                <div class="form-group text-center">
+                    <input type="url" class="form-control input-lg text-center" placeholder="https://twitter.com/" ng-model="dashboard.link">
+                </div>
+                <div class="text-center">
+                    <button type="submit" class="btn btn-primary btn-lg" ng-click="dashboard.add()">Short URL</button>
+                </div>
             </form>
             <spinner class="custom-spinner" name="loadingSpinner" img-src="spinner.gif"></spinner>
             <div ng-show="dashboard.result" class="alert alert-success alert-dismissible text-center center-block twitter-alert" role="alert">
