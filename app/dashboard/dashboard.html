@@ -164,7 +164,7 @@
 
                         </i>
                         <b ng-if="!accountTweets.retweeted">&nbsp;{{accountTweets.retweet_count}}&nbsp;</b>
-                        <i ng-click="dashboard.unfavorite(accountTweets.id_str, sub.hashtag)"
+                        <i ng-click="dashboard.unfavorite(accountTweets.id_str)"
                            ng-if="accountTweets.favorited "
                            class="fa fa-heart fa-lg"
                            aria-hidden="true"
@@ -172,7 +172,7 @@
 
                         </i>
                         <b ng-if="accountTweets.favorited">&nbsp;{{accountTweets.favorite_count}}</b>
-                        <i ng-click="dashboard.favorite(accountTweets.id_str, sub.hashtag)"
+                        <i ng-click="dashboard.favorite(accountTweets.id_str)"
                            ng-if="!accountTweets.favorited"
                            class="fa fa-heart fa-lg"
                            aria-hidden="true">
