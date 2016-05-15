@@ -54,31 +54,34 @@
 
                 </div><!-- /input-group -->
                 <br>
-                <div class="text-center">
-                    <button class="btn btn-primary btn-lg" align="right"
-                            type="submit"
-                            ng-disabled="dashboard.tweet.length == 0 ||
-                            dashboard.tweet.length > 140 ||
-                            dashboard.tweet == null ">
-                        Tweet
-                    </button>
-                </div>
+                <button  class="btn btn-primary" align="right"
+                         type="submit"
+                         ng-disabled="dashboard.tweet.length == 0 ||
+                         dashboard.tweet.length > 140 ||
+                         dashboard.tweet == null ">
+                    Tweet
+                </button>
 
             </form>
         </div>
         <div class="col-md-6">
             <div class="caption" style="text-align: center"><h4>Short your URL</h4></div>
             <form>
-                <div class="form-group text-center">
-                    <input type="url" class="form-control input-lg text-center" placeholder="https://twitter.com/" ng-model="dashboard.link">
+                <div class="form-group">
+                    <input type="url" class="form-control input-lg text-center"
+                           placeholder="https://twitter.com/" ng-model="dashboard.link" >
                 </div>
-                <div class="text-center">
-                    <button type="submit" class="btn btn-primary btn-lg" ng-click="dashboard.add()">Short URL</button>
-                </div>
+
+                <button type="submit" class="btn btn-primary" ng-click="dashboard.add()"
+                        ng-disabled="dashboard.link.length == 0 ||dashboard.link == null"> Short URL</button>
             </form>
             <spinner class="custom-spinner" name="loadingSpinner" img-src="spinner.gif"></spinner>
             <div ng-show="dashboard.result" class="alert alert-success alert-dismissible text-center center-block twitter-alert" role="alert">
-                <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <button
+                    type="button" class="close" data-dismiss="alert"
+                    aria-label="Close">
+                    <span aria-hidden="true">&times; </span>
+                </button>
                 <strong>Your URL has been shortened successfully:</strong><br/>
                 <a target="_blank" href="{{dashboard.result}}">{{dashboard.result}}</a>
             </div>
