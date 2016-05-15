@@ -5,7 +5,7 @@ PID=$(echo $!)
 nohup sleep 10 > /dev/null
 echo "Started"
 echo "Running mocha..."
-mocha
+mocha --timeout 20000
 RESULT=$(echo $?)
 kill -9 $PID
 echo "Finished"

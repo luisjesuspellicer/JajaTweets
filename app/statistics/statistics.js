@@ -125,7 +125,7 @@ function statisticsCtrl($http, $scope, authentication, $location, errorsService,
     });
 
     vm.createTable = function(id) {
-        $http.get('/twitter/statsDay/'+id,{
+        $http.get('/twitter/' + id + '/statsDay',{
             headers: {
                 'Authorization': 'Bearer ' + authentication.getToken()
             }
@@ -142,7 +142,7 @@ function statisticsCtrl($http, $scope, authentication, $location, errorsService,
     };
 
     vm.createPlot = function(id, screen_name) {
-        $http.get('/twitter/statsMentions/'+id,{
+        $http.get('/twitter/' + id + '/statsMentions',{
             headers: {
                 'Authorization': 'Bearer ' + authentication.getToken()
             }
@@ -172,7 +172,7 @@ function statisticsCtrl($http, $scope, authentication, $location, errorsService,
     };
 
     vm.createPie = function(id) {
-        $http.get('/twitter/followers/'+id,{
+        $http.get('/twitter/' + id + '/followers',{
             headers: {
                 'Authorization': 'Bearer ' + authentication.getToken()
             }

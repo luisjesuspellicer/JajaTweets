@@ -152,8 +152,7 @@
          * (Checked)
          */
         app.get('/twitter/:id', user_required.before, function(req, res, next) {
-            if(req.params.id == "notUse" || req.params.id == "update" || req.params.id == "statsMentions" ||
-                req.params.id == "statsHour" || req.params.id == "followers"){
+            if(req.params.id == "notUse"){
                 next();
             } else {
                 TwitterCommons.getUserFromJWT(req, function (user) {
@@ -373,166 +372,80 @@
          *
          * (Checked)
          */
-        app.get('/twitter/:statsDay/:id', user_required.before, function(req, res, next) {
-            if(req.params.statsDay!="statsDay"){
-                next();
-            } else {
-                TwitterCommons.getUserFromJWT(req, function(user){
-                    Twitter.findOne({user: user.email, id_str: req.params.id}, function(err, account){
-                        if(err){
-                            res.status(500).json({
-                                "error": true,
-                                "data": {
-                                    "message": "Cannot retrieve Twitter day stats",
-                                    "url": process.env.CURRENT_DOMAIN + "/"
-                                }
-                            });
-                            next();
-                        } else {
-                            TweetCommons.getOwnTweets(account, function (own) {
-                                if (own.statusCode && own.statusCode != 200) {
-                                    res.status(own.statusCode).json({
-                                        "error": true,
-                                        "data": {
-                                            "message": "Cannot retrieve Twitter day stats",
-                                            "url": process.env.CURRENT_DOMAIN + "/"
-                                        }
-                                    });
-                                    next();
-                                } else {
-                                    var object = {};
-                                    var retweets = {};
-                                    var favorites = {};
-                                    var average = 0;
-                                    var averageRetweets = 0;
-                                    var averageFavorites = 0;
-                                    for(var value in own){
-                                        if(own[value].user.id_str == req.params.id && own[value].retweeted == false) {
-                                            var date = new Date(own[value].created_at);
-                                            var day = date.getDate() + "/" + date.getMonth();
-                                            object[day] = (object[day] | 0) + 1;
-                                            retweets[day] = (retweets[day] | 0) + own[value].retweet_count;
-                                            favorites[day] = (favorites[day] | 0) + own[value].favorite_count;
-                                        }
+        app.get('/twitter/:id/statsDay', user_required.before, function(req, res, next) {
+            TwitterCommons.getUserFromJWT(req, function(user){
+                Twitter.findOne({user: user.email, id_str: req.params.id}, function(err, account){
+                    if(err){
+                        res.status(500).json({
+                            "error": true,
+                            "data": {
+                                "message": "Cannot retrieve Twitter day stats",
+                                "url": process.env.CURRENT_DOMAIN + "/"
+                            }
+                        });
+                        next();
+                    } else {
+                        TweetCommons.getOwnTweets(account, function (own) {
+                            if (own.statusCode && own.statusCode != 200) {
+                                res.status(own.statusCode).json({
+                                    "error": true,
+                                    "data": {
+                                        "message": "Cannot retrieve Twitter day stats",
+                                        "url": process.env.CURRENT_DOMAIN + "/"
                                     }
-                                    var days = 0;
-                                    for (var attribute in object) {
-                                        days = days + 1;
-                                        average = average + object[attribute];
-                                    }
-                                    average = average / days;
-                                    days = 0;
-                                    for (var attribute2 in retweets) {
-                                        days = days + 1;
-                                        averageRetweets = averageRetweets + retweets[attribute2];
-                                    }
-                                    averageRetweets = averageRetweets / days;
-                                    days = 0;
-                                    for (var attribute3 in favorites) {
-                                        days = days + 1;
-                                        averageFavorites = averageFavorites + favorites[attribute3];
-                                    }
-                                    averageFavorites = averageFavorites / days;
-                                    res.json({
-                                        "error": false,
-                                        "data": {
-                                            "message": "Twitter day stats retrieved succesfully",
-                                            "url": process.env.CURRENT_DOMAIN + "/twitter",
-                                            "content": {
-                                                screen_name: account.screen_name, avgTweetsDay: average,
-                                                avgRetweetsDay: averageRetweets, avgFavoritesDay: averageFavorites
-                                            }
-                                        }
-                                    });
-                                    next();
-                                }
-                            });
-                        }
-                    });
-                });
-            }
-        }, user_required.after);
-
-        /**
-         * Gets stats by date of one twitter account of current user by unique twitter account id.
-         * Including stats are based in mentions.
-         *
-         * (Checked)
-         */
-        app.get('/twitter/:statsMentions/:id', user_required.before, function(req, res, next) {
-            if(req.params.statsMentions!="statsMentions"){
-                next();
-            } else {
-                TwitterCommons.getUserFromJWT(req, function(user){
-                    Twitter.findOne({user: user.email, id_str: req.params.id}, function(err, account){
-                        if(err){
-                            res.status(500).json({
-                                "error": true,
-                                "data": {
-                                    "message": "Cannot retrieve Twitter mention stats",
-                                    "url": process.env.CURRENT_DOMAIN + "/"
-                                }
-                            });
-                            next();
-                        } else {
-                            TweetCommons.getOwnTweets(account, function (own) {
-                                if (own.statusCode && own.statusCode != 200) {
-                                    res.status(own.statusCode).json({
-                                        "error": true,
-                                        "data": {
-                                            "message": "Cannot retrieve Twitter mention stats",
-                                            "url": process.env.CURRENT_DOMAIN + "/"
-                                        }
-                                    });
-                                    next();
-                                } else {
-                                    var object = {};
-                                    own.forEach(function (value) {
-                                        var date = new Date(value.created_at);
+                                });
+                                next();
+                            } else {
+                                var object = {};
+                                var retweets = {};
+                                var favorites = {};
+                                var average = 0;
+                                var averageRetweets = 0;
+                                var averageFavorites = 0;
+                                for(var value in own){
+                                    if(own[value].user.id_str == req.params.id && own[value].retweeted == false) {
+                                        var date = new Date(own[value].created_at);
                                         var day = date.getDate() + "/" + date.getMonth();
-                                        if (!object[day]) {
-                                            object[day] = 0;
-                                        } else {
-                                            object[day] = 0;
-                                        }
-                                    });
-                                    TweetCommons.searchMentions(account, function (mentions) {
-                                        if (mentions.statusCode && mentions.statusCode != 200) {
-                                            res.status(mentions.statusCode).json({
-                                                "error": true,
-                                                "data": {
-                                                    "message": "Cannot retrieve Twitter mention stats",
-                                                    "url": process.env.CURRENT_DOMAIN + "/"
-                                                }
-                                            });
-                                            next();
-                                        } else {
-                                            mentions.forEach(function (value) {
-                                                var date = new Date(value.created_at);
-                                                var day = date.getDate() + "/" + date.getMonth();
-                                                if (!object[day]) {
-                                                    object[day] = 1;
-                                                } else {
-                                                    object[day] = object[day] + 1;
-                                                }
-                                            });
-                                            res.json({
-                                                "error": false,
-                                                "data": {
-                                                    "message": "Twitter mention stats retrieved succesfully",
-                                                    "url": process.env.CURRENT_DOMAIN + "/twitter",
-                                                    "content": object
-                                                }
-                                            });
-                                            next();
-                                        }
-                                    });
+                                        object[day] = (object[day] | 0) + 1;
+                                        retweets[day] = (retweets[day] | 0) + own[value].retweet_count;
+                                        favorites[day] = (favorites[day] | 0) + own[value].favorite_count;
+                                    }
                                 }
-                            });
-                        }
-                    });
+                                var days = 0;
+                                for (var attribute in object) {
+                                    days = days + 1;
+                                    average = average + object[attribute];
+                                }
+                                average = average / days;
+                                days = 0;
+                                for (var attribute2 in retweets) {
+                                    days = days + 1;
+                                    averageRetweets = averageRetweets + retweets[attribute2];
+                                }
+                                averageRetweets = averageRetweets / days;
+                                days = 0;
+                                for (var attribute3 in favorites) {
+                                    days = days + 1;
+                                    averageFavorites = averageFavorites + favorites[attribute3];
+                                }
+                                averageFavorites = averageFavorites / days;
+                                res.json({
+                                    "error": false,
+                                    "data": {
+                                        "message": "Twitter day stats retrieved succesfully",
+                                        "url": process.env.CURRENT_DOMAIN + "/twitter",
+                                        "content": {
+                                            screen_name: account.screen_name, avgTweetsDay: average,
+                                            avgRetweetsDay: averageRetweets, avgFavoritesDay: averageFavorites
+                                        }
+                                    }
+                                });
+                                next();
+                            }
+                        });
+                    }
                 });
-            }
+            });
         }, user_required.after);
 
         /**
@@ -541,48 +454,122 @@
          *
          * (Checked)
          */
-        app.get('/twitter/:followers/:id', user_required.before, function(req, res, next) {
-            if(req.params.followers!="followers"){
-                next();
-            } else {
-                TwitterCommons.getUserFromJWT(req, function (user) {
-                    Twitter.findOne({user: user.email, id_str: req.params.id}, function (err, account) {
-                        if (err) {
-                            res.status(500).json({
-                                "error": true,
-                                "data": {
-                                    "message": "Cannot retrieve Twitter followers",
-                                    "url": process.env.CURRENT_DOMAIN + "/"
-                                }
-                            });
-                            next();
-                        } else {
-                            TweetCommons.getFollowersList(account, function (results) {
-                                if (results.statusCode && results.statusCode != 200) {
-                                    res.status(results.statusCode).json({
-                                        "error": true,
-                                        "data": {
-                                            "message": "Cannot retrieve Twitter followers",
-                                            "url": process.env.CURRENT_DOMAIN + "/"
-                                        }
-                                    });
-                                    next();
-                                } else {
-                                    res.json({
-                                        "error": false,
-                                        "data": {
-                                            "message": "Twitter followers retrieved succesfully",
-                                            "url": process.env.CURRENT_DOMAIN + "/twitter",
-                                            "content": results.users
-                                        }
-                                    });
-                                    next();
-                                }
-                            });
-                        }
-                    });
+        app.get('/twitter/:id/statsMentions', user_required.before, function(req, res, next) {
+            TwitterCommons.getUserFromJWT(req, function(user){
+                Twitter.findOne({user: user.email, id_str: req.params.id}, function(err, account){
+                    if(err){
+                        res.status(500).json({
+                            "error": true,
+                            "data": {
+                                "message": "Cannot retrieve Twitter mention stats",
+                                "url": process.env.CURRENT_DOMAIN + "/"
+                            }
+                        });
+                        next();
+                    } else {
+                        TweetCommons.getOwnTweets(account, function (own) {
+                            if (own.statusCode && own.statusCode != 200) {
+                                res.status(own.statusCode).json({
+                                    "error": true,
+                                    "data": {
+                                        "message": "Cannot retrieve Twitter mention stats",
+                                        "url": process.env.CURRENT_DOMAIN + "/"
+                                    }
+                                });
+                                next();
+                            } else {
+                                var object = {};
+                                own.forEach(function (value) {
+                                    var date = new Date(value.created_at);
+                                    var day = date.getDate() + "/" + date.getMonth();
+                                    if (!object[day]) {
+                                        object[day] = 0;
+                                    } else {
+                                        object[day] = 0;
+                                    }
+                                });
+                                TweetCommons.searchMentions(account, function (mentions) {
+                                    if (mentions.statusCode && mentions.statusCode != 200) {
+                                        res.status(mentions.statusCode).json({
+                                            "error": true,
+                                            "data": {
+                                                "message": "Cannot retrieve Twitter mention stats",
+                                                "url": process.env.CURRENT_DOMAIN + "/"
+                                            }
+                                        });
+                                        next();
+                                    } else {
+                                        mentions.forEach(function (value) {
+                                            var date = new Date(value.created_at);
+                                            var day = date.getDate() + "/" + date.getMonth();
+                                            if (!object[day]) {
+                                                object[day] = 1;
+                                            } else {
+                                                object[day] = object[day] + 1;
+                                            }
+                                        });
+                                        res.json({
+                                            "error": false,
+                                            "data": {
+                                                "message": "Twitter mention stats retrieved succesfully",
+                                                "url": process.env.CURRENT_DOMAIN + "/twitter",
+                                                "content": object
+                                            }
+                                        });
+                                        next();
+                                    }
+                                });
+                            }
+                        });
+                    }
                 });
-            }
+            });
+        }, user_required.after);
+
+        /**
+         * Gets stats by date of one twitter account of current user by unique twitter account id.
+         * Including stats are based in mentions.
+         *
+         * (Checked)
+         */
+        app.get('/twitter/:id/followers', user_required.before, function(req, res, next) {
+            TwitterCommons.getUserFromJWT(req, function (user) {
+                Twitter.findOne({user: user.email, id_str: req.params.id}, function (err, account) {
+                    if (err) {
+                        res.status(500).json({
+                            "error": true,
+                            "data": {
+                                "message": "Cannot retrieve Twitter followers",
+                                "url": process.env.CURRENT_DOMAIN + "/"
+                            }
+                        });
+                        next();
+                    } else {
+                        TweetCommons.getFollowersList(account, function (results) {
+                            if (results.statusCode && results.statusCode != 200) {
+                                res.status(results.statusCode).json({
+                                    "error": true,
+                                    "data": {
+                                        "message": "Cannot retrieve Twitter followers",
+                                        "url": process.env.CURRENT_DOMAIN + "/"
+                                    }
+                                });
+                                next();
+                            } else {
+                                res.json({
+                                    "error": false,
+                                    "data": {
+                                        "message": "Twitter followers retrieved succesfully",
+                                        "url": process.env.CURRENT_DOMAIN + "/twitter",
+                                        "content": results.users
+                                    }
+                                });
+                                next();
+                            }
+                        });
+                    }
+                });
+            });
         }, user_required.after);
 
         // Return middleware.

@@ -41,8 +41,7 @@
                 .post("/users")
                 .set("Authorization", "Bearer " + admin_token)
                 .send({
-                    "email":"user@user",
-                    "password":"user",
+                    "email":"mocha@mocha",
                     "name": "user"
                 })
                 .expect("Content-type",/json/)
@@ -61,7 +60,7 @@
             server
                 .post("/login")
                 .send({
-                    "email":"user@user",
+                    "email":"mocha@mocha",
                     "password": user_password
                 })
                 .expect("Content-type",/json/)
@@ -104,7 +103,7 @@
                 .expect("Content-type",/json/)
                 .end(function(err, res){
                     res.status.should.equal(200);
-                    user_id = JSON.parse(res.text)[1]._id;
+                    user_id = JSON.parse(res.text)[3]._id;
                     admin_id = JSON.parse(res.text)[0]._id;
                     done();
                 });
@@ -166,7 +165,7 @@
             server
                 .put("/users/"+user_id)
                 .send({
-                    "email":"user@user",
+                    "email":"mocha@mocha",
                     "password":"user",
                     "name": "user_replaced"
                 })
@@ -183,7 +182,7 @@
             server
                 .put("/users/"+user_id)
                 .send({
-                    "email":"user@user",
+                    "email":"mocha@mocha",
                     "password":"user",
                     "name": "user"
                 })
