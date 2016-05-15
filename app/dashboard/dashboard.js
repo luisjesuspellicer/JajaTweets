@@ -15,10 +15,10 @@ angular.module('myApp.dashboard', ['ngRoute','chart.js', 'ngSanitize'])
     }]).controller('dashboardCtrl', dashboardCtrl);
 
 
-dashboardCtrl.$inject = ['$http', 'authentication', '$location', '$sce',
+dashboardCtrl.$inject = ['$scope', '$http', 'authentication', '$location', '$sce',
     'errorsService', 'spinnerService'];
 
-function dashboardCtrl($http, authentication, $location, $sce,
+function dashboardCtrl($scope, $http, authentication, $location, $sce,
                        errorsService, spinnerService) {
 
     var self = this;
@@ -32,7 +32,8 @@ function dashboardCtrl($http, authentication, $location, $sce,
     }
     self.tweet ="";
     self.num = -1;
-
+    $scope.formData = {};
+    $scope.result = null;
     self.own = function(id){
         var res = false;
 
@@ -168,7 +169,9 @@ function dashboardCtrl($http, authentication, $location, $sce,
     };
 
     self.favorite = function(id){
-
+        spinnerService.show('ownSpinner');
+        spinnerService.show('homeSpinner');
+        spinnerService.show('mentionsSpinner');
 
         //spinnerService.show('loadingSpinner');
         $http.get('/tweets/' + id + '/favorite', {
@@ -182,7 +185,11 @@ function dashboardCtrl($http, authentication, $location, $sce,
             $location.path('errors');
         }).then(function (data) {
             self.updateHome();
-            //self.updateMentions();
+            if(self.mentionss(id)){
+                self.updateMentions();
+            }else{
+                spinnerService.hide('mentionsSpinner')
+            }
             self.updateOwn();
 
         });
@@ -190,7 +197,9 @@ function dashboardCtrl($http, authentication, $location, $sce,
     };
 
     self.unfavorite = function(id){
-        //spinnerService.show('loadingSpinner');
+        spinnerService.show('ownSpinner');
+        spinnerService.show('homeSpinner');
+        spinnerService.show('mentionsSpinner');
         $http.get('/tweets/' + id + '/unfavorite',{
             headers: {
                 'Authorization': 'Bearer ' + authentication.getToken()
@@ -205,6 +214,8 @@ function dashboardCtrl($http, authentication, $location, $sce,
             self.updateHome();
             if(self.mentionss(id)){
                 self.updateMentions();
+            }else{
+                spinnerService.hide('mentionsSpinner')
             }
         });
     };
@@ -362,16 +373,57 @@ function dashboardCtrl($http, authentication, $location, $sce,
             self.sendTweet();
         }
     }
+    
+    self.shortURLs = function(){
+        if(self.tweet != null){
+            var regex = /(https?:\/\/[^\s]+)/ig;
+            return self.tweet.replace(regex, function (url) {
+                $http.post('/shortened/', $scope.formData, {
+                    headers: {
+                        'Authorization': 'Bearer ' + authentication.getToken()
+                    }
+                }).error(function(data, status, headers, config) {
+                    console.log("Add shortened URL error");
+                    errorsService.errorCode = status;
+                    errorsService.errorMessage = data.data.message || "Undefined error";
+                    $location.path('errors');
+                }).then(function(data) {
+                     // clear the form so our user is ready to enter another
+                    return data.data.data.direct_url;
+                });
+            });
+        }
 
-    self.parse = function(oneTweet){
-        if(oneTweet != null) {
+    }
+    self.parse = function(oneTweet) {
+        if (oneTweet != null) {
             var regex = /(https?:\/\/[^\s]+)/ig;
             return '<span>' + oneTweet.replace(regex, function (url) {
                     return '</span> ' + '<a href="' + url + '">' + url + ' </a><span>';
                 }) + '</span>';
-        }else{return ""}
+        } else {
+            return ""
+        }
 
     }
+    self.add = function() {
+        spinnerService.show('loadingSpinner');
+        $scope.result = null;
+        $http.post('/shortened/', $scope.formData, {
+            headers: {
+                'Authorization': 'Bearer ' + authentication.getToken()
+            }
+        }).error(function(data, status, headers, config) {
+            console.log("Add shortened URL error");
+            errorsService.errorCode = status;
+            errorsService.errorMessage = data.data.message || "Undefined error";
+            $location.path('errors');
+        }).then(function(data) {
+            $scope.formData = {}; // clear the form so our user is ready to enter another
+            $scope.result = data.data.data.direct_url;
+            spinnerService.hide('loadingSpinner');
+        });
+    };
     self.parse2 = function(oneHashtag){
         var regex2 = /(#[a-zA-Záéíúëïüöó0-9_\d]+)/ig;
         var axu = ""+oneHashtag;

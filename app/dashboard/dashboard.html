@@ -38,7 +38,6 @@
                     </div>
                 </ng-switch>
                 <h3>Delay publication</h3>
-                <p>Format: DD/MM/AAAA, HH:MM</p>
                 <div class="input-group">
                     <span class="input-group-addon">
                         <input type="checkbox"
@@ -50,14 +49,13 @@
                      </span>
 
                     <input type="text"
-                           value="01"
+                           placeholder="23/12/2017, 23:59"
                            class="form-control"
                            aria-label="..."
                            ng-model="dashboard.datePending">
 
                 </div><!-- /input-group -->
                 <br>
-
                 <button  class="btn btn-primary" align="right"
                          type="submit"
                          ng-disabled="dashboard.tweet.length == 0 ||
@@ -65,8 +63,23 @@
                         dashboard.tweet == null ">
                     Tweet
                 </button>
+
             </form>
+            <br>
+            <form>
+                <div class="form-group">
+                    <input type="url" class="form-control input-lg text-center" placeholder="https://twitter.com/" ng-model="formData.link">
+                </div>
+
+                <button type="submit" class="btn btn-primary btn-lg" ng-click="shAcc.add()">Short URL</button>
+            </form>
+            <spinner class="custom-spinner" name="loadingSpinner" img-src="spinner.gif"></spinner>
         </div>
+    </div>
+    <div ng-show="result" class="alert alert-success alert-dismissible text-center center-block twitter-alert" role="alert">
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <strong>Your URL has been shortened successfully:</strong><br/>
+        <a target="_blank" href="{{result}}">{{result}}</a>
     </div>
     <div class="row"><p></p></div>
     <div class="row">
@@ -82,40 +95,30 @@
                          width="50"
                          height="50">
                 </div>
-
                 <div class="media-body">
                     <h4 class="media-heading">{{own.user.name}}</h4>
                     <div ng-bind-html="own.text"></div>
                     <p>
                         <i ng-click="dashboard.unretweet(own.id_str)"
-
                            ng-if="own.retweeted "
                            class="fa fa-retweet fa-lg"
-                           aria-hidden="true" style="color:greenyellow;">
-
-                        </i>
+                           aria-hidden="true" style="color:greenyellow;"></i>
                         <b ng-if="own.retweeted ">&nbsp;{{own.retweet_count}}&nbsp;</b>
                         <i ng-click="dashboard.retweet(own.id_str)"
                            ng-if="!own.retweeted"
                            class="fa fa-retweet fa-lg"
-                           aria-hidden="true">
-
-                        </i>
+                           aria-hidden="true"></i>
                         <b ng-if="!own.retweeted">&nbsp;{{own.retweet_count}}&nbsp;</b>
                         <i ng-click="dashboard.unfavorite(own.id_str)"
                            ng-if="own.favorited "
                            class="fa fa-heart fa-lg"
                            aria-hidden="true"
-                           style="color:red;">
-
-                        </i>
+                           style="color:red;"></i>
                         <b ng-if="own.favorited">&nbsp;{{own.favorite_count}}</b>
                         <i ng-click="dashboard.favorite(own.id_str)"
                            ng-if="!own.favorited"
                            class="fa fa-heart fa-lg"
-                           aria-hidden="true">
-
-                        </i>
+                           aria-hidden="true"></i>
                         <b ng-if="!own.favorited">&nbsp;{{own.favorite_count}}</b>
                     </p>
                 </div>
@@ -212,34 +215,25 @@
                     <div ng-bind-html="mentions.text"></div>
                     <p>
                         <i ng-click="dashboard.unretweet(mentions.id_str)"
-
                            ng-if="mentions.retweeted "
                            class="fa fa-retweet fa-lg"
-                           aria-hidden="true" style="color:greenyellow;">
-
-                        </i>
+                           aria-hidden="true" style="color:greenyellow;"></i>
                         <b ng-if="mentions.retweeted ">&nbsp;{{mentions.retweet_count}}&nbsp;</b>
                         <i ng-click="dashboard.retweet(mentions.id_str)"
                            ng-if="!mentions.retweeted"
                            class="fa fa-retweet fa-lg"
-                           aria-hidden="true">
-
-                        </i>
+                           aria-hidden="true"></i>
                         <b ng-if="!mentions.retweeted">&nbsp;{{mentions.retweet_count}}&nbsp;</b>
                         <i ng-click="dashboard.unfavorite(mentions.id_str, sub.hashtag)"
                            ng-if="mentions.favorited "
                            class="fa fa-heart fa-lg"
                            aria-hidden="true"
-                           style="color:red;">
-
-                        </i>
+                           style="color:red;"></i>
                         <b ng-if="mentions.favorited">&nbsp;{{mentions.favorite_count}}</b>
                         <i ng-click="dashboard.favorite(mentions.id_str, sub.hashtag)"
                            ng-if="!mentions.favorited"
                            class="fa fa-heart fa-lg"
-                           aria-hidden="true">
-
-                        </i>
+                           aria-hidden="true"></i>
                         <b ng-if="!mentions.favorited">&nbsp;{{mentions.favorite_count}}</b>
                     </p>
                 </div>
