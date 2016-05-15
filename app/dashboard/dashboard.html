@@ -68,19 +68,20 @@
             <br>
             <form>
                 <div class="form-group">
-                    <input type="url" class="form-control input-lg text-center" placeholder="https://twitter.com/" ng-model="formData.link">
+                    <input type="url" class="form-control input-lg text-center" placeholder="https://twitter.com/" ng-model="dashboard.link">
                 </div>
 
-                <button type="submit" class="btn btn-primary btn-lg" ng-click="shAcc.add()">Short URL</button>
+                <button type="submit" class="btn btn-primary btn-lg" ng-click="dashboard.add()">Short URL</button>
             </form>
             <spinner class="custom-spinner" name="loadingSpinner" img-src="spinner.gif"></spinner>
+            <div ng-show="dashboard.result" class="alert alert-success alert-dismissible text-center center-block twitter-alert" role="alert">
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <strong>Your URL has been shortened successfully:</strong><br/>
+                <a target="_blank" href="{{dashboard.result}}">{{dashboard.result}}</a>
+            </div>
         </div>
     </div>
-    <div ng-show="result" class="alert alert-success alert-dismissible text-center center-block twitter-alert" role="alert">
-        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <strong>Your URL has been shortened successfully:</strong><br/>
-        <a target="_blank" href="{{result}}">{{result}}</a>
-    </div>
+
     <div class="row"><p></p></div>
     <div class="row">
         <div class="col-md-3 col-lg-3"  style="hight: 100%;overflow: scroll;">

@@ -374,27 +374,6 @@ function dashboardCtrl($scope, $http, authentication, $location, $sce,
         }
     }
     
-    self.shortURLs = function(){
-        if(self.tweet != null){
-            var regex = /(https?:\/\/[^\s]+)/ig;
-            return self.tweet.replace(regex, function (url) {
-                $http.post('/shortened/', $scope.formData, {
-                    headers: {
-                        'Authorization': 'Bearer ' + authentication.getToken()
-                    }
-                }).error(function(data, status, headers, config) {
-                    console.log("Add shortened URL error");
-                    errorsService.errorCode = status;
-                    errorsService.errorMessage = data.data.message || "Undefined error";
-                    $location.path('errors');
-                }).then(function(data) {
-                     // clear the form so our user is ready to enter another
-                    return data.data.data.direct_url;
-                });
-            });
-        }
-
-    }
     self.parse = function(oneTweet) {
         if (oneTweet != null) {
             var regex = /(https?:\/\/[^\s]+)/ig;
@@ -406,10 +385,12 @@ function dashboardCtrl($scope, $http, authentication, $location, $sce,
         }
 
     }
+    
     self.add = function() {
         spinnerService.show('loadingSpinner');
+
         $scope.result = null;
-        $http.post('/shortened/', $scope.formData, {
+        $http.post('/shortened/', {'link' : self.link}, {
             headers: {
                 'Authorization': 'Bearer ' + authentication.getToken()
             }
@@ -419,8 +400,8 @@ function dashboardCtrl($scope, $http, authentication, $location, $sce,
             errorsService.errorMessage = data.data.message || "Undefined error";
             $location.path('errors');
         }).then(function(data) {
-            $scope.formData = {}; // clear the form so our user is ready to enter another
-            $scope.result = data.data.data.direct_url;
+            self.link = null ; // clear the form so our user is ready to enter another
+            self.result = data.data.data.direct_url;
             spinnerService.hide('loadingSpinner');
         });
     };
