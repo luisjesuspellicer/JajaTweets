@@ -2,7 +2,11 @@
 
 <div class="container">
     <div class="row">
-        <div class="caption" style="text-align: center"><h3>Dashboard</h3></div>
+        <div class="col-md-offset-2 col-md-8 bg-success">
+
+            <h2 align="center">DASH BOARD</h2>
+
+        </div>
     </div>
     <br>
 
@@ -34,7 +38,7 @@
                     </div>
                 </ng-switch>
                 <h3>Delay publication</h3>
-                <p><b>Format:</b> DD/MM/AAAA, HH:MM</p>
+                <p>Format: DD/MM/AAAA, HH:MM</p>
                 <div class="input-group">
                     <span class="input-group-addon">
                         <input type="checkbox"
@@ -55,8 +59,8 @@
                 <br>
 
                 <button  class="btn btn-primary" align="right"
-                        type="submit"
-                        ng-disabled="dashboard.tweet.length == 0 ||
+                         type="submit"
+                         ng-disabled="dashboard.tweet.length == 0 ||
                         dashboard.tweet.length > 140 ||
                         dashboard.tweet == null ">
                     Tweet
@@ -68,7 +72,7 @@
     <div class="row">
         <div class="col-md-3 col-lg-3"  style="hight: 100%;overflow: scroll;">
             <h3>Own tweets</h3>
-            <spinner class="custom-spinner" name="loadingSpinner" img-src="spinner.gif"></spinner>
+            <spinner class="custom-spinner" name="ownSpinner" img-src="spinner.gif"></spinner>
             <div class="media" ng-repeat="own in dashboard.ownTweets track by $index">
 
                 <div class="media-left">
@@ -83,28 +87,43 @@
                     <h4 class="media-heading">{{own.user.name}}</h4>
                     <div ng-bind-html="own.text"></div>
                     <p>
+                        <i ng-click="dashboard.unretweet(own.id_str)"
+
+                           ng-if="own.retweeted "
+                           class="fa fa-retweet fa-lg"
+                           aria-hidden="true" style="color:greenyellow;">
+
+                        </i>
+                        <b ng-if="own.retweeted ">&nbsp;{{own.retweet_count}}&nbsp;</b>
+                        <i ng-click="dashboard.retweet(own.id_str)"
+                           ng-if="!own.retweeted"
+                           class="fa fa-retweet fa-lg"
+                           aria-hidden="true">
+
+                        </i>
+                        <b ng-if="!own.retweeted">&nbsp;{{own.retweet_count}}&nbsp;</b>
                         <i ng-click="dashboard.unfavorite(own.id_str)"
-                           ng-if="own.favorited"
+                           ng-if="own.favorited "
                            class="fa fa-heart fa-lg"
                            aria-hidden="true"
                            style="color:red;">
 
-                        </i><b ng-if="own.favorited ">&nbsp;{{own.favorite_count}}</b>
+                        </i>
+                        <b ng-if="own.favorited">&nbsp;{{own.favorite_count}}</b>
                         <i ng-click="dashboard.favorite(own.id_str)"
-                           ng-if="!own.favorited "
+                           ng-if="!own.favorited"
                            class="fa fa-heart fa-lg"
                            aria-hidden="true">
 
-                        </i><b ng-if="!own.favorited">&nbsp;{{own.favorite_count}}</b>
-                        <i ng-click="dashboard.destroy(own.id_str,$index)"
-                           class="glyphicon glyphicon-trash"
-                           aria-hidden="true"></i>
+                        </i>
+                        <b ng-if="!own.favorited">&nbsp;{{own.favorite_count}}</b>
                     </p>
                 </div>
             </div>
         </div>
         <div class="col-md-3 col-lg-3 "  style="hight: 100%;overflow: scroll;">
             <h3>Home</h3>
+            <spinner class="custom-spinner" name="homeSpinner" img-src="spinner.gif"></spinner>
             <div class="media" ng-repeat="accountTweets in dashboard.accountTweets">
                 <div class="media-left">
                     <img class="media-object img-rounded"
@@ -124,34 +143,37 @@
                            class="fa fa-retweet fa-lg"
                            aria-hidden="true" style="color:greenyellow;">
 
-                        </i><b ng-if="accountTweets.retweeted">&nbsp;{{accountTweets.retweet_count}}&nbsp;</b>
+                        </i>
+                        <b ng-if="accountTweets.retweeted ">&nbsp;{{accountTweets.retweet_count}}&nbsp;</b>
                         <i ng-click="dashboard.retweet(accountTweets.id_str)"
                            ng-if="!accountTweets.retweeted"
                            class="fa fa-retweet fa-lg"
                            aria-hidden="true">
 
-                        </i><b
-
-                            ng-if="!accountTweets.retweeted">&nbsp;{{accountTweets.retweet_count}}&nbsp;</b>
+                        </i>
+                        <b ng-if="!accountTweets.retweeted">&nbsp;{{accountTweets.retweet_count}}&nbsp;</b>
                         <i ng-click="dashboard.unfavorite(accountTweets.id_str, sub.hashtag)"
                            ng-if="accountTweets.favorited "
                            class="fa fa-heart fa-lg"
                            aria-hidden="true"
                            style="color:red;">
 
-                        </i><b ng-if="accountTweets.favorited">&nbsp;{{accountTweets.favorite_count}}</b>
+                        </i>
+                        <b ng-if="accountTweets.favorited">&nbsp;{{accountTweets.favorite_count}}</b>
                         <i ng-click="dashboard.favorite(accountTweets.id_str, sub.hashtag)"
                            ng-if="!accountTweets.favorited"
                            class="fa fa-heart fa-lg"
                            aria-hidden="true">
 
-                        </i><b ng-if="!accountTweets.favorited">&nbsp;{{accountTweets.favorite_count}}</b>
+                        </i>
+                        <b ng-if="!accountTweets.favorited">&nbsp;{{accountTweets.favorite_count}}</b>
                     </p>
                 </div>
             </div>
         </div>
         <div class="col-md-3 col-lg-3 "  style="hight: 100%;overflow: scroll;">
             <h3>Pending tweets</h3>
+            <spinner class="custom-spinner" name="pendingSpinner" img-src="spinner.gif"></spinner>
             <div class="media" ng-repeat="pending in dashboard.pendingTweets track by $index">
                 <div class="media-left">
                     <img class="media-object img-rounded"
@@ -175,6 +197,7 @@
         </div>
         <div class="col-md-3 col-lg-3 "  style="hight: 100%;overflow: scroll;">
             <h3>Mentions</h3>
+            <spinner class="custom-spinner" name="mentionsSpinner" img-src="spinner.gif"></spinner>
             <div class="media" ng-repeat="mentions in dashboard.mentions">
                 <div class="media-left">
                     <img class="media-object img-rounded"
@@ -188,38 +211,36 @@
                     <h4 class="media-heading">{{mentions.user.screen_name}}</h4>
                     <div ng-bind-html="mentions.text"></div>
                     <p>
-                        <i ng-click="dashboard.unretweet(mentions.id_str, sub.hashtag)"
+                        <i ng-click="dashboard.unretweet(mentions.id_str)"
 
-                           ng-if="mentions.retweeted &&
-                         !dashboard.own(mentions.id_str)"
+                           ng-if="mentions.retweeted "
                            class="fa fa-retweet fa-lg"
                            aria-hidden="true" style="color:greenyellow;">
 
-                        </i><b
-
-                            ng-if="mentions.retweeted &&
-                         !dashboard.own(mentions.id_str)">&nbsp;{{mentions.retweet_count}}&nbsp;</b>
-                        <i ng-click="dashboard.retweet(mentions.id_str, sub.hashtag)"
-                           ng-if="!mentions.retweeted &&
-                         !dashboard.own(mentions.id_str)" class="fa fa-retweet fa-lg"
+                        </i>
+                        <b ng-if="mentions.retweeted ">&nbsp;{{mentions.retweet_count}}&nbsp;</b>
+                        <i ng-click="dashboard.retweet(mentions.id_str)"
+                           ng-if="!mentions.retweeted"
+                           class="fa fa-retweet fa-lg"
                            aria-hidden="true">
 
-                        </i><b
-
-                            ng-if="!mentions.retweeted">&nbsp;{{mentions.retweet_count}}&nbsp;</b>
+                        </i>
+                        <b ng-if="!mentions.retweeted">&nbsp;{{mentions.retweet_count}}&nbsp;</b>
                         <i ng-click="dashboard.unfavorite(mentions.id_str, sub.hashtag)"
                            ng-if="mentions.favorited "
                            class="fa fa-heart fa-lg"
                            aria-hidden="true"
                            style="color:red;">
 
-                        </i><b ng-if="mentions.favorited">&nbsp;{{mentions.favorite_count}}</b>
+                        </i>
+                        <b ng-if="mentions.favorited">&nbsp;{{mentions.favorite_count}}</b>
                         <i ng-click="dashboard.favorite(mentions.id_str, sub.hashtag)"
                            ng-if="!mentions.favorited"
                            class="fa fa-heart fa-lg"
                            aria-hidden="true">
 
-                        </i><b ng-if="!mentions.favorited">&nbsp;{{mentions.favorite_count}}</b>
+                        </i>
+                        <b ng-if="!mentions.favorited">&nbsp;{{mentions.favorite_count}}</b>
                     </p>
                 </div>
             </div>

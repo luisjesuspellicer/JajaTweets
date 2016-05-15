@@ -33,7 +33,27 @@ function dashboardCtrl($http, authentication, $location, $sce,
     self.tweet ="";
     self.num = -1;
 
+    self.own = function(id){
+        var res = false;
 
+        for (var i = 0; i < self.ownTweets.length; i++) {
+            if (self.ownTweets[i].id_str == id) {
+                res = true;
+            }
+        }
+        return res;
+    }
+    self.mentionss = function(id){
+        var res = false;
+
+        for (var i = 0; i < self.mentions.length; i++) {
+            if (self.mentions[i].id_str == id) {
+                res = true;
+            }
+        }
+        return res;
+
+    }
     self.countt = function(){
         if(self.tweet != undefined){
             
@@ -95,8 +115,11 @@ function dashboardCtrl($http, authentication, $location, $sce,
     }
 
     self.retweet = function(id){
-        if(self.own(id)) {
-            spinnerService.show('loadingSpinner');
+        if(!self.own(id)) {
+            spinnerService.show('ownSpinner');
+            spinnerService.show('homeSpinner');
+            spinnerService.show('mentionsSpinner');
+
             $http.get('/tweets/' + id + '/retweet', {
                 headers: {
                     'Authorization': 'Bearer ' + authentication.getToken()
@@ -107,13 +130,21 @@ function dashboardCtrl($http, authentication, $location, $sce,
                 errorsService.errorMessage = data.data.message || "Undefined error";
                 $location.path('errors');
             }).then(function (data) {
-                self.update(hashtag);
+                self.updateOwn();
+                self.updateHome();
+                if(self.mentionss(id)){
+                    self.updateMentions();
+                }else{
+                    spinnerService.hide('mentionsSpinner')
+                }
             });
         }
     };
 
-    self.unretweet = function(id, hashtag){
-        spinnerService.show('loadingSpinner');
+    self.unretweet = function(id){
+        spinnerService.show('ownSpinner');
+        spinnerService.show('homeSpinner');
+        spinnerService.show('mentionsSpinner');
         $http.get('/tweets/' + id + '/unretweet',{
             headers: {
                 'Authorization': 'Bearer ' + authentication.getToken()
@@ -124,14 +155,22 @@ function dashboardCtrl($http, authentication, $location, $sce,
             errorsService.errorMessage = data.data.message || "Undefined error";
             $location.path('errors');
         }).then(function(data) {
-            self.update(hashtag);
+            self.updateOwn();
+            // First look is tweet is in mentions.+
+            if(self.mentionss(id)){
+                self.updateMentions();
+            }else{
+                spinnerService.hide('mentionsSpinner')
+            }
+            self.updateHome();
+
         });
     };
 
     self.favorite = function(id){
 
 
-        spinnerService.show('loadingSpinner');
+        //spinnerService.show('loadingSpinner');
         $http.get('/tweets/' + id + '/favorite', {
             headers: {
                 'Authorization': 'Bearer ' + authentication.getToken()
@@ -150,8 +189,8 @@ function dashboardCtrl($http, authentication, $location, $sce,
 
     };
 
-    self.unfavorite = function(id, hashtag){
-        spinnerService.show('loadingSpinner');
+    self.unfavorite = function(id){
+        //spinnerService.show('loadingSpinner');
         $http.get('/tweets/' + id + '/unfavorite',{
             headers: {
                 'Authorization': 'Bearer ' + authentication.getToken()
@@ -162,7 +201,11 @@ function dashboardCtrl($http, authentication, $location, $sce,
             errorsService.errorMessage = data.data.message || "Undefined error";
             $location.path('errors');
         }).then(function(data) {
-            self.update(hashtag);
+            self.updateOwn()
+            self.updateHome();
+            if(self.mentionss(id)){
+                self.updateMentions();
+            }
         });
     };
 
@@ -184,8 +227,8 @@ function dashboardCtrl($http, authentication, $location, $sce,
 
                 auxx[i].text = $sce.trustAsHtml(self.parse2(self.parse3(self.parse(auxx[i].text))));
             }
+            spinnerService.hide('ownSpinner');
             self.ownTweets = auxx;
-            spinnerService.hide('loadingSpinner');
         });
     }
 
@@ -205,6 +248,7 @@ function dashboardCtrl($http, authentication, $location, $sce,
 
                 auxx[i].text = $sce.trustAsHtml(self.parse2(self.parse3(self.parse(auxx[i].text))));
             }
+            spinnerService.hide('homeSpinner');
             self.accountTweets = auxx;
         });
     }
@@ -225,6 +269,7 @@ function dashboardCtrl($http, authentication, $location, $sce,
 
                 auxx[i].status = $sce.trustAsHtml(self.parse2(self.parse3(self.parse(auxx[i].text))));
             }
+            spinnerService.hide('pendingSpinner');
             self.pendingTweets = auxx;
         });
     }
@@ -245,7 +290,7 @@ function dashboardCtrl($http, authentication, $location, $sce,
 
                 auxx[i].text = $sce.trustAsHtml(self.parse2(self.parse3(self.parse(auxx[i].text))));
             }
-
+            spinnerService.hide('mentionsSpinner');
             self.mentions = auxx;
 
         });
@@ -327,7 +372,6 @@ function dashboardCtrl($http, authentication, $location, $sce,
         }else{return ""}
 
     }
-
     self.parse2 = function(oneHashtag){
         var regex2 = /(#[a-zA-Záéíúëïüöó0-9_\d]+)/ig;
         var axu = ""+oneHashtag;
@@ -346,16 +390,8 @@ function dashboardCtrl($http, authentication, $location, $sce,
                     + '?src=hash' + '">' + user +' </a><span>';
             }) + '</span>';
     }
-    self.own = function(id){
-        var res = false;
 
-        for (var i = 0; i < self.ownTweets.length; i++) {
-            if (self.ownTweets[i].id_str == id) {
-                res = true;
-            }
-        }
-        return res;
-    }
+
 
     self.updateOwn();
     self.updateHome();
