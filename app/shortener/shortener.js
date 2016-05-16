@@ -1,3 +1,10 @@
+/**
+ * Authors: Diego Ceresuela, Raúl Piracés and Luis Jesús Pellicer.
+ * Date: 16-05-2016
+ * Name file: shortener.js
+ * Description: Controller for the view shortener.
+ * It controls the shortener. Let short url's and give the short result.
+ */
 'use strict';
 
 angular.module('myApp.shortener', ['ngRoute', 'angularSpinners'])
@@ -20,6 +27,9 @@ function shortCtrl($http, authentication, $scope, spinnerService, errorsService,
     $scope.formData = {};
     $scope.result = null;
 
+    /*
+     * Be sure that the user is logged in.
+     */
     if (!authentication.isLoggedIn()) {
         console.log('unauth');
         errorsService.errorCode = 401;
@@ -27,6 +37,9 @@ function shortCtrl($http, authentication, $scope, spinnerService, errorsService,
         $location.path('errors');
     }
 
+    /*
+     * Send url to backend shortenner and show the response in the view.
+     */
     self.add = function() {
         spinnerService.show('loadingSpinner');
         $scope.result = null;

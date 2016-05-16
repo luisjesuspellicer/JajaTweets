@@ -1,10 +1,18 @@
+<!--
+ * Authors: Diego Ceresuela, Raúl Piracés and Luis Jesús Pellicer.
+ * Date: 16-05-2016
+ * Name file: shortener.html
+ * Description: It show options for the shortener. Let short url's and give the short result.
+ -->
 <div class="caption" style="text-align: center"><h3>URL Shortener</h3></div>
 
 <div id="todo-form" class="row">
     <div class="col-sm-8 col-sm-offset-2 text-center">
+        <!-- Form to input url -->
         <form>
             <div class="form-group">
-                <input type="url" class="form-control input-lg text-center" placeholder="https://twitter.com/" ng-model="formData.link">
+                <input type="url" class="form-control input-lg text-center"
+                       placeholder="https://twitter.com/" ng-model="formData.link">
             </div>
 
             <button type="submit" class="btn btn-primary btn-lg" ng-click="shAcc.add()">Short URL</button>
@@ -13,8 +21,14 @@
     </div>
 </div>
 
-<div ng-show="result" class="alert alert-success alert-dismissible text-center center-block twitter-alert" role="alert">
-    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+<!-- Results -->
+<div ng-show="result"
+     class="alert alert-success alert-dismissible
+      text-center center-block twitter-alert" role="alert">
+    <button type="button" class="close" data-dismiss="alert"
+            aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+    </button>
     <strong>Your URL has been shortened successfully:</strong><br/>
     <a target="_blank" href="{{result}}">{{result}}</a>
 </div>
