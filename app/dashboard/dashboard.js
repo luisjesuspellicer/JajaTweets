@@ -317,7 +317,6 @@ function dashboardCtrl($scope, $http, authentication, $location, $sce,
             self.accountTweets = auxx;
         });
     }
-
     self.updatePending = function(){
         $http.get('/tweets/pending', {
             headers: {
@@ -331,14 +330,14 @@ function dashboardCtrl($scope, $http, authentication, $location, $sce,
         }).then(function (data) {
             var auxx = data.data.data.content;
             for (var i = 0;i<auxx.length; i++){
-
-                auxx[i].status = $sce.trustAsHtml(self.parse2(self.parse3(self.parse(auxx[i].text))));
+                console.log(auxx[i].status);
+                auxx[i].status = $sce.trustAsHtml(self.parse2(self.parse3(self.parse(auxx[i].status))));
+                console.log(auxx[i].status);
             }
             spinnerService.hide('pendingSpinner');
             self.pendingTweets = auxx;
         });
     }
-
     self.updateMentions = function(){
         $http.get('/mentions', {
             headers: {
@@ -367,7 +366,17 @@ function dashboardCtrl($scope, $http, authentication, $location, $sce,
 
             self.dat = {"status": self.tweet, "date": validDate};
         }else{
-            self.dat = {"status": self.tweet, "date": new Date()};
+            validDate = new Date();
+            self.dat = {"status": self.tweet, "date": validDate};
+        }
+        if(validDate > new Date()){
+            spinnerService.show('pendingSpinner');
+
+            self.updatePending();
+        }else{
+            spinnerService.show('ownSpinner');
+            spinnerService.show('homeSpinner');
+
         }
 
         $http({
@@ -384,17 +393,21 @@ function dashboardCtrl($scope, $http, authentication, $location, $sce,
             errorsService.errorMessage = data.data.message || "Undefined error";
             $location.path('errors');
         }).then(function (data) {
-            spinnerService.hide('ownSpinner');
-            spinnerService.hide('homeSpinner');
-            self.tweet = "";
-            self.ownTweets = self.updateOwn()
+            if(validDate > new Date()){
+
+                self.updatePending();
+            }else{
+                spinerService.show('ownSpinner');
+                spinnerService.show('homeSpinner');
+                self.tweet = "";
+                self.ownTweets = self.updateHome();
+                self.ownTweets = self.updateOwn();
+            }
 
         });
     }
-
     self.newTweet = function(){
-        spinnerService.show('ownSpinner');
-        spinnerService.show('homeSpinner');
+        spinnerService.show('pendingSpinner');
         if(self.checked == 'YES'){
             //console.log("Con check");
 
@@ -417,9 +430,9 @@ function dashboardCtrl($scope, $http, authentication, $location, $sce,
 
                     var min = t[1];
                     var hours = t[0];
-
-                    self.sendTweet(new Date(parseInt(year),parseInt(month),
-                        parseInt(day),parseInt(hours),parseInt(min),0,0));
+                    var d = new Date(new Date(parseInt(year),parseInt(month),
+                        parseInt(day),parseInt(hours),parseInt(min),0,0))
+                    self.sendTweet(d);
                 }else {
                     errorsService.errorCode = status;
                     errorsService.errorMessage = data.data.message || "Undefined error";
@@ -427,6 +440,8 @@ function dashboardCtrl($scope, $http, authentication, $location, $sce,
                 }
             }
         }else {
+            spinnerService.show('ownSpinner');
+            spinnerService.show('homeSpinner');
             self.sendTweet();
         }
     }
@@ -539,7 +554,6 @@ function dashboardCtrl($scope, $http, authentication, $location, $sce,
         self.updateRtMentions(id, type);
 
     }
-
     self.updateRtHome = function(id, type){
 
         for (var i = 0; i < self.accountTweets.length; i++) {
@@ -556,7 +570,6 @@ function dashboardCtrl($scope, $http, authentication, $location, $sce,
             }
         }
     }
-
     self.updateRtMentions = function(id, type){
         for (var i = 0; i < self.mentions.length; i++) {
             if (self.mentions[i].id_str == id) {
@@ -573,9 +586,9 @@ function dashboardCtrl($scope, $http, authentication, $location, $sce,
     }
 
 
-    self.updateOwn();
-    self.updateHome();
-    self.updateMentions();
+   // self.updateOwn();
+    //self.updateHome();
+   // self.updateMentions();
     self.updatePending();
 
 }
