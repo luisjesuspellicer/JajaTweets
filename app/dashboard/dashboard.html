@@ -1,11 +1,27 @@
-
+<!--
+ * Authors: Diego Ceresuela, Raúl Piracés and Luis Jesús Pellicer.
+ * Date: 16-05-2016
+ * Name file: dashboard.html
+ * Description: View for the view dashboard.
+ * It show the dashboard, show own tweets, tweets from an account, mention tweets
+ * and pending tweets. This show options to:
+ * - Remove own tweets.
+ * - Make and unmake favourite in own, account and mention tweets.
+ * - Make and unmake retweet in account and mention tweets.
+ * - Create new tweet in the moment.
+ * - Create pending tweet (must select the date and hour).
+ * - Short urls with own shortener.
+ *
+ -->
 
 <div class="container">
+    <!-- Principal title  -->
     <div class="row">
         <div class="caption" style="text-align: center"><h3>Dashboard</h3></div>
     </div>
     <br>
 
+    <!-- Options to create new tweet -->
     <div class="row">
         <div class="col-md-6 border-right">
             <div class="caption" style="text-align: center"><h4>Send a Tweet</h4></div>
@@ -66,6 +82,8 @@
             </form>
         </div>
         <div class="col-md-6">
+
+            <!-- Url shortener -->
             <div class="caption" style="text-align: center"><h4>Short your URL</h4></div>
             <form>
                 <div class="form-group">
@@ -91,7 +109,11 @@
     </div>
     <br/><br/>
     <div class="row"><p></p></div>
+
+    <!-- Different types of tweets in one twitter account -->
     <div class="row">
+
+        <!-- Own Tweets -->
         <div class="col-md-3 col-lg-3 top"  style="hight: 100%;overflow: scroll;">
             <h3>Own tweets</h3>
             <spinner class="custom-spinner" name="ownSpinner" img-src="spinner.gif"></spinner>
@@ -137,6 +159,8 @@
                 </div>
             </div>
         </div>
+
+        <!-- Home Tweets -->
         <div class="col-md-3 col-lg-3 top"  style="hight: 100%;overflow: scroll;">
             <h3>Home</h3>
             <spinner class="custom-spinner" name="homeSpinner" img-src="spinner.gif"></spinner>
@@ -187,6 +211,8 @@
                 </div>
             </div>
         </div>
+
+        <!-- Pending Tweets -->
         <div class="col-md-3 col-lg-3 top"  style="hight: 100%;overflow: scroll;">
             <h3>Pending tweets</h3>
             <spinner class="custom-spinner" name="pendingSpinner" img-src="spinner.gif"></spinner>
@@ -211,6 +237,8 @@
                 </div>
             </div>
         </div>
+
+        <!-- Mention Tweets -->
         <div class="col-md-3 col-lg-3 top"  style="hight: 100%;overflow: scroll;">
             <h3>Mentions</h3>
             <spinner class="custom-spinner" name="mentionsSpinner" img-src="spinner.gif"></spinner>
@@ -252,5 +280,6 @@
                 </div>
             </div>
         </div>
+
     </div>
 </div>

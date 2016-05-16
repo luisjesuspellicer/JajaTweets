@@ -1,5 +1,8 @@
 /**
- * Created by piraces on 22/4/16.
+ * Authors: Diego Ceresuela, Raúl Piracés and Luis Jesús Pellicer.
+ * Date: 16-05-2016
+ * Name file: auth.controller.js
+ * Description: Controller for provide twitter authentication, necessary jwt.
  */
 (function() {
 
@@ -25,6 +28,7 @@
             passport.authenticate('twitter', { failureRedirect: '/login' }),
             function(req, res) {
                 if(req.session.jwt) {
+
                     // Gets jwt from authorization header
                     var payload = req.session.jwt.split('.')[1];
                     payload = atob(payload);
@@ -48,11 +52,15 @@
                         "profile_image_url": mainContent.profile_image_url,
                         "tweet_app": 0
                     });
+
+                    // Update user.
                     newTwitter.save(function (err) {
                         if (err) {
+
                             // Error updating user
                             res.redirect(process.env.CURRENT_DOMAIN + '/#/errors');
                         } else {
+
                             // Successful authentication
                             // Now setting as active account (using)
                             request({
@@ -73,6 +81,8 @@
                         }
                     });
                 } else {
+
+                    // If not have jwt -> error.
                     res.redirect(process.env.CURRENT_DOMAIN + '/#/errors');
                 }
             });

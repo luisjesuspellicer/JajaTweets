@@ -1,5 +1,8 @@
 /**
- * Created by piraces on 22/4/16.
+ * Authors: Diego Ceresuela, Raúl Piracés and Luis Jesús Pellicer.
+ * Date: 16-05-2016
+ * Name file: twitter.controller.js
+ * Description: Controller for provide Twitter accounts administration with system users.
  */
 (function() {
 
@@ -54,8 +57,6 @@
         /**
          * Save a twitter account for current user.
          * Local user authentication required.
-         *
-         * (Checked)
          */
         app.post('/twitter', user_required.before, function(req, res, next) {
             TwitterCommons.getUserFromJWT(req, function(user){
@@ -88,8 +89,6 @@
         /**
          * Deletes all twitter accounts of current user.
          * Local user authentication required.
-         *
-         * (Checked)
          */
         app.delete('/twitter', user_required.before, function(req, res, next) {
             TwitterCommons.getUserFromJWT(req, function(user){
@@ -120,8 +119,6 @@
         /**
          * Set to not use all twitter accounts of current user (by unique id).
          * Local user authentication required.
-         *
-         * (Checked)
          */
         app.get('/twitter/notUse', user_required.before, function(req, res, next) {
             TwitterCommons.notUseAnyAccount(req, function(err){
@@ -148,8 +145,6 @@
         /**
          * Gets one twitter accounts of current user (by unique id).
          * Local user authentication required.
-         *
-         * (Checked)
          */
         app.get('/twitter/:id', user_required.before, function(req, res, next) {
             if(req.params.id == "notUse"){
@@ -186,8 +181,6 @@
          * Set to use one twitter accounts of current user (by unique id).
          * Also set to not use any other possible twitter accounts of current user.
          * Local user authentication required.
-         *
-         * (Checked)
          */
         app.get('/twitter/:id/use', user_required.before, function(req, res, next) {
             TwitterCommons.getUserFromJWT(req, function(user){
@@ -242,8 +235,6 @@
         /**
          * Update statistics of one twitter account of current user (by unique id).
          * Local user authentication required.
-         *
-         * (Checked)
          */
         app.get('/twitter/:id/update', user_required.before, function(req, res, next) {
             if(req.params.id=="update" || req.params.id=="notUse"){
@@ -293,8 +284,6 @@
         /**
          * Set to not use one twitter accounts of current user (by unique id).
          * Local user authentication required.
-         *
-         * (Checked)
          */
         app.get('/twitter/:id/notUse', user_required.before, function(req, res, next) {
             TwitterCommons.getUserFromJWT(req, function(user){
@@ -336,8 +325,6 @@
         /**
          * Deletes one twitter account of current user (by unique id).
          * Local user authentication required.
-         *
-         * (Checked)
          */
         app.delete('/twitter/:id', user_required.before, function(req, res, next) {
             TwitterCommons.getUserFromJWT(req, function(user){
@@ -369,8 +356,6 @@
         /**
          * Gets stats by day of one twitter account of current user by unique twitter account id.
          * Including stats are tweets/day, retweets/day, favorites/day.
-         *
-         * (Checked)
          */
         app.get('/twitter/:id/statsDay', user_required.before, function(req, res, next) {
             TwitterCommons.getUserFromJWT(req, function(user){
@@ -451,8 +436,6 @@
         /**
          * Gets stats by date of one twitter account of current user by unique twitter account id.
          * Including stats are based in mentions.
-         *
-         * (Checked)
          */
         app.get('/twitter/:id/statsMentions', user_required.before, function(req, res, next) {
             TwitterCommons.getUserFromJWT(req, function(user){
@@ -529,8 +512,6 @@
         /**
          * Gets stats by date of one twitter account of current user by unique twitter account id.
          * Including stats are based in mentions.
-         *
-         * (Checked)
          */
         app.get('/twitter/:id/followers', user_required.before, function(req, res, next) {
             TwitterCommons.getUserFromJWT(req, function (user) {

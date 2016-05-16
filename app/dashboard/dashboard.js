@@ -527,7 +527,7 @@ function dashboardCtrl($scope, $http, authentication, $location, $sce,
     }
 
     /*
-     * Parse 
+     * Parse urls to show it in interface.
      */
     self.parse = function(oneTweet) {
         if (oneTweet != null) {
@@ -541,6 +541,9 @@ function dashboardCtrl($scope, $http, authentication, $location, $sce,
 
     }
 
+    /*
+     * Update in memory tweets when user click like.
+     */
     self.updateLikeById= function(id,type ){
         self.likeOwn(id, type);
         self.likeHome(id, type);
@@ -593,6 +596,9 @@ function dashboardCtrl($scope, $http, authentication, $location, $sce,
         spinnerService.hide('mentionsSpinner');
     }
 
+    /*
+     * Send url to backend shortenner and show the response in the view.
+     */
     self.add = function() {
         spinnerService.show('loadingSpinner');
 
@@ -612,6 +618,10 @@ function dashboardCtrl($scope, $http, authentication, $location, $sce,
             spinnerService.hide('loadingSpinner');
         });
     };
+
+    /*
+     * Parse hashtag to show it in interface.
+     */
     self.parse2 = function(oneHashtag){
         var regex2 = /(#[a-zA-Záéíúëïüöó0-9_\d]+)/ig;
         var axu = ""+oneHashtag;
@@ -621,6 +631,10 @@ function dashboardCtrl($scope, $http, authentication, $location, $sce,
                     + '?src=hash' + '">' + hash +' </a><span>';
             }) + '</span>';
     }
+
+    /*
+     * Parse user mention to show it in interface.
+     */
     self.parse3 = function(oneUser){
         var regex3 = /(@[a-zA-Záéíúëïüöó0-9_\d]+)/ig;
         var axu = ""+ oneUser;
@@ -631,6 +645,10 @@ function dashboardCtrl($scope, $http, authentication, $location, $sce,
             }) + '</span>';
     }
 
+    /*
+     * Update in memory if it's possible, in other case
+     * make request to the backend to refresh the view.
+     */
     self.updateRtById= function(id,type ){
         
         self.updateRtHome(id, type);

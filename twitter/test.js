@@ -1,5 +1,8 @@
 /**
- * Created by piraces on 22/04/16.
+ * Authors: Diego Ceresuela, Luis Jesús Pellicer, Raúl Piracés.
+ * Date: 16-05-2016
+ * Name file: test.js
+ * Description: File for testing all "twitter" resource endpoints with "mocha".
  */
 (function() {
 
@@ -151,7 +154,6 @@
                     done();
                 });
         });
-
 
         // #8 should set to use one user twitter account
         it("GET /twitter/:id/use test@test => Set to use one user twitter account", function(done) {
