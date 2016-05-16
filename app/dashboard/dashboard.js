@@ -99,7 +99,7 @@ function dashboardCtrl($scope, $http, authentication, $location, $sce,
     }
 
     /*
-     * Destroy own tweet with id as identifier in the view and make request to
+     * Destroy own tweet with ID equal to 'id' in the view and make request to
      * backend, for destroy tweet with Twitter's API.
      */
     self.destroy = function(id, index){
@@ -137,7 +137,7 @@ function dashboardCtrl($scope, $http, authentication, $location, $sce,
     }
 
     /*
-     * Destroy pending tweet with id as identifier in the view and make request to
+     * Destroy pending tweet with ID equal to 'id' in the view and make request to
      * backend, for destroy tweet with Twitter's API.
      */
     self.destroyPending = function(id, index){
@@ -157,7 +157,7 @@ function dashboardCtrl($scope, $http, authentication, $location, $sce,
     }
 
     /*
-     * If tweet with id as identifier is part of ownTweets do nothing. Else,
+     * If tweet with ID equal to 'id' is part of ownTweets do nothing. Else,
      * make retweet request to back-end and refresh with increasing retweet count.
      */
     self.retweet = function(id, index, where){
@@ -187,7 +187,7 @@ function dashboardCtrl($scope, $http, authentication, $location, $sce,
     };
 
     /*
-     * If tweet with id as identifier is part of ownTweets and isn't a
+     * If tweet with ID equal to 'id' is part of ownTweets and isn't a
      * retweeted tweet, do nothing. Else unretweet the tweet in the view
      * and make unretweet request for the back-end.
      */
@@ -274,7 +274,7 @@ function dashboardCtrl($scope, $http, authentication, $location, $sce,
     };
 
     /*
-     * If tweet as identifier is part of ownTweets and is a retweet tweet,
+     * If tweet with ID equal to 'id' is part of ownTweets and is a retweet tweet,
      * make requests to back-end to refresh the view. Else refresh view in local.
      * For finish, make request of unfavourite to the back-end in two cases.
      */

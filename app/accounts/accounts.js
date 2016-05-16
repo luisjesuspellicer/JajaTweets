@@ -1,3 +1,10 @@
+/**
+ * Authors: Diego Ceresuela, Raúl Piracés and Luis Jesús Pellicer.
+ * Date: 16-05-2016
+ * Name file: accounts.js
+ * Description: Controller for the view accounts.
+ * It controls the users. Show list of users and let user deletion.
+ */
 'use strict';
 
 angular.module('myApp.accounts', ['ngRoute'])
@@ -18,7 +25,10 @@ function accountsCtrl($http, authentication, errorsService, $location) {
 
     var vm = this;
     vm.id=0;
-    
+
+    /*
+     * Be sure that the user is logged in.
+     */
     if (!authentication.isLoggedIn()) {
         console.log('unauth');
         errorsService.errorCode = 401;
@@ -26,6 +36,7 @@ function accountsCtrl($http, authentication, errorsService, $location) {
         $location.path('errors');
     }
 
+    // Shows all available users.
     $http.get('/users',{
         headers: {
             'Authorization': 'Bearer ' + authentication.getToken()
@@ -39,6 +50,9 @@ function accountsCtrl($http, authentication, errorsService, $location) {
         vm.users = data.data;
     });
 
+    /*
+     * Remove user with ID equal to 'id'
+     */
     vm.delete = function(id) {
         $http.delete('/users/'+id,{
             headers: {
