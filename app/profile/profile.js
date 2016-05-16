@@ -1,3 +1,9 @@
+/**
+ * Authors: Diego Ceresuela, Raúl Piracés and Luis Jesús Pellicer.
+ * Date: 16-05-2016
+ * Name file: profile.js
+ * Description: This file contains functions to work on user profiles (showing & changes).
+ */
 'use strict';
 
 angular.module('myApp.profile', ['ngRoute'])
@@ -14,6 +20,14 @@ angular.module('myApp.profile', ['ngRoute'])
 
 profileCtrl.$inject = ['$http','authentication','errorsService','$location','$routeParams'];
 
+/**
+ * Main function of the controller. Acquire user profile data, and allows to modify its profile.
+ * @param $http
+ * @param authentication
+ * @param errorsService
+ * @param $location
+ * @param $routeParams
+ */
 function profileCtrl($http, authentication, errorsService, $location, $routeParams) {
 
     var vm = this;
@@ -30,6 +44,7 @@ function profileCtrl($http, authentication, errorsService, $location, $routePara
 
     console.log($routeParams.id);
 
+    // Get information from user profile
     $http.get('/users/'+$routeParams.id,{
         headers: {
             'Authorization': 'Bearer ' + authentication.getToken()
@@ -45,6 +60,7 @@ function profileCtrl($http, authentication, errorsService, $location, $routePara
         $location.path('errors');
     });
 
+    // Submits new changes on the user profile
     function onSubmit() {
         console.log(vm.credentials);
         if(vm.credentials.password=="" || !vm.credentials.password){

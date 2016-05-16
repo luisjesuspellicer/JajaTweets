@@ -1,5 +1,8 @@
 /**
- * Created by diego on 26/04/16.
+ * Authors: Diego Ceresuela, Raúl Piracés and Luis Jesús Pellicer.
+ * Date: 16-05-2016
+ * Name file: authentication.service.js
+ * Description: This file specifies a controller which control the navigation on the frontend.
  */
 (function() {
     'use strict';
@@ -10,8 +13,12 @@
 
     navCtrl.$inject = ['authentication','$location'];
 
+    /**
+     * Main function of the navigation controller.
+     * @param authentication
+     * @param $location
+     */
     function navCtrl(authentication, $location) {
-
         var vm = this;
 
         vm.loc = $location;

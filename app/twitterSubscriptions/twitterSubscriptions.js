@@ -1,3 +1,9 @@
+/**
+ * Authors: Diego Ceresuela, Raúl Piracés and Luis Jesús Pellicer.
+ * Date: 16-05-2016
+ * Name file: twitterSubscriptions.js
+ * Description: This file contains functions to make actions on twitter subscriptions (delete, update and add).
+ */
 'use strict';
 
 angular.module('myApp.twitterSubscriptions', ['ngRoute', 'angularSpinners'])
@@ -14,12 +20,22 @@ angular.module('myApp.twitterSubscriptions', ['ngRoute', 'angularSpinners'])
 
 subsCtrl.$inject = ['$http','authentication', '$scope', 'spinnerService', 'errorsService', '$location'];
 
+/**
+ * Main function of the controller. Generates rows with multiple twitter subscriptions and their associate tweets.
+ * Controls certain actions on each twitter subscriptions, and lets the user add a new ones.
+ * @param $http
+ * @param authentication
+ * @param $location
+ * @param errorsService
+ * @param spinnerService
+ */
 function subsCtrl($http, authentication, $scope, spinnerService, errorsService, $location) {
 
     var self = this;
     $scope.subs = {};
     $scope.formData = {};
 
+    // Checks if user is logged in
     if (!authentication.isLoggedIn()) {
         console.log('unauth');
         errorsService.errorCode = 401;
@@ -27,6 +43,7 @@ function subsCtrl($http, authentication, $scope, spinnerService, errorsService, 
         $location.path('errors');
     }
 
+    // Gets all the subscriptions for current twitter account
     $http.get('/subscriptions', {
         headers: {
             'Authorization': 'Bearer ' + authentication.getToken()
@@ -42,7 +59,9 @@ function subsCtrl($http, authentication, $scope, spinnerService, errorsService, 
         self.reload(data);
     });
 
+    // Search tweets from subscription by id
     self.search = function(id) {
+        // Encode the id for the URI
         var id_enc = encodeURIComponent(id).replace(/\(/g, "%28").replace(/\)/g, "%29");
         $http.get('/subscriptions/'+id_enc,{
             headers: {
@@ -58,6 +77,7 @@ function subsCtrl($http, authentication, $scope, spinnerService, errorsService, 
         });
     };
 
+    // Adds a new subscription to current twitter account
     self.add = function() {
         spinnerService.show('loadingSpinner');
         $http.post('/subscriptions/', $scope.formData, {
@@ -81,6 +101,7 @@ function subsCtrl($http, authentication, $scope, spinnerService, errorsService, 
         });
     };
 
+    // Refreshes all tweets from all subscriptions and show them
     self.reload = function(data) {
         self.subscriptions = data.data.data.content;
         angular.forEach(self.subscriptions, function(value, key){
@@ -89,8 +110,10 @@ function subsCtrl($http, authentication, $scope, spinnerService, errorsService, 
         spinnerService.hide('loadingSpinner');
     };
 
+    // Refresh all tweets from subscription by id and show them
     self.update = function(hashtag) {
         spinnerService.show('loadingSpinner');
+        // Encode the hashtag for the URI
         var hashtag_enc = encodeURIComponent(hashtag).replace(/\(/g, "%28").replace(/\)/g, "%29");
         $http.get('/subscriptions/' + hashtag_enc,{
             headers: {
@@ -107,8 +130,10 @@ function subsCtrl($http, authentication, $scope, spinnerService, errorsService, 
         });
     };
 
+    // Deletes a subscription by id
     self.delete = function(id) {
         spinnerService.show('loadingSpinner');
+        // Encode the id for the URI
         var id_enc = encodeURIComponent(id).replace(/\(/g, "%28").replace(/\)/g, "%29");
         $http.delete('/subscriptions/' + id_enc,{
             headers: {

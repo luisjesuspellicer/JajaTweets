@@ -1,3 +1,9 @@
+/**
+ * Authors: Diego Ceresuela, Raúl Piracés and Luis Jesús Pellicer.
+ * Date: 16-05-2016
+ * Name file: twitterAccounts.js
+ * Description: This file contains functions to make actions on twitter accounts (delete, update, add and use).
+ */
 'use strict';
 
 angular.module('myApp.twitterAccounts', ['ngRoute', 'angularSpinners'])
@@ -14,11 +20,21 @@ angular.module('myApp.twitterAccounts', ['ngRoute', 'angularSpinners'])
 
 twAccountsCtrl.$inject = ['$window', '$http','authentication', 'spinnerService','errorsService','$location'];
 
+/**
+ * Main function of the controller. Generates a table with multiple twitter accounts and their info.
+ * Controls certain actions on each twitter account, and lets the user add a new one (using the Twitter auth method).
+ * @param $http
+ * @param authentication
+ * @param $location
+ * @param errorsService
+ * @param spinnerService
+ */
 function twAccountsCtrl($window, $http, authentication, spinnerService, errorsService, $location) {
 
     var vm = this;
     vm.id=0;
 
+    // Checks if user is logged in
     if (!authentication.isLoggedIn()) {
         console.log('unauth');
         errorsService.errorCode = 401;
@@ -26,6 +42,7 @@ function twAccountsCtrl($window, $http, authentication, spinnerService, errorsSe
         $location.path('errors');
     }
 
+    // Gets all twitter accounts
     $http.get('/twitter',{
         headers: {
             'Authorization': 'Bearer ' + authentication.getToken()
@@ -39,6 +56,7 @@ function twAccountsCtrl($window, $http, authentication, spinnerService, errorsSe
         vm.users = data.data.data.content;
     });
 
+    // Delete a twitter account by id
     vm.delete = function(id) {
         spinnerService.show('loadingSpinner');
         $http.delete('/twitter/'+id,{
@@ -63,6 +81,7 @@ function twAccountsCtrl($window, $http, authentication, spinnerService, errorsSe
         });
     };
 
+    // Update info for one twitter account by id
     vm.update = function(id) {
         spinnerService.show('loadingSpinner');
         $http.get('/twitter/'+id+'/update',{
@@ -86,6 +105,7 @@ function twAccountsCtrl($window, $http, authentication, spinnerService, errorsSe
         });
     };
 
+    // Set to use one twitter account by id
     vm.use = function(id) {
         spinnerService.show('loadingSpinner');
         $http.get('/twitter/'+id+'/use',{
@@ -109,7 +129,7 @@ function twAccountsCtrl($window, $http, authentication, spinnerService, errorsSe
         });
     };
 
-
+    // Calls twitter auth to add a new twitter account
     vm.add = function() {
         $window.location.href = '/auth/twitter';
     };

@@ -1,3 +1,9 @@
+/**
+ * Authors: Diego Ceresuela, Raúl Piracés and Luis Jesús Pellicer.
+ * Date: 16-05-2016
+ * Name file: graphs.js
+ * Description: This file contains functions to generate admin graphs (of system users).
+ */
 'use strict';
 
 angular.module('myApp.graphs', ['ngRoute','chart.js','angularSpinners'])
@@ -14,6 +20,14 @@ angular.module('myApp.graphs', ['ngRoute','chart.js','angularSpinners'])
 
 graphsCtrl.$inject = ['$http', 'authentication', '$location', 'errorsService', 'spinnerService'];
 
+/**
+ * Main function of the controller. Generates multiple graphs of current status of system users.
+ * @param $http
+ * @param authentication
+ * @param $location
+ * @param errorsService
+ * @param spinnerService
+ */
 function graphsCtrl($http, authentication, $location, errorsService, spinnerService) {
 
     var vm = this;
@@ -23,6 +37,8 @@ function graphsCtrl($http, authentication, $location, errorsService, spinnerServ
     var tw_id=0, la_id=0, el_id=0;
 
     spinnerService.showAll();
+
+    // Gets available data for graphs
     $http.get('/data', {
         headers: {
             'Authorization': 'Bearer ' + authentication.getToken()
@@ -43,7 +59,7 @@ function graphsCtrl($http, authentication, $location, errorsService, spinnerServ
             }
             spinnerService.hideAll();
         });
-
+        // Gets tweets data
         $http.get('/data/'+tw_id,{
             headers: {
                 'Authorization': 'Bearer ' + authentication.getToken()
@@ -53,6 +69,7 @@ function graphsCtrl($http, authentication, $location, errorsService, spinnerServ
             vm.data[0]++; vm.data[1]++;
         });
 
+        // Gets last accesses data
         $http.get('/data/'+la_id,{
             headers: {
                 'Authorization': 'Bearer ' + authentication.getToken()
@@ -61,6 +78,7 @@ function graphsCtrl($http, authentication, $location, errorsService, spinnerServ
             vm.accesses = data.data.data.chart;
         });
 
+        // Gets users data
         $http.get('/data/'+el_id,{
             headers: {
                 'Authorization': 'Bearer ' + authentication.getToken()
@@ -68,8 +86,7 @@ function graphsCtrl($http, authentication, $location, errorsService, spinnerServ
         }).then(function(data) {
             vm.tweets = data.data.data.chart;
         });
-
-
+    // Error handling
     }, function (err) {
         errorsService.errorCode = err.status;
         errorsService.errorMessage = authentication.getToken();//err.data.data.message;

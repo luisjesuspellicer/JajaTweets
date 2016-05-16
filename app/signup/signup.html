@@ -1,11 +1,19 @@
+<!--
+ * Authors: Diego Ceresuela, Raúl Piracés and Luis Jesús Pellicer.
+ * Date: 16-05-2016
+ * Name file: accounts.html
+ * Description: View for sign up a new user in the system. Only for admin user.
+ -->
 <link href="../styles/signup.css" rel="stylesheet">
 <div class="container">
     <form class="form-signup" ng-submit="signup.onSubmit()">
         <h2 class="form-signup-heading">Register new user</h2>
         <label for="name" class="sr-only">User name</label>
-        <input type="text" id="name" class="form-control" placeholder="Name" required autofocus ng-model="signup.credentials.name">
+        <input type="text" id="name" class="form-control" placeholder="Name" required autofocus
+               ng-model="signup.credentials.name">
         <label for="email" class="sr-only">Email address</label>
-        <input type="email" id="email" class="form-control" placeholder="Email address" required autofocus ng-model="signup.credentials.email">
+        <input type="email" id="email" class="form-control" placeholder="Email address" required autofocus
+               ng-model="signup.credentials.email">
         <label for="password" class="sr-only">Password</label>
         <span id="password" class="form-control">
             {{signup.password}}

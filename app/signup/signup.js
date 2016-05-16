@@ -1,3 +1,9 @@
+/**
+ * Authors: Diego Ceresuela, Raúl Piracés and Luis Jesús Pellicer.
+ * Date: 16-05-2016
+ * Name file: signup.js
+ * Description: This file contains functions to handle the sign up of system users (only admin).
+ */
 'use strict';
 
 angular.module('myApp.signup', ['ngRoute'])
@@ -14,6 +20,13 @@ angular.module('myApp.signup', ['ngRoute'])
 
 signupCtrl.$inject = ['$http','errorsService','$location','authentication'];
 
+/**
+ * Main function of the controller. Lets the admin sign up users.
+ * @param $http
+ * @param authentication
+ * @param $location
+ * @param errorsService
+ */
 function signupCtrl($http, errorsService, $location, authentication) {
 
     var vm = this;
@@ -27,6 +40,7 @@ function signupCtrl($http, errorsService, $location, authentication) {
 
     vm.onSubmit = onSubmit;
 
+    // Check if user is admin user
     if (!authentication.isRoot()) {
         console.log('unauth');
         errorsService.errorCode = 401;
@@ -34,8 +48,7 @@ function signupCtrl($http, errorsService, $location, authentication) {
         $location.path('errors');
     }
 
-    ///////////
-
+    // Sign up function on form submit by user. Sets the new random password for user and lets the admin share the info.
     function onSubmit() {
         $http.post('/users',vm.credentials,{
             headers: {

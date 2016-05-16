@@ -1,3 +1,9 @@
+/**
+ * Authors: Diego Ceresuela, Raúl Piracés and Luis Jesús Pellicer.
+ * Date: 16-05-2016
+ * Name file: signin.js
+ * Description: This file contains functions to handle the sign in of system users.
+ */
 'use strict';
 
 angular.module('myApp.signin', ['ngRoute'])
@@ -14,6 +20,13 @@ angular.module('myApp.signin', ['ngRoute'])
 
 signinCtrl.$inject = ['$http', 'authentication', '$location', 'errorsService'];
 
+/**
+ * Main function of the controller. Lets the user sign in.
+ * @param $http
+ * @param authentication
+ * @param $location
+ * @param errorsService
+ */
 function signinCtrl($http, authentication, $location, errorsService) {
 
     var vm = this;
@@ -24,12 +37,13 @@ function signinCtrl($http, authentication, $location, errorsService) {
         'password': ""
     };
 
+    // Check if user is already sign in
     if (authentication.isLoggedIn()) {
         $location.path('dashboard');
     }
 
-    ///////
 
+    // Login function on form submit by user. Sets the credentials and redirects the user (if its successful).
     vm.onSubmit = function () {
         vm.wrong = false;
         $http.post('/login', vm.credentials)
@@ -50,6 +64,7 @@ function signinCtrl($http, authentication, $location, errorsService) {
                         'password': ""
                     };
                 } else {
+                    // Error handling
                     errorsService.errorCode = err.status;
                     errorsService.errorMessage = err.data.message || "Undefined error";
                     $location.path('errors');

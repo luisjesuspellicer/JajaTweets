@@ -1,3 +1,9 @@
+/**
+ * Authors: Diego Ceresuela, Raúl Piracés and Luis Jesús Pellicer.
+ * Date: 16-05-2016
+ * Name file: statistics.js
+ * Description: This file contains functions to generate twitter graphs (of system user, all accounts).
+ */
 'use strict';
 
 angular.module('myApp.statistics', ['ngRoute','chart.js','angularSpinners'])
@@ -14,6 +20,14 @@ angular.module('myApp.statistics', ['ngRoute','chart.js','angularSpinners'])
 
 statisticsCtrl.$inject = ['$http', '$scope', 'authentication', '$location', 'errorsService', 'spinnerService'];
 
+/**
+ * Main function of the controller. Generates multiple graphs/statistics of current status of twitter accounts.
+ * @param $http
+ * @param authentication
+ * @param $location
+ * @param errorsService
+ * @param spinnerService
+ */
 function statisticsCtrl($http, $scope, authentication, $location, errorsService, spinnerService) {
 
     var vm = this;
@@ -56,6 +70,7 @@ function statisticsCtrl($http, $scope, authentication, $location, errorsService,
 
     lastDays();
 
+    // Gets the label of last eight days
     function lastDays() {
         for (var i=7; i>=0; i--) {
             var d = new Date();
@@ -64,6 +79,7 @@ function statisticsCtrl($http, $scope, authentication, $location, errorsService,
         }
     }
 
+    // Array prototipe for removing duplicates in an array
     Array.prototype.getUnique = function(){
         var u = {}, a = [];
         for(var i = 0, l = this.length; i < l; ++i){
@@ -76,6 +92,7 @@ function statisticsCtrl($http, $scope, authentication, $location, errorsService,
         return a;
     };
 
+    // Checks if user is loggged in
     if (!authentication.isLoggedIn()) {
         console.log('unauth');
         errorsService.errorCode = 401;
@@ -83,6 +100,7 @@ function statisticsCtrl($http, $scope, authentication, $location, errorsService,
         $location.path('errors');
     }
 
+    // Gets user info
     $http.get('/users/' + authentication.getId(), {
         headers: {
             'Authorization': 'Bearer ' + authentication.getToken()
@@ -97,6 +115,7 @@ function statisticsCtrl($http, $scope, authentication, $location, errorsService,
         vm.data1[1] = data.data.tweet_total | 0;
     });
 
+    // Gets all twitter accounts of current user
     $http.get('/twitter/', {
         headers: {
             'Authorization': 'Bearer ' + authentication.getToken()
@@ -124,6 +143,7 @@ function statisticsCtrl($http, $scope, authentication, $location, errorsService,
         });
     });
 
+    // Creates a table with the stats by day of all twitter accounts
     vm.createTable = function(id) {
         $http.get('/twitter/' + id + '/statsDay',{
             headers: {
@@ -141,6 +161,7 @@ function statisticsCtrl($http, $scope, authentication, $location, errorsService,
         });
     };
 
+    // Creates a plot with mentions on the last days
     vm.createPlot = function(id, screen_name) {
         $http.get('/twitter/' + id + '/statsMentions',{
             headers: {
@@ -171,6 +192,7 @@ function statisticsCtrl($http, $scope, authentication, $location, errorsService,
         });
     };
 
+    // Create a pie with region of followers
     vm.createPie = function(id) {
         $http.get('/twitter/' + id + '/followers',{
             headers: {
@@ -197,6 +219,7 @@ function statisticsCtrl($http, $scope, authentication, $location, errorsService,
         });
     };
 
+    // Function that creates the data for the followers by region pie graph
     function createDataForPie(content){
         var i = 0;
         angular.forEach($scope.labels4, function(value, key){
@@ -218,6 +241,7 @@ function statisticsCtrl($http, $scope, authentication, $location, errorsService,
         }
     }
 
+    // Function that creates the labels for the followers by region pie graph
     function createLabelsForPie(content){
         angular.forEach(content, function(value, key) {
             if(value.time_zone!=null) {
