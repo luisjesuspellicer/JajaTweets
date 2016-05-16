@@ -118,13 +118,13 @@
                            class="fa fa-retweet fa-lg"
                            aria-hidden="true"></i>
                         <b ng-if="!own.retweeted">&nbsp;{{own.retweet_count}}&nbsp;</b>
-                        <i ng-click="dashboard.unfavorite(own.id_str)"
+                        <i ng-click="dashboard.unfavorite(own.id_str, 'own')"
                            ng-if="own.favorited "
                            class="fa fa-heart fa-lg"
                            aria-hidden="true"
                            style="color:red;"></i>
                         <b ng-if="own.favorited">&nbsp;{{own.favorite_count}}</b>
-                        <i ng-click="dashboard.favorite(own.id_str)"
+                        <i ng-click="dashboard.favorite(own.id_str, 'own')"
                            ng-if="!own.favorited"
                            class="fa fa-heart fa-lg"
                            aria-hidden="true"></i>
