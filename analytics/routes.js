@@ -1,5 +1,8 @@
 /**
- * Created by diego on 23/04/16.
+ * Authors: Diego Ceresuela, Luis Jesús Pellicer, Raúl Piracés.
+ * Date: 16-05-2016
+ * Name file: routes.js
+ * Description: This file exports routes controllers for the resources in this webservice.
  */
 (function() {
 

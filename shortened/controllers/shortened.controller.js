@@ -23,8 +23,6 @@
         /**
          * Gets all shortened URL of the current user.
          * Requires user authentication.
-         *
-         * (Checked)
          */
         app.get('/shortened', user_required.before, function(req, res, next) {
             TweetCommons.getUserFromJWT(req, function(user){
@@ -55,9 +53,7 @@
 
         /**
          * Saves a new shortened URL given an URL in request body, and returns that object.
-         * Requires user authentication.
-         *
-         * (Checked)
+         * Requires user authentication. Checks if URL has already been shortened (no repetitions by user).
          */
         app.post('/shortened', user_required.before, function(req, res, next) {
             TweetCommons.getUserFromJWT(req, function(user){
@@ -134,8 +130,6 @@
         /**
          * Gets a shortened URL by hash.
          * Requires user authentication.
-         *
-         * (Checked)
          */
         app.get('/shortened/:id', user_required.before, function(req, res, next) {
             TweetCommons.getUserFromJWT(req, function(user){
@@ -176,8 +170,6 @@
         /**
          * Deletes a shortened URL by hash.
          * Requires user authentication.
-         *
-         * (Checked)
          */
         app.delete('/shortened/:id', user_required.before, function(req, res, next) {
             TweetCommons.getUserFromJWT(req, function(user) {
@@ -218,8 +210,6 @@
         /**
          * Redirects the user to a link by a shorten URL.
          * Do NOT requires user authentication.
-         *
-         * (Checked)
          */
         app.get('/s/:encoded_id', function(req, res, next) {
             Shortened.findOne({hash: req.params.encoded_id}, function(err,doc){
@@ -233,6 +223,7 @@
                     });
                     next();
                 } else {
+                    // Redirection to resultant link
                     res.redirect(doc.link);
                     next();
                 }

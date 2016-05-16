@@ -1,5 +1,8 @@
 /**
- * Created by diego on 21/04/16.
+ * Authors: Diego Ceresuela, Luis Jesús Pellicer, Raúl Piracés.
+ * Date: 16-05-2016
+ * Name file: passport.config.js
+ * Description: This file contains passport package configuration (strategies and configurations).
  */
 (function (){
     'use strict';
@@ -10,6 +13,9 @@
     var mongoose = require('mongoose');
     var User = mongoose.model('users');
 
+    /**
+     * Local authentication using "LocalStrategy" and local data.
+     */
     passport.use(new LocalStrategy({
             usernameField: 'email'
         },
@@ -34,12 +40,16 @@
         }
     ));
 
+    /**
+     * Twitter authentication using "TwitterStrategy" and twitter data (app keys and configurations).
+     */
     passport.use(new TwitterStrategy({
             consumerKey: process.env.TWITTER_CONSUMER_KEY,
             consumerSecret: process.env.TWITTER_CONSUMER_SECRET,
             callbackURL: process.env.CURRENT_DOMAIN + "/auth/twitter/callback"
         },
         function(token, tokenSecret, profile, cb) {
+            // Returns twitter token and secret for one account.
             return cb(null, {"token": token, "tokenSecret": tokenSecret, "profile": profile});
         }
     ));
@@ -49,6 +59,7 @@
         done(null, user);
     });
 
+    // For passport sessions
     passport.deserializeUser(function(id, done) {
         done(null, id);
     });

@@ -2,7 +2,7 @@
  * Authors: Diego Ceresuela, Luis Jesús Pellicer, Raúl Piracés.
  * Date: 16-05-2016
  * Name file: shortened.model.js
- * Description: This file contains the mongoose model for "shortened" resource
+ * Description: This file contains the mongoose model for "shortened" resource.
  */
 (function() {
     'use strict';

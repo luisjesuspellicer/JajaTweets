@@ -1,7 +1,8 @@
 /**
- * Created by diego on 22/04/16.
- *
- * Contains all the security policies supported by the endpoints
+ * Authors: Diego Ceresuela, Luis Jesús Pellicer, Raúl Piracés.
+ * Date: 16-05-2016
+ * Name file: policies.config.js
+ * Description: This file contains all the security policies supported by the endpoints
  *      user_required:              Any logged user can access to the endpoint
  *      admin_or_self_required:     Only the admin can access or an user if it is his own resource
  *      admin_required:             Only the admin can acces to the endpoint
@@ -18,7 +19,7 @@
     });
 
     /**
-     * Adds an URL in the REST response if it's not present
+     * Adds an URL in the REST response if it's not present (making it RESTful).
      * @param req
      * @param res
      * @param next
@@ -28,7 +29,7 @@
     };
 
     /**
-     * Requires admin authentication
+     * Requires admin authentication.
      * @param req
      * @param res
      * @param next
@@ -49,7 +50,7 @@
     };
 
     /**
-     * Handles unauthenticated error
+     * Handles unauthenticated error.
      * @param err
      * @param req
      * @param res
@@ -96,8 +97,7 @@
         }
     };
 
-    //////////////////
-
+    // Exports the security policies
     exports.admin_required = { // Just admin can access
         before: [require_auth,require_admin],
         after: [handle_error, add_url]

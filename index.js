@@ -1,5 +1,8 @@
 /**
- * Created by Diego on 16/04/16.
+ * Authors: Diego Ceresuela, Luis Jesús Pellicer, Raúl Piracés.
+ * Date: 16-05-2016
+ * Name file: index.js
+ * Description: This file contains the main behaviour of the web app.
  *
  * Launches all the web services listed in webservices,js
  *  PORT = 3000

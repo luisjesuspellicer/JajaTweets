@@ -1,7 +1,8 @@
 /**
- * Created by Diego on 21/04/16.
- *
- * Web services list.
+ * Authors: Diego Ceresuela, Luis Jesús Pellicer, Raúl Piracés.
+ * Date: 16-05-2016
+ * Name file: webservices.js
+ * Description: This file exports the correspondent Web services list.
  */
 (function (){
 

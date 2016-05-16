@@ -2,8 +2,8 @@
  * Authors: Diego Ceresuela, Luis Jesús Pellicer, Raúl Piracés.
  * Date: 16-05-2016
  * Name file: users.model.js
- * Description: This file contains the mongoose model for "users" resource.
- * */
+ * Description: Manages basic user information.
+ */
 (function() {
 
     'use strict';

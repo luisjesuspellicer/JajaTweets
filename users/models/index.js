@@ -1,11 +1,9 @@
 /**
- * Authors: Diego Ceresuela, Raúl Piracés and Luis Jesús Pellicer.
+ * Authors: Diego Ceresuela, Luis Jesús Pellicer, Raúl Piracés.
  * Date: 16-05-2016
  * Name file: index.js
- * Description: Contains all the models used by the web service.
+ * Description: This file contains all the models used by the web service.
  */
-
-
 (function() {
     'use strict';
 

@@ -1,36 +1,35 @@
 /**
- * Authors: Diego Ceresuela, Raúl Piracés and Luis Jesús Pellicer.
+ * Authors: Diego Ceresuela, Luis Jesús Pellicer, Raúl Piracés.
  * Date: 16-05-2016
  * Name file: auth.controller.js
- * Description: Manages the login endpoint.
+ * Description: This file contains functions to manage the login endpoint.
  */
-
 (function() {
 
     'use strict';
 
     var passport = require('passport');
-    var mongoose = require('mongoose');
 
     module.exports = function(app) {
-    
-        // User log out.
+
+        /**
+         * Logout current user by destroying session and expiring correspondent cookies.
+         * After execution, user has to login again for new JWT to use in further interactions.
+         */
         app.get('/logout', function(req,res,next) {
             req.session.cookie.expires = new Date(1);
             req.session.cookie.maxAge = 1;
             req.session.destroy(function(err) {
-                // cannot access session here
+                // Session destroyed
             });
-            res.status(200).json({error: false});
+            res.status(200).json({error: false, content:{message: "Successful logout"}});
         });
 
         /**
-         * Offers the endpoint POST /login
-         * Uses passport to authenticate the user
-         * and returns a valid JWT.
+         * Offers the endpoint POST /login, where user can start a session to interact with the other system endpoints.
+         * Uses passport to authenticate the user and returns a valid JWT.
          */
         app.post('/login',function(req, res, next) {
-            
             passport.authenticate('local', function(err, user, info){
                 var token;
 

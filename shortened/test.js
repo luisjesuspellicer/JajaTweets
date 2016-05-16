@@ -2,7 +2,7 @@
  * Authors: Diego Ceresuela, Luis Jesús Pellicer, Raúl Piracés.
  * Date: 16-05-2016
  * Name file: test.js
- * Description: File for testing all "shortened" resource endpoints with "mocha".
+ * Description: This file contains functions to test the "shortened" resource with "mocha".
  */
 (function() {
 

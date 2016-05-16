@@ -1,15 +1,13 @@
 /**
- * Authors: Diego Ceresuela, Raúl Piracés and Luis Jesús Pellicer.
+ * Authors: Diego Ceresuela, Luis Jesús Pellicer, Raúl Piracés.
  * Date: 16-05-2016
- * Name file: auth.controller.js
- * Description: Contains all the endpoints offered for the resource 'users'.
- * It is a restful api.
+ * Name file: users.controller.js
+ * Description: This file contains all the endpoints offered for the resource 'users'.
+ * It's a restful api.
  *      GET,POST            /users
  *      GET,PUT,DELETE      /users/:id
  *      GET                 /users::last
  */
-
-
 (function () {
 
     var Resource = require('resourcejs');
@@ -25,7 +23,6 @@
         // First load the policies that will be used in the endpoints
         var admin_required = require('../../config/policies.config').admin_required;
         var admin_or_self_required = require('../../config/policies.config').admin_or_self_required;
-
         // Delete operation should update Analytics
         var delete_options = _.cloneDeep(admin_or_self_required);
         delete_options.after.push(function (req, res, next) {
@@ -51,19 +48,15 @@
 
         // POST /users must generate new JWT token
         resource.register(app, 'post', '/users', createUser, resource.respond.bind(resource), admin_required);
-
         // PUT /users/:id updates user by id
         resource.register(app, 'put', '/users/:id', updateUser,resource.respond.bind(resource), admin_or_self_required);
-
         // GET /users::last offers the last accesses
         resource.register(app, 'get', '/users::last', getLastUsers, resource.respond.bind(resource), admin_required);
-        
         // GET /users::tweets offers users with more tweets
         resource.register(app, 'get', '/users::tweets', getMoreTweets, resource.respond.bind(resource), admin_required);
 
         /**
-         * Create a new user and returns a JWT token, token could be
-         * changed so /login required.
+         * Create a new user and returns a JWT token, token could be changed so /login required.
          * @param req
          * @param res
          * @param next
@@ -74,6 +67,7 @@
             user.name = req.body.name;
             user.email = req.body.email;
             user.lastAccess = new Date();
+            // Creates a random initial password
             var password = make_passwd(13, 'qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM1234567890');
 
             user.setPassword(password);
@@ -97,8 +91,7 @@
         }
 
         /**
-         * Updates a user and returns a JWT token, token could be
-         * changed so /login required.
+         * Updates a user and returns a JWT token, token could be changed so /login required.
          * @param req
          * @param res
          * @param next
@@ -112,7 +105,7 @@
             var password = req.body.password;
 
             user.setPassword(password);
-
+            // Updates all data of specified user
             User.update({email: req.body.oldEmail}, {$set: {email: user.email, name: user.name, hash: user.hash,
                 salt: user.salt, lastAccess: user.lastAccess}}, function (err, doc) {
                     if(err){
@@ -144,6 +137,12 @@
             });
         }
 
+        /**
+         * Creates a random password using an array of characters and a maximum length.
+         * @param n is the maximum length.
+         * @param a are the characters array to combine to create the password.
+         * @returns {string} with the generated password.
+         */
         make_passwd = function(n, a) {
             var index = (Math.random() * (a.length - 1)).toFixed(0);
             return n > 0 ? a[index] + make_passwd(n - 1, a) : '';
@@ -170,7 +169,7 @@
     }
 
     /**
-     * Returns the users with more tweets
+     * Returns the users with more tweets.
      * @param req
      * @param res
      * @param next
@@ -184,7 +183,7 @@
     }
 
     /**
-     * Uses the Analytics API so as to update subunsub data
+     * Uses the Analytics API so as to update "subunsub" data.
      * @param {Numeric} num
      * @param {String} token
      */

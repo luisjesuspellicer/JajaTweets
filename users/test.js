@@ -1,8 +1,8 @@
 /**
  * Authors: Diego Ceresuela, Luis Jesús Pellicer, Raúl Piracés.
  * Date: 16-05-2016
- * Name file: test.js
- * Description: File for testing all "users" resource endpoints with "mocha".
+ * Name file: auth.controller.js
+ * Description: This file contains functions to test the "users" resource with "mocha".
  */
 (function() {
 
