@@ -1,5 +1,8 @@
 /**
- * Created by piraces on 28/4/16.
+ * Authors: Diego Ceresuela, Luis Jesús Pellicer, Raúl Piracés.
+ * Date: 16-05-2016
+ * Name file: OAuth.js
+ * Description: Provides callback after Twitter authentication.
  */
 
 (function () {

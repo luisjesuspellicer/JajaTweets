@@ -1,5 +1,8 @@
 /**
- * Created by piraces on 28/4/16.
+ * Authors: Diego Ceresuela, Luis Jesús Pellicer, Raúl Piracés.
+ * Date: 16-05-2016
+ * Name file: tweets.js
+ * Description: Provides functions to interact with Twitter API and Tweet resource.
  */
 
 (function () {
@@ -14,7 +17,8 @@
 
     /**
      * Function for posting a new tweet using OAuth, user token and secret.
-     * It needs an initial OAuth object with the twitter application consumer key and secret.
+     * It needs an initial OAuth object with the twitter application consumer
+     * key and secret.
      * @param user is the local user object (from database).
      * @param body is the body of the request made.
      * @param callback is the callback object, containing response of Twitter.
@@ -76,7 +80,8 @@
      * Requires user authentication.
      * @param user is the local user.
      * @param params are the params of the request.
-     * @param callback is the callback object, containing the resultant tweet data (and retweet data).
+     * @param callback is the callback object, containing the resultant tweet 
+     * data (and retweet data).
      */
     function makeRetweet(user, params, callback){
         OAuth.initTwitterOauth(function(oa)
@@ -105,13 +110,15 @@
      * Requires user authentication.
      * @param user is the local user.
      * @param params are the params of the request.
-     * @param callback is the callback object, containing the resultant tweet data (and unretweet data).
+     * @param callback is the callback object, containing the resultant tweet 
+     * data (and unretweet data).
      */
     function makeUnretweet(user, params, callback){
         OAuth.initTwitterOauth(function(oa)
         {
             oa.post(
-                "https://api.twitter.com/1.1/statuses/unretweet/" + params.id + ".json"
+                "https://api.twitter.com/1.1/statuses/unretweet/" 
+                + params.id + ".json"
                 , user.token
                 , user.secret
                 // Content
@@ -134,7 +141,8 @@
      * Requires user authentication.
      * @param user is the local user.
      * @param params are the params of the request.
-     * @param callback is the callback object, containing the resultant tweet data (and favorite data).
+     * @param callback is the callback object, containing the resultant
+     * tweet data (and favorite data).
      */
     function makeFavorite(user, params, callback){
         OAuth.initTwitterOauth(function(oa)
@@ -163,7 +171,8 @@
      * Requires user authentication.
      * @param user is the local user.
      * @param params are the params of the request.
-     * @param callback is the callback object, containing the resultant tweet data (and unfavorite data).
+     * @param callback is the callback object, containing the resultant
+     * tweet data (and unfavorite data).
      */
     function makeUnfavorite(user, params, callback){
         OAuth.initTwitterOauth(function(oa)
@@ -192,7 +201,8 @@
      * Requires user authentication.
      * @param user is the local user.
      * @param id is the id of the twitter user.
-     * @param callback is the callback object, containing the resultant user data (statistics info).
+     * @param callback is the callback object, containing the resultant
+     * user data (statistics info).
      */
     function getUserInfo(user, id, callback){
         OAuth.initTwitterOauth(function(oa)
@@ -220,7 +230,8 @@
      */
     function updateStatistics(user, id, num_app){
         getUserInfo(user, id, function(result){
-            Twitter.findOneAndUpdate({user: user.user}, {$set: {statuses_count: result.statuses_count},
+            Twitter.findOneAndUpdate({user: user.user}, 
+                {$set: {statuses_count: result.statuses_count},
                 $inc: { tweet_app: num_app }}, function(err, doc){
                 if(err) {
                     console.log(err);
@@ -235,7 +246,8 @@
                         totalTwitter = totalTwitter + docs[doc].statuses_count;
                         totalApp = totalApp + docs[doc].tweet_app;
                     }
-                    User.findOneAndUpdate({email: user.user}, {$set: {tweet_total: totalTwitter, tweet_app: totalApp}},
+                    User.findOneAndUpdate({email: user.user}, 
+                        {$set: {tweet_total: totalTwitter, tweet_app: totalApp}},
                         function(err, doc){
                         if(err) {
                             console.log(err);
@@ -345,7 +357,8 @@
      * Requires user authentication.
      * @param user is the local user.
      * @param query is the query to find tweets.
-     * @param callback is the callback object, containing the resultant user data (searched tweets).
+     * @param callback is the callback object, containing the resultant 
+     * user data (searched tweets).
      */
     function searchTweets(user, query, callback){
         OAuth.initTwitterOauth(function(oa)
@@ -369,7 +382,8 @@
      * Search mentions of specific user from Twitter by unique id.
      * Requires user authentication.
      * @param user is the local user.
-     * @param callback is the callback object, containing the resultant mentions data (searched mention tweets).
+     * @param callback is the callback object, containing the resultant mentions
+     * data (searched mention tweets).
      */
     function searchMentions(user, callback){
         OAuth.initTwitterOauth(function(oa)
@@ -399,7 +413,8 @@
         OAuth.initTwitterOauth(function(oa)
         {
             oa.get(
-                "https://api.twitter.com/1.1/followers/list.json?count=200&screen_name=" + user.screen_name
+                "https://api.twitter.com/1.1/followers/list.json?" +
+                "count=200&screen_name=" + user.screen_name
                 , user.token,user.secret,
                 function(error, data, response){
                     if(error){
