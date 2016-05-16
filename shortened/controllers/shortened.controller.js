@@ -1,5 +1,8 @@
 /**
- * Created by piraces on 25/04/16.
+ * Authors: Diego Ceresuela, Luis Jesús Pellicer, Raúl Piracés.
+ * Date: 16-05-2016
+ * Name file: shortened.controller.js
+ * Description: This file contains methods to attend the "shortened" resource and endpoints.
  */
 (function() {
 

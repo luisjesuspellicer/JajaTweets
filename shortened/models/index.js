@@ -1,5 +1,8 @@
 /**
- * Created by piraces on 22/04/16.
+ * Authors: Diego Ceresuela, Luis Jesús Pellicer, Raúl Piracés.
+ * Date: 16-05-2016
+ * Name file: index.js
+ * Description: This file exports the correspondent resource model.
  */
 (function() {
     'use strict';

@@ -1,5 +1,8 @@
 /**
- * Created by piraces on 24/04/16.
+ * Authors: Diego Ceresuela, Luis Jesús Pellicer, Raúl Piracés.
+ * Date: 16-05-2016
+ * Name file: shortened.model.js
+ * Description: This file contains the mongoose model for "shortened" resource
  */
 (function() {
     'use strict';
