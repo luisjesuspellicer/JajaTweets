@@ -1,5 +1,9 @@
 /**
- * Created by piraces on 22/4/16.
+ * Authors: Diego Ceresuela, Luis Jesús Pellicer, Raúl Piracés.
+ * Date: 16-05-2016
+ * Name file: subscriptions.controller.js
+ * Description: This file contains functions on the "subscriptions" resource and declare endpoints for the interaction
+ * with this resource.
  */
 (function() {
 
@@ -18,9 +22,8 @@
         
 
         /**
-         * Gets hashtags subscriptions of current user.
-         *
-         * (Checked)
+         * Gets hashtags (or other queries) subscriptions of current user (in use Twitter account of local user).
+         * Returns a list of subscriptions (containing the query).
          */
         app.get('/subscriptions', user_required.before, function(req, res, next) {
             TweetCommons.getUserFromJWT(req, function(user){
@@ -70,9 +73,9 @@
         }, user_required.after);
 
         /**
-         * Add a new subscription (hashtag) to current user.
-         *
-         * (Checked)
+         * Adds a new subscription (hashtag or other query) to current user.
+         * Body parameters required:
+         * - hashtag: query to subscribe the user.
          */
         app.post('/subscriptions', user_required.before, function(req, res, next) {
             TweetCommons.getUserFromJWT(req, function(user){
@@ -139,9 +142,9 @@
         }, user_required.after);
 
         /**
-         * Gets all statuses of hashtag in the request (using current user).
-         *
-         * (Checked)
+         * Gets all statuses of query in the request (using current user credentials).
+         * Returns Tweets from Twitter containing the query, using the Twitter search API.
+         * id: the query for searching in Twitter.
          */
         app.get('/subscriptions/:id', user_required.before, function(req, res, next) {
             TweetCommons.getUserFromJWT(req, function(user){
@@ -150,6 +153,7 @@
                     var id = encodeURIComponent(req.params.id).replace(/\(/g, "%28").replace(/\)/g, "%29");
                     TweetCommons.searchTweets(user, id, function (result) {
                         if (result.statusCode && result.statusCode != 200) {
+                            // Twitter API interaction error.
                             res.status(result.statusCode).json({
                                 "error": true,
                                 "data": {
@@ -184,9 +188,8 @@
         }, user_required.after);
 
         /**
-         * Delete a subscription (hashtag) from current user.
-         *
-         * (Checked)
+         * Delete a subscription (hashtag or other query) from current user, identified with unique id.
+         * - id: query to unsubscribe the user from,.
          */
         app.delete('/subscriptions/:id', user_required.before, function(req, res, next) {
             TweetCommons.getUserFromJWT(req, function(user){

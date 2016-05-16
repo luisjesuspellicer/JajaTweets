@@ -1,5 +1,9 @@
 /**
- * Created by piraces on 22/04/16.
+ * Authors: Diego Ceresuela, Luis Jesús Pellicer, Raúl Piracés.
+ * Date: 16-05-2016
+ * Name file: tweets.controller.js
+ * Description: Contains functions to perform actions with "tweets" resource.
+ * It performs actions with tweets from Twitter and local tweets.
  */
 (function() {
 
@@ -18,11 +22,9 @@
         
 
         /**
-         * Get all tweets from Twitter account.
+         * Get all tweets from Twitter account (timeline tweets).
          * Body parameters required:
          * - id  unique tweet id (from Twitter "id_str").
-         *
-         * (Checked)
          */
         app.get('/tweets', user_required.before, function(req, res, next) {
             TweetCommons.getUserFromJWT(req, function(user){
@@ -31,7 +33,7 @@
                 } else {
                     TweetCommons.getAccountTweets(user,function(result){
                         if(result.statusCode && result.statusCode != 200){
-
+                            // Twitter API interaction error
                             res.status(result.statusCode).json({
                                 "error": true,
                                 "data" : {
@@ -55,13 +57,11 @@
         }, user_required.after);
 
         /**
-         * Endpoint that updates a twitter status (post a tweet).
-         * Requires a local user account with at least one twitter account associated.
+         * Endpoint that updates a twitter status (post a tweet), or keeps it to update later (pending tweet).
+         * Requires a local user account with at least one twitter account associated and in user.
          * Body parameters required:
          * - date: javascript date object (timestamp or string).
          * - status: status to put on the tweet.
-         *
-         * (Checked)
          */
         app.post('/tweets', user_required.before, function(req, res, next) {
             TweetCommons.getUserFromJWT(req, function(user) {
@@ -118,6 +118,7 @@
                         // If tweet date is before or equal to current date, its updated directly
                         TweetCommons.makeTweet(user, req.body, function (result) {
                             if (result.id_str) {
+                                // Update twitter statistics locally
                                 TweetCommons.updateStatistics(user, result.user.id_str, 1);
                                 res.status(200).json({
                                     "error": false,
@@ -128,6 +129,7 @@
                                     }
                                 });
                             } else if (result.statusCode && result.statusCode != 200) {
+                                // Twitter API interaction error
                                 res.status(result.statusCode).json({
                                     "error": true,
                                     "data": {
@@ -151,11 +153,9 @@
 
         /**
          * Gets a tweet by the unique tweet id, and provides the data of it.
-         * Requires a local user account with at least one twitter account associated.
+         * Requires a local user account with at least one twitter account associated and in use.
          * Get parameters required:
          * - id: unique tweet id (from Twitter "id_str").
-         *
-         * (Checked)
          */
         app.get('/tweets/:id', user_required.before, function(req, res, next) {
             if(req.params.id == "own" || req.params.id == "pending"){
@@ -167,6 +167,7 @@
                     } else {
                         TweetCommons.getTweet(user, req.params, function (result) {
                             if (result.statusCode && result.statusCode != 200) {
+                                // Twitter API interaction error
                                 res.status(result.statusCode).json({
                                     "error": true,
                                     "data": {
@@ -191,13 +192,11 @@
         }, user_required.after);
 
         /**
-         * Modify only pending tweets.
+         * Modifies one pending tweet.
          * Body parameters required:
          * - date: javascript date object (timestamp or string).
          * - status: status to put on the tweet.
          * - id  unique tweet id (from Twitter "id_str").
-         *
-         * (Checked)
          */
         app.put('/tweets/:id', user_required.before, function(req, res, next) {
             TweetCommons.getUserFromJWT(req, function(user){
@@ -247,8 +246,6 @@
          * Delete tweet from Twitter.
          * Body parameters required:
          * - id  unique tweet id (from Twitter "id_str").
-         *
-         * (Checked)
          */
         app.delete('/tweets/:id', user_required.before, function(req, res, next) {
             TweetCommons.getUserFromJWT(req, function(user){
@@ -257,6 +254,7 @@
                 } else {
                     TweetCommons.deleteTweet(user, req.params.id, function (result) {
                         if (result.statusCode && result.statusCode != 200) {
+                            // Twitter API interaction error
                             res.status(result.statusCode).json({
                                 "error": true,
                                 "data": {
@@ -281,10 +279,8 @@
         }, user_required.after);
 
         /**
-         * Gets own tweets.
-         * Requires a local user account with at least one twitter account associated.
-         *
-         * (Checked)
+         * Gets own tweets (tweets written with in use account).
+         * Requires a local user account with at least one twitter account associated in use.
          */
         app.get('/tweets/:own', user_required.before, function(req, res, next) {
             if(req.params.own != "own"){
@@ -295,6 +291,7 @@
                         next();
                     } else {
                         TweetCommons.getOwnTweets(user, function (result) {
+                            // Twitter API interaction error
                             if (result.statusCode && result.statusCode != 200) {
                                 res.status(result.statusCode).json({
                                     "error": true,
@@ -321,12 +318,10 @@
 
 
         /**
-         * Makes a retweet on a specific tweet (with determinated user account).
-         * Requires a local user account with at least one twitter account associated.
+         * Makes a retweet on a specific tweet (with an user account in use).
+         * Requires a local user account with at least one twitter account associated and in use.
          * Get parameters required:
          * - id: unique tweet id (from Twitter "id_str").
-         *
-         * (Checked)
          */
         app.get('/tweets/:id/retweet', user_required.before, function(req, res, next) {
             TweetCommons.getUserFromJWT(req, function(user){
@@ -335,6 +330,7 @@
                 } else {
                     TweetCommons.makeRetweet(user, req.params, function (result) {
                         if (result.statusCode && result.statusCode != 200) {
+                            // Twitter API interaction error
                             res.status(result.statusCode).json({
                                 "error": true,
                                 "data": {
@@ -358,12 +354,10 @@
         }, user_required.after);
 
         /**
-         * Makes an unretweet on a specific tweet (with determinated user account).
-         * Requires a local user account with at least one twitter account associated.
+         * Makes an unretweet on a specific tweet (with an user account).
+         * Requires a local user account with at least one twitter account associated and in use.
          * Get parameters required:
          * - id: unique tweet id (from Twitter "id_str").
-         *
-         * (Checked)
          */
         app.get('/tweets/:id/unretweet', user_required.before, function(req, res, next) {
             TweetCommons.getUserFromJWT(req, function(user){
@@ -372,6 +366,7 @@
                 } else {
                     TweetCommons.makeUnretweet(user, req.params, function (result) {
                         if (result.statusCode && result.statusCode != 200) {
+                            // Twitter API interaction error
                             res.status(result.statusCode).json({
                                 "error": true,
                                 "data": {
@@ -403,12 +398,10 @@
         }, user_required.after);
 
         /**
-         * Makes a favorite/like on a specific tweet (with determinated user account).
-         * Requires a local user account with at least one twitter account associated.
+         * Makes a favorite/like on a specific tweet (with an user account).
+         * Requires a local user account with at least one twitter account associated and in use.
          * Get parameters required:
          * - id: unique tweet id (from Twitter "id_str").
-         *
-         * (Checked)
          */
         app.get('/tweets/:id/favorite', user_required.before, function(req, res, next) {
             TweetCommons.getUserFromJWT(req, function(user){
@@ -417,6 +410,7 @@
                 } else {
                     TweetCommons.makeFavorite(user, req.params, function (result) {
                         if (result.statusCode && result.statusCode != 200) {
+                            // Twitter API interaction error
                             res.status(result.statusCode).json({
                                 "error": true,
                                 "data": {
@@ -440,12 +434,10 @@
         }, user_required.after);
 
         /**
-         * Makes a favorite/like on a specific tweet (with determinated user account).
-         * Requires a local user account with at least one twitter account associated.
+         * Undo a favorite/like on a specific tweet (with an user account).
+         * Requires a local user account with at least one twitter account associated and in use.
          * Get parameters required:
          * - id: unique tweet id (from Twitter "id_str").
-         *
-         * (Checked)
          */
         app.get('/tweets/:id/unfavorite', user_required.before, function(req, res, next) {
             TweetCommons.getUserFromJWT(req, function(user){
@@ -477,9 +469,8 @@
         }, user_required.after);
 
         /**
-         * Get pending tweets from user. (User authentication required)
-         *
-         * (Checked)
+         * Get pending tweets from user (waiting for posting). User authentication required.
+         * Requires a local user account with at least one twitter account associated.
          */
         app.get('/tweets/:pending', user_required.before, function(req, res, next) {
             if(req.params.pending != "pending"){
@@ -524,9 +515,8 @@
         }, user_required.after);
 
         /**
-         * Delete pending tweet from user, by unique tweet (local) id. (User authentication required)
-         *
-         * (Checked)
+         * Delete pending tweet from user, by unique tweet (local) id. User authentication required.
+         * Requires a local user account with at least one twitter account associated.
          */
         app.delete('/tweets/pending/:id', user_required.before, function(req, res, next) {
             if(req.params.id == "pending" || req.params.id == "own"){

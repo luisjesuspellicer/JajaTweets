@@ -1,5 +1,9 @@
 /**
- * Created by piraces on 22/04/16.
+ * Authors: Diego Ceresuela, Luis Jesús Pellicer, Raúl Piracés.
+ * Date: 16-05-2016
+ * Name file: tweets.model.js
+ * Description: This file contains the mongoose model for "tweets" resource, based on the information of tweets
+ * retrieved from Twitter.
  */
 (function() {
     'use strict';
@@ -7,7 +11,7 @@
     var mongoose = require('mongoose');
 
 
-    // Ver: https://dev.twitter.com/rest/reference/post/statuses/update
+    // Tweet model based on: https://dev.twitter.com/rest/reference/post/statuses/update
     var tweetsSchema = new mongoose.Schema({
         status: {
             type: String,

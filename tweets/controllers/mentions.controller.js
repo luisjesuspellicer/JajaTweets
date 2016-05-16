@@ -1,5 +1,8 @@
 /**
- * Created by piraces on 22/4/16.
+ * Authors: Diego Ceresuela, Luis Jesús Pellicer, Raúl Piracés.
+ * Date: 16-05-2016
+ * Name file: mentions.controller.js
+ * Description: This file contains methods to attend the "mentions" resource and endpoints.
  */
 (function() {
 
@@ -11,14 +14,14 @@
     module.exports = function(app) {
 
         /**
-         * Get the latest mentions of current user in twitter.
-         *
-         * (Checked)
+         * Get the latest mentions of current user in Twitter, using the correspondent Twitter search API endpoint.
+         * If there is an error with Twitter, the response contains error status code from Twitter.
          */
         app.get('/mentions', user_required.before, function(req, res, next) {
             TweetCommons.getUserFromJWT(req, function(user){
                 if(user) {
                     TweetCommons.searchMentions(user, function (result) {
+                        // Error in the interaction with Twitter.
                         if (result.statusCode && result.statusCode != 200) {
                             res.status(result.statusCode).json({
                                 "error": true,
