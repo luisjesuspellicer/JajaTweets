@@ -1,8 +1,10 @@
 /**
- * Created by diego on 21/04/16.
- *
- * Manages the login endpoint.
+ * Authors: Diego Ceresuela, Raúl Piracés and Luis Jesús Pellicer.
+ * Date: 16-05-2016
+ * Name file: auth.controller.js
+ * Description: Manages the login endpoint.
  */
+
 (function() {
 
     'use strict';
@@ -11,7 +13,8 @@
     var mongoose = require('mongoose');
 
     module.exports = function(app) {
-
+    
+        // User log out.
         app.get('/logout', function(req,res,next) {
             req.session.cookie.expires = new Date(1);
             req.session.cookie.maxAge = 1;
@@ -27,6 +30,7 @@
          * and returns a valid JWT.
          */
         app.post('/login',function(req, res, next) {
+            
             passport.authenticate('local', function(err, user, info){
                 var token;
 

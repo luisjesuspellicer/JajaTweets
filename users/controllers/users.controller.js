@@ -1,12 +1,15 @@
 /**
- * Created by diego on 16/04/16.
- *
- * Contains all the endpoints offered for the resource 'users'.
+ * Authors: Diego Ceresuela, Raúl Piracés and Luis Jesús Pellicer.
+ * Date: 16-05-2016
+ * Name file: auth.controller.js
+ * Description: Contains all the endpoints offered for the resource 'users'.
  * It is a restful api.
  *      GET,POST            /users
  *      GET,PUT,DELETE      /users/:id
  *      GET                 /users::last
  */
+
+
 (function () {
 
     var Resource = require('resourcejs');
@@ -22,6 +25,7 @@
         // First load the policies that will be used in the endpoints
         var admin_required = require('../../config/policies.config').admin_required;
         var admin_or_self_required = require('../../config/policies.config').admin_or_self_required;
+
         // Delete operation should update Analytics
         var delete_options = _.cloneDeep(admin_or_self_required);
         delete_options.after.push(function (req, res, next) {
@@ -47,10 +51,13 @@
 
         // POST /users must generate new JWT token
         resource.register(app, 'post', '/users', createUser, resource.respond.bind(resource), admin_required);
+
         // PUT /users/:id updates user by id
         resource.register(app, 'put', '/users/:id', updateUser,resource.respond.bind(resource), admin_or_self_required);
+
         // GET /users::last offers the last accesses
         resource.register(app, 'get', '/users::last', getLastUsers, resource.respond.bind(resource), admin_required);
+        
         // GET /users::tweets offers users with more tweets
         resource.register(app, 'get', '/users::tweets', getMoreTweets, resource.respond.bind(resource), admin_required);
 

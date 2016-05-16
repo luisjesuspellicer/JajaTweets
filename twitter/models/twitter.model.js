@@ -1,5 +1,8 @@
 /**
- * Created by piraces on 25/04/16.
+ * Authors: Diego Ceresuela, Luis Jesús Pellicer, Raúl Piracés.
+ * Date: 16-05-2016
+ * Name file: twitter.model.js
+ * Description: This file contains the mongoose model for "twitter" resource.
  */
 (function() {
     'use strict';

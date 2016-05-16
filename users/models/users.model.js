@@ -1,8 +1,9 @@
 /**
- * Created by Diego on 16/04/16.
- *
- * Manages basic user information.
- */
+ * Authors: Diego Ceresuela, Luis Jesús Pellicer, Raúl Piracés.
+ * Date: 16-05-2016
+ * Name file: users.model.js
+ * Description: This file contains the mongoose model for "users" resource.
+ * */
 (function() {
 
     'use strict';

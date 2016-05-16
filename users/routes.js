@@ -1,7 +1,8 @@
 /**
- * Created by diego on 16/04/16.
- *
- * Contains all the resources offered by the web service's api.
+ * Authors: Diego Ceresuela, Luis Jesús Pellicer, Raúl Piracés.
+ * Date: 16-05-2016
+ * Name file: routes.js
+ * Description: This file exports the correspondent resource "routers" and their endpoints.
  */
 (function() {
 

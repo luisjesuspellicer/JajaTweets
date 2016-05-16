@@ -1,6 +1,9 @@
 /**
- * Created by diego on 22/04/16.
-*/
+ * Authors: Diego Ceresuela, Luis Jesús Pellicer, Raúl Piracés.
+ * Date: 16-05-2016
+ * Name file: test.js
+ * Description: File for testing all "users" resource endpoints with "mocha".
+ */
 (function() {
 
     'use strict';
