@@ -1,5 +1,16 @@
 /**
- * Created by luis on 27/04/16.
+ * Authors: Diego Ceresuela, Raúl Piracés and Luis Jesús Pellicer.
+ * Date: 16-05-2016
+ * Name file: dashboard.js
+ * Description: Controller for the view dashboard.
+ * It controls the dashboard, show own tweets, tweets from an account, mention tweets
+ * and pending tweets. This controller let:
+ * - Remove own tweets.
+ * - Make and unmake favourite in own, account and mention tweets.
+ * - Make and unmake retweet in account and mention tweets.
+ * - Create new tweet in the moment.
+ * - Create pending tweet (must select the date and hour).
+ * - Short urls with own shortener.
  */
 
 // Own tweets, pending tweets and account tweets.
@@ -21,20 +32,31 @@ dashboardCtrl.$inject = ['$scope', '$http', 'authentication', '$location', '$sce
 function dashboardCtrl($scope, $http, authentication, $location, $sce,
                        errorsService, spinnerService) {
 
+
     var self = this;
 
     self.checked = "NO";
-    console.log("User: Token: "+authentication.getToken());
+
+    /*
+     * Be sure that the user is logged in.
+     */
     if (!authentication.isLoggedIn()) {
         console.log('unauth');
         errorsService.errorCode = 401;
         errorsService.errorMessage = "Unauthorized operation.";
         $location.path('errors');
     }
-    self.tweet ="";
-    self.num = -1;
+
+    self.tweet =""; // Initial text of the new tweet's text.
+    self.num = -1; // Num of characters in the new tweet's text.
+
     $scope.formData = {};
     $scope.result = null;
+
+    /*
+     * Return true if exists one tweet in ownTweets that have id as identifier.
+     * Return false in other case.
+     */
     self.own = function(id){
         var res = false;
 
@@ -45,6 +67,11 @@ function dashboardCtrl($scope, $http, authentication, $location, $sce,
         }
         return res;
     }
+
+    /*
+     * Return true if exists one tweet in mentionTweets that have id as identifier.
+     * Return false in other case.
+     */
     self.mentionss = function(id){
         var res = false;
 
@@ -57,9 +84,11 @@ function dashboardCtrl($scope, $http, authentication, $location, $sce,
 
     }
 
+    /*
+     * Return the length of the text that the user typed
+     */
     self.countt = function(){
         if(self.tweet != undefined){
-            
             self.num = self.tweet.length;
 
         }else{
@@ -69,7 +98,12 @@ function dashboardCtrl($scope, $http, authentication, $location, $sce,
         }
     }
 
+    /*
+     * Destroy own tweet with id as identifier in the view and make request to
+     * backend, for destroy tweet with Twitter's API.
+     */
     self.destroy = function(id, index){
+
         // Refresh ownTweets and accountTweets
         var aux1 = self.ownTweets[index];
         self.ownTweets.splice(index,1);
@@ -85,6 +119,7 @@ function dashboardCtrl($scope, $http, authentication, $location, $sce,
                 i = self.mentions.length;
             }
         }
+        // Request to back-end.
         $http.delete('/tweets/' + id, {
             headers: {
                 'Authorization': 'Bearer ' + authentication.getToken()
@@ -101,6 +136,10 @@ function dashboardCtrl($scope, $http, authentication, $location, $sce,
         });
     }
 
+    /*
+     * Destroy pending tweet with id as identifier in the view and make request to
+     * backend, for destroy tweet with Twitter's API.
+     */
     self.destroyPending = function(id, index){
         self.pendingTweets.splice(index,1);
         $http.delete('/tweets/pending/'+ id, {
@@ -117,6 +156,10 @@ function dashboardCtrl($scope, $http, authentication, $location, $sce,
         });
     }
 
+    /*
+     * If tweet with id as identifier is part of ownTweets do nothing. Else,
+     * make retweet request to back-end and refresh with increasing retweet count.
+     */
     self.retweet = function(id, index, where){
 
         if(!self.own(id)) {
@@ -143,6 +186,11 @@ function dashboardCtrl($scope, $http, authentication, $location, $sce,
         }
     };
 
+    /*
+     * If tweet with id as identifier is part of ownTweets and isn't a
+     * retweeted tweet, do nothing. Else unretweet the tweet in the view
+     * and make unretweet request for the back-end.
+     */
     self.unretweet = function(id, index, where){
         spinnerService.show('ownSpinner');
         spinnerService.show('homeSpinner');
@@ -168,6 +216,10 @@ function dashboardCtrl($scope, $http, authentication, $location, $sce,
         });
     };
 
+    /*
+     * If tweet with id as identifier is part of ownTweets and is a retweet
+     * tweet do nothing, else refresh the view and make request to back-end.
+     */
     self.favorite = function(id, where){
         spinnerService.show('ownSpinner');
         spinnerService.show('homeSpinner');
@@ -221,6 +273,11 @@ function dashboardCtrl($scope, $http, authentication, $location, $sce,
         }
     };
 
+    /*
+     * If tweet as identifier is part of ownTweets and is a retweet tweet,
+     * make requests to back-end to refresh the view. Else refresh view in local.
+     * For finish, make request of unfavourite to the back-end in two cases.
+     */
     self.unfavorite = function(id, where){
         spinnerService.show('ownSpinner');
         spinnerService.show('homeSpinner');
@@ -274,6 +331,9 @@ function dashboardCtrl($scope, $http, authentication, $location, $sce,
         }
     };
 
+    /*
+     * Make request to the back-end to refresh the view with new own tweets.
+     */
     self.updateOwn = function(){
 
 
@@ -297,6 +357,9 @@ function dashboardCtrl($scope, $http, authentication, $location, $sce,
         });
     }
 
+    /*
+     * Make request to the back-end to refresh the view with new home tweets.
+     */
     self.updateHome= function (){
         $http.get('/tweets',{
             headers: {
@@ -317,6 +380,10 @@ function dashboardCtrl($scope, $http, authentication, $location, $sce,
             self.accountTweets = auxx;
         });
     }
+
+    /*
+     * Make request to the back-end to refresh the view with new pending weets.
+     */
     self.updatePending = function(){
         $http.get('/tweets/pending', {
             headers: {
@@ -338,6 +405,10 @@ function dashboardCtrl($scope, $http, authentication, $location, $sce,
             self.pendingTweets = auxx;
         });
     }
+
+    /*
+     * Make request to the back-end to refresh the view with new mention tweets.
+     */
     self.updateMentions = function(){
         $http.get('/mentions', {
             headers: {
@@ -360,11 +431,17 @@ function dashboardCtrl($scope, $http, authentication, $location, $sce,
         });
     }
 
+    /*
+     * Make request to back-end to send one tweet. If validDate is
+     * less than actual date, refresh ownTweets, else refresh pending tweets.
+     */
     self.sendTweet = function(validDate){
 
+        // If date is null, it create the tweet with actual date.
         if(validDate != null){
 
             self.dat = {"status": self.tweet, "date": validDate};
+
         }else{
             validDate = new Date();
             self.dat = {"status": self.tweet, "date": validDate};
@@ -378,7 +455,6 @@ function dashboardCtrl($scope, $http, authentication, $location, $sce,
             spinnerService.show('homeSpinner');
 
         }
-
         $http({
             method: 'POST',
             url: '/tweets',
@@ -403,9 +479,13 @@ function dashboardCtrl($scope, $http, authentication, $location, $sce,
                 self.ownTweets = self.updateHome();
                 self.ownTweets = self.updateOwn();
             }
-
         });
     }
+
+    /*
+     * If the user click in checkbox, parse de date and call method sendTweet.
+     * In other cases, call sendTweet with null date.
+     */
     self.newTweet = function(){
         spinnerService.show('pendingSpinner');
         if(self.checked == 'YES'){
@@ -445,7 +525,10 @@ function dashboardCtrl($scope, $http, authentication, $location, $sce,
             self.sendTweet();
         }
     }
-    
+
+    /*
+     * Parse 
+     */
     self.parse = function(oneTweet) {
         if (oneTweet != null) {
             var regex = /(https?:\/\/[^\s]+)/ig;
@@ -585,10 +668,10 @@ function dashboardCtrl($scope, $http, authentication, $location, $sce,
         }
     }
 
-
-   // self.updateOwn();
-    //self.updateHome();
-   // self.updateMentions();
-    self.updatePending();
+   // Refresh all section at start.
+   self.updateOwn();
+   self.updateHome();
+   self.updateMentions();
+   self.updatePending();
 
 }
