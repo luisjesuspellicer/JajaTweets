@@ -26,28 +26,32 @@
          */
         app.get('/shortened', user_required.before, function(req, res, next) {
             TweetCommons.getUserFromJWT(req, function(user){
-                Shortened.find({user: user.user}, function(err,doc){
-                    if(err){
-                        res.status(500).json({
-                            "error": true,
-                            "data" : {
-                                "message": "Could get shortened links of user",
-                                "url": process.env.CURRENT_DOMAIN
-                            }
-                        });
-                        next();
-                    } else {
-                        res.json({
-                            "error": false,
-                            "data" : {
-                                "message": "Shortened links obtained successfully",
-                                "url": process.env.CURRENT_DOMAIN + "/shortened",
-                                "content": doc
-                            }
-                        });
-                        next();
-                    }
-                });
+                if(user==null){
+                    next();
+                } else {
+                    Shortened.find({user: user.user}, function (err, doc) {
+                        if (err) {
+                            res.status(500).json({
+                                "error": true,
+                                "data": {
+                                    "message": "Could get shortened links of user",
+                                    "url": process.env.CURRENT_DOMAIN
+                                }
+                            });
+                            next();
+                        } else {
+                            res.json({
+                                "error": false,
+                                "data": {
+                                    "message": "Shortened links obtained successfully",
+                                    "url": process.env.CURRENT_DOMAIN + "/shortened",
+                                    "content": doc
+                                }
+                            });
+                            next();
+                        }
+                    });
+                }
             });
         }, user_required.after);
 
@@ -57,72 +61,76 @@
          */
         app.post('/shortened', user_required.before, function(req, res, next) {
             TweetCommons.getUserFromJWT(req, function(user){
-                var newHash;
-                try {
-                    newHash = hash(req.body.link);
-                } catch(ex){
-                    res.status(400).json({
-                        "error": true,
-                        "data": {
-                            "message": "Given link isn't a valid URL",
-                            "url": process.env.CURRENT_DOMAIN
-                        }
-                    });
+                if(user==null){
                     next();
-                }
-                if(newHash) {
-                    Shortened.findOne({hash: newHash, user: user.user}, function (err, doc) {
-                        if (err) {
-                            res.status(500).json({
-                                "error": true,
-                                "data": {
-                                    "message": "Could shorten given link: " + req.body.link,
-                                    "url": process.env.CURRENT_DOMAIN
-                                }
-                            });
-                            next();
-                        } else if (doc != null) {
-                            res.json({
-                                "error": false,
-                                "data": {
-                                    "message": "URL already shortened by user: " + doc.link,
-                                    "url": process.env.CURRENT_DOMAIN + "/shortened/" + doc.hash,
-                                    "direct_url": process.env.CURRENT_DOMAIN + "/s/" + doc.hash,
-                                    "content": doc
-                                }
-                            });
-                            next();
-                        } else {
-                            var newShortened = new Shortened({
-                                "link": req.body.link,
-                                "hash": newHash,
-                                "user": user.user
-                            });
-                            newShortened.save(function (err) {
-                                if (err) {
-                                    res.status(500).json({
-                                        "error": true,
-                                        "data": {
-                                            "message": "Could shorten given link: " + req.body.link,
-                                            "url": process.env.CURRENT_DOMAIN
-                                        }
-                                    });
-                                    next();
-                                } else {
-                                    res.json({
-                                        "error": false,
-                                        "data": {
-                                            "message": "URL successfully shortened",
-                                            "url": process.env.CURRENT_DOMAIN + "/shortened/" + newHash,
-                                            "direct_url": process.env.CURRENT_DOMAIN + "/s/" + newHash,
-                                            "content": newShortened
-                                        }
-                                    });
-                                    next();
-                                }
-                            });
-                        }
-                    });
+                } else {
+                    var newHash;
+                    try {
+                        newHash = hash(req.body.link);
+                    } catch (ex) {
+                        res.status(400).json({
+                            "error": true,
+                            "data": {
+                                "message": "Given link isn't a valid URL",
+                                "url": process.env.CURRENT_DOMAIN
+                            }
+                        });
+                        next();
+                    }
+                    if (newHash) {
+                        Shortened.findOne({hash: newHash, user: user.user}, function (err, doc) {
+                            if (err) {
+                                res.status(500).json({
+                                    "error": true,
+                                    "data": {
+                                        "message": "Could shorten given link: " + req.body.link,
+                                        "url": process.env.CURRENT_DOMAIN
+                                    }
+                                });
+                                next();
+                            } else if (doc != null) {
+                                res.json({
+                                    "error": false,
+                                    "data": {
+                                        "message": "URL already shortened by user: " + doc.link,
+                                        "url": process.env.CURRENT_DOMAIN + "/shortened/" + doc.hash,
+                                        "direct_url": process.env.CURRENT_DOMAIN + "/s/" + doc.hash,
+                                        "content": doc
+                                    }
+                                });
+                                next();
+                            } else {
+                                var newShortened = new Shortened({
+                                    "link": req.body.link,
+                                    "hash": newHash,
+                                    "user": user.user
+                                });
+                                newShortened.save(function (err) {
+                                    if (err) {
+                                        res.status(500).json({
+                                            "error": true,
+                                            "data": {
+                                                "message": "Could shorten given link: " + req.body.link,
+                                                "url": process.env.CURRENT_DOMAIN
+                                            }
+                                        });
+                                        next();
+                                    } else {
+                                        res.json({
+                                            "error": false,
+                                            "data": {
+                                                "message": "URL successfully shortened",
+                                                "url": process.env.CURRENT_DOMAIN + "/shortened/" + newHash,
+                                                "direct_url": process.env.CURRENT_DOMAIN + "/s/" + newHash,
+                                                "content": newShortened
+                                            }
+                                        });
+                                        next();
+                                    }
+                                });
+                            }
+                        });
+                    }
                 }
             });
         }, user_required.after);
@@ -133,37 +141,41 @@
          */
         app.get('/shortened/:id', user_required.before, function(req, res, next) {
             TweetCommons.getUserFromJWT(req, function(user){
-                Shortened.findOne({user: user.user, hash: req.params.id}, function(err,doc){
-                    if(err){
-                        res.status(500).json({
-                            "error": true,
-                            "data" : {
-                                "message": "Could not get the URL of that hash",
-                                "url": process.env.CURRENT_DOMAIN
-                            }
-                        });
-                        next();
-                    } else if(doc == null){
-                        res.status(404).json({
-                            "error": true,
-                            "data" : {
-                                "message": "The hash doesn't exists",
-                                "url": process.env.CURRENT_DOMAIN
-                            }
-                        });
-                        next();
-                    } else {
-                        res.json({
-                            "error": false,
-                            "data" : {
-                                "message": "URL obtained successfully",
-                                "url": doc.link,
-                                "content": doc
-                            }
-                        });
-                        next();
-                    }
-                });
+                if(user==null){
+                    next();
+                } else {
+                    Shortened.findOne({user: user.user, hash: req.params.id}, function (err, doc) {
+                        if (err) {
+                            res.status(500).json({
+                                "error": true,
+                                "data": {
+                                    "message": "Could not get the URL of that hash",
+                                    "url": process.env.CURRENT_DOMAIN
+                                }
+                            });
+                            next();
+                        } else if (doc == null) {
+                            res.status(404).json({
+                                "error": true,
+                                "data": {
+                                    "message": "The hash doesn't exists",
+                                    "url": process.env.CURRENT_DOMAIN
+                                }
+                            });
+                            next();
+                        } else {
+                            res.json({
+                                "error": false,
+                                "data": {
+                                    "message": "URL obtained successfully",
+                                    "url": doc.link,
+                                    "content": doc
+                                }
+                            });
+                            next();
+                        }
+                    });
+                }
             });
         }, user_required.after);
 
@@ -173,37 +185,41 @@
          */
         app.delete('/shortened/:id', user_required.before, function(req, res, next) {
             TweetCommons.getUserFromJWT(req, function(user) {
-                Shortened.findOneAndRemove({user: user.user, hash: req.params.id}, function (err, doc) {
-                    if (err) {
-                        res.status(500).json({
-                            "error": true,
-                            "data": {
-                                "message": "Could not delete the shortened URL",
-                                "url": process.env.CURRENT_DOMAIN
-                            }
-                        });
-                        next();
-                    } else if (doc == null) {
-                        res.status(404).json({
-                            "error": true,
-                            "data": {
-                                "message": "Could not found the shortened URL",
-                                "url": process.env.CURRENT_DOMAIN + "/shortened"
-                            }
-                        });
-                        next();
-                    } else {
-                        res.json({
-                            "error": false,
-                            "data": {
-                                "message": "Shortened URL deleted successfully",
-                                "url": process.env.CURRENT_DOMAIN + "/shortened",
-                                "content": doc
-                            }
-                        });
-                        next();
-                    }
-                });
+                if(user==null){
+                    next();
+                } else {
+                    Shortened.findOneAndRemove({user: user.user, hash: req.params.id}, function (err, doc) {
+                        if (err) {
+                            res.status(500).json({
+                                "error": true,
+                                "data": {
+                                    "message": "Could not delete the shortened URL",
+                                    "url": process.env.CURRENT_DOMAIN
+                                }
+                            });
+                            next();
+                        } else if (doc == null) {
+                            res.status(404).json({
+                                "error": true,
+                                "data": {
+                                    "message": "Could not found the shortened URL",
+                                    "url": process.env.CURRENT_DOMAIN + "/shortened"
+                                }
+                            });
+                            next();
+                        } else {
+                            res.json({
+                                "error": false,
+                                "data": {
+                                    "message": "Shortened URL deleted successfully",
+                                    "url": process.env.CURRENT_DOMAIN + "/shortened",
+                                    "content": doc
+                                }
+                            });
+                            next();
+                        }
+                    });
+                }
             });
         }, user_required.after);
 
@@ -213,7 +229,7 @@
          */
         app.get('/s/:encoded_id', function(req, res, next) {
             Shortened.findOne({hash: req.params.encoded_id}, function(err,doc){
-                if(err){
+                if(err || doc == null){
                     res.status(500).json({
                         "error": true,
                         "data" : {

@@ -14,6 +14,9 @@
     var passport = require('passport');
     var mongoose = require('mongoose');
     var User = mongoose.model('users');
+    var Twitter = mongoose.model('twitter');
+    var Tweets = mongoose.model('tweets');
+    var Shortened = mongoose.model('shortened');
     var http = require('http');
     var _ = require('lodash');
     var jwt = require('jsonwebtoken');
@@ -155,9 +158,10 @@
             var password = req.body.password;
 
             user.setPassword(password);
-            // Updates all data of specified user
-            User.update({email: req.body.oldEmail}, {$set: {email: user.email, name: user.name, hash: user.hash,
-                salt: user.salt, lastAccess: user.lastAccess}}, function (err, doc) {
+            if(req.body.name && req.body.email && req.body.password && req.body.oldEmail){
+                // Updates all data of specified user
+                User.update({email: req.body.oldEmail}, {$set: {email: user.email, name: user.name, hash: user.hash,
+                    salt: user.salt, lastAccess: user.lastAccess}}, function (err, doc) {
                     if(err){
                         return resource.setResponse(res,
                             {
@@ -171,20 +175,84 @@
                                 }
                             }, next);
                     } else {
-                        return resource.setResponse(res,
-                            {
-                                status: 200,
-                                item: {
-                                    "error": false,
-                                    "data": {
-                                        "message": "Update user successful",
-                                        "password": password,
-                                        "url": process.env.CURRENT_DOMAIN + "/login"
-                                    }
-                                }
-                            }, next);
+                        // Updates all other linked resources of user
+                        multiUpdate(req, user, function (err) {
+                            if (err) {
+                                return resource.setResponse(res,
+                                    {
+                                        status: 500,
+                                        item: {
+                                            "error": true,
+                                            "data": {
+                                                "message": "Cannot update this user",
+                                                "url": process.env.CURRENT_DOMAIN + "/users"
+                                            }
+                                        }
+                                    }, next);
+                            } else {
+                                return resource.setResponse(res,
+                                    {
+                                        status: 200,
+                                        item: {
+                                            "error": false,
+                                            "data": {
+                                                "message": "Update user successful",
+                                                "password": password,
+                                                "url": process.env.CURRENT_DOMAIN + "/login"
+                                            }
+                                        }
+                                    }, next);
+                            }
+                        });
                     }
-            });
+                });
+            } else {
+                return resource.setResponse(res,
+                    {
+                        status: 400,
+                        item: {
+                            "error": true,
+                            "data": {
+                                "message": "Cannot update this user",
+                                "url": process.env.CURRENT_DOMAIN + "/users"
+                            }
+                        }
+                    }, next);
+            }
+        }
+
+        /**
+         * Updates all resources associated with the specified user, with the new email in req.
+         * @param req is the request object.
+         * @param user is the user object.
+         * @param callback is the callback object.
+         */
+        function multiUpdate(req, user, callback){
+            // Updates all twitter data of specified user
+            Twitter.update({user: req.body.oldEmail}, {$set: {user: user.email}}, {multi: true},
+                function (err, doc) {
+                    if(err){
+                        callback(true);
+                    } else {
+                        // Updates all tweets data of specified user
+                        Tweets.update({user: req.body.oldEmail}, {$set: {user: user.email}}, {multi: true},
+                            function (err, doc) {
+                                if(err){
+                                    callback(true);
+                                } else {
+                                    // Updates all shortened data of specified user
+                                    Shortened.update({user: req.body.oldEmail}, {$set: {user: user.email}},
+                                        {multi: true}, function (err, doc) {
+                                            if(err){
+                                                callback(true);
+                                            } else {
+                                                callback();
+                                            }
+                                        });
+                                }
+                            });
+                    }
+                });
         }
 
         /**
