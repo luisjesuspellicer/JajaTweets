@@ -58,8 +58,9 @@
                     $inc: { tweet_app: num_app }}, {new: true}, function(err, doc){
                     if(err) {
                         callback();
+                    } else {
+                        callback();
                     }
-                    callback();
                 });
         });
     }

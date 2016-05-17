@@ -105,7 +105,7 @@
                             Twitter.findOneAndUpdate({user: user.user, in_use: true}, {$push: {subscribed:
                                 {hashtag: req.body.hashtag}}},
                                 {new: true}, function (err, doc) {
-                                    if (err) {
+                                    if (err || doc==null) {
                                         res.status(500).json({
                                             "error": true,
                                             "data": {
@@ -198,7 +198,7 @@
                     Twitter.findOneAndUpdate({user: user.user, in_use: true}, {$pull: {subscribed: {hashtag: id}}},
                         {new: true},
                         function (err, doc) {
-                            if (err) {
+                            if (err || doc==null) {
                                 res.status(500).json({
                                     "error": true,
                                     "data": {

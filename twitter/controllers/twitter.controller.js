@@ -26,7 +26,7 @@
         app.get('/twitter', user_required.before, function(req, res, next) {
             TwitterCommons.getUserFromJWT(req, function(user){
                 Twitter.find({user: user.email}, function(err, doc){
-                    if(err){
+                    if(err  || doc==null){
                         res.json({
                             "error": true,
                             "data" : {
@@ -147,7 +147,7 @@
             } else {
                 TwitterCommons.getUserFromJWT(req, function (user) {
                     Twitter.findOne({user: user.email, id_str: req.params.id}, function (err, doc) {
-                        if (err) {
+                        if (err  || doc==null) {
                             res.status(500).json({
                                 "error": true,
                                 "data": {
@@ -324,7 +324,7 @@
         app.delete('/twitter/:id', user_required.before, function(req, res, next) {
             TwitterCommons.getUserFromJWT(req, function(user){
                 Twitter.findOneAndRemove({user: user.email, id_str: req.params.id}, function(err, doc){
-                    if(err){
+                    if(err || doc==null){
                         res.status(500).json({
                             "error": true,
                             "data" : {
@@ -355,7 +355,7 @@
         app.get('/twitter/:id/statsDay', user_required.before, function(req, res, next) {
             TwitterCommons.getUserFromJWT(req, function(user){
                 Twitter.findOne({user: user.email, id_str: req.params.id}, function(err, account){
-                    if(err){
+                    if(err || account==null){
                         res.status(500).json({
                             "error": true,
                             "data": {
@@ -435,7 +435,7 @@
         app.get('/twitter/:id/statsMentions', user_required.before, function(req, res, next) {
             TwitterCommons.getUserFromJWT(req, function(user){
                 Twitter.findOne({user: user.email, id_str: req.params.id}, function(err, account){
-                    if(err){
+                    if(err || account==null){
                         res.status(500).json({
                             "error": true,
                             "data": {
@@ -511,7 +511,7 @@
         app.get('/twitter/:id/followers', user_required.before, function(req, res, next) {
             TwitterCommons.getUserFromJWT(req, function (user) {
                 Twitter.findOne({user: user.email, id_str: req.params.id}, function (err, account) {
-                    if (err) {
+                    if (err || account==null) {
                         res.status(500).json({
                             "error": true,
                             "data": {

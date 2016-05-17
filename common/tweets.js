@@ -282,7 +282,7 @@
                 function(error, data, response){
                     if(error){
                         callback(error);
-                    }else{
+                    } else {
                         callback(JSON.parse(data));
                     }
                 }
@@ -306,7 +306,7 @@
                 function(error, data, response){
                     if(error){
                         callback(error);
-                    }else{
+                    } else {
                         callback(JSON.parse(data));
                     }
                 }
@@ -332,7 +332,6 @@
                     "id": id
                 },
                 function (error, data, response) {
-
                     if (error) {
                         callback(error);
                     } else {
@@ -409,7 +408,7 @@
                 function(error, data, response){
                     if(error){
                         callback(error);
-                    }else{
+                    } else {
                         callback(JSON.parse(data));
                     }
                 }

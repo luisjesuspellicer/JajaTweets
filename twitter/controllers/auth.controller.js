@@ -14,9 +14,6 @@
     var request = require('request');
     var atob = require('atob');
 
-    // TODO: quit in production
-    var util = require('util');
-
     module.exports = function(app) {
 
         // Session with Twitter
@@ -80,7 +77,6 @@
                         }
                     });
                 } else {
-
                     // If not have jwt -> error.
                     res.redirect(process.env.CURRENT_DOMAIN + '/#/errors');
                 }

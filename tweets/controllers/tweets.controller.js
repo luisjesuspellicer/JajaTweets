@@ -71,7 +71,7 @@
                     var date = new Date();
                     if(req.body.date && new Date(req.body.date) > date) {
                         Twitter.findOne({user: user.user, in_use: true}, function(err, doc){
-                            if (err){
+                            if (err || doc==null){
                                 res.status(500).json({
                                     "error": true,
                                     "data" : {
@@ -479,7 +479,7 @@
                 TweetCommons.getUserFromJWT(req, function(user) {
                     if (user) {
                         Tweet.find({user: user.user}, function (err, tweets) {
-                            if (err) {
+                            if (err || tweets==null) {
                                 res.status(500).json({
                                     "error": true,
                                     "data": {
