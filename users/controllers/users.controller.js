@@ -6,7 +6,7 @@
  * It's a restful api.
  *      GET,POST            /users
  *      GET,PUT,DELETE      /users/:id
- *      GET                 /users::last
+ *      GET                 /users/:filter
  */
 (function () {
 
@@ -40,26 +40,76 @@
             next();
         });
 
+        // Available filters
+        var filters = ["tweets","last"];
+
+
         // Setup the controller for REST
         var resource = Resource(app, '', route, app.models.users)
-            .get(admin_or_self_required) // GET /users/:id
             .delete(delete_options) // DELETE /users/:id
             .index(index_options); // GET /users
 
-        // POST /users must generate new JWT token
+        // GET /users returns all the users
+        resource.register(app,'get','/users/:id',getUser, resource.respond.bind(resource), admin_or_self_required);
+        // POST /users must generate new user/password
         resource.register(app, 'post', '/users', createUser, resource.respond.bind(resource), admin_required);
         // PUT /users/:id updates user by id
         resource.register(app, 'put', '/users/:id', updateUser,resource.respond.bind(resource), admin_or_self_required);
-        // GET /users::last offers the last accesses
-        resource.register(app, 'get', '/users::last', getLastUsers, resource.respond.bind(resource), admin_required);
-        // GET /users::tweets offers users with more tweets
-        resource.register(app, 'get', '/users::tweets', getMoreTweets, resource.respond.bind(resource), admin_required);
+        // GET /users/:filter applies a filter to the users list
+        resource.register(app, 'get', '/users/:filter', filterUsers, resource.respond.bind(resource), admin_required);
+
+        function getUser(req, res, next) {
+            if (filters.indexOf(req.params.id)>-1) {
+                next();
+            } else {
+                User.findById(req.params.id, function(err,docs) {
+                    if(err){
+                        return resource.setResponse(res,
+                            {
+                                status: 500,
+                                item: {
+                                    "error": true,
+                                    "data": {
+                                        "message": "Cannot get user info",
+                                        "url": process.env.CURRENT_DOMAIN + "/users"
+                                    }
+                                }
+                            }, next);
+                    } else {
+                        return resource.setResponse(res,
+                            {
+                                status: 200,
+                                item: {
+                                    "error": false,
+                                    "data": docs
+                                }
+                            }, next);
+                    }
+                })
+
+            }
+        }
+
+        /**
+         * Applies a filter to the users list
+         */
+        function filterUsers(req, res, next) {
+            if (filters.indexOf(req.params.filter)<0) {
+                next();
+            } else {
+                switch (req.params.filter) {
+                    case "tweets":
+                        getMoreTweets(req, res, next);
+                        break;
+                    case "last":
+                        getLastUsers(req, res, next);
+                        break;
+                }
+            }
+        }
 
         /**
          * Create a new user and returns a JWT token, token could be changed so /login required.
-         * @param req
-         * @param res
-         * @param next
          */
         function createUser(req, res, next) {
             var user = new User();
@@ -161,11 +211,13 @@
      * @param next
      */
     function getLastUsers(req, res, next) {
-        User.find({}).sort({lastAccess: -1}).limit(20).exec(
-            function(err, users) {
-                res.status(200).json(users);
-            }
-        );
+
+            User.find({}).sort({lastAccess: -1}).limit(20).exec(
+                function (err, users) {
+                    res.status(200).json(users);
+                }
+            );
+
     }
 
     /**
@@ -175,11 +227,13 @@
      * @param next
      */
     function getMoreTweets(req, res, next) {
-        User.find({}).sort({tweets_app: -1}).limit(20).exec(
-            function(err, users) {
-                res.status(200).json(users);
-            }
-        );
+
+            User.find({}).sort({tweets_app: -1}).limit(20).exec(
+                function (err, users) {
+                    res.status(200).json(users);
+                }
+            );
+
     }
 
     /**

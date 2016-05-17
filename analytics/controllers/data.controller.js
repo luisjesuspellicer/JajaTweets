@@ -61,7 +61,7 @@
 
                         case "lastAccess":
                             http.request({
-                                method: 'get', port: 3000, path: '/users::last',
+                                method: 'get', port: 3000, path: '/users/last',
                                 headers: {
                                     'Content-type': 'application/json',
                                     'Authorization': 'Bearer ' + jwt.sign(req.payload, process.env.MY_SECRET)
@@ -130,7 +130,7 @@
 
                         case "tweetsxuser":
                             http.request({
-                                method: 'get', port: 3000, path: '/users::tweets',
+                                method: 'get', port: 3000, path: '/users/tweets',
                                 headers: {
                                     'Content-type': 'application/json',
                                     'Authorization': 'Bearer ' + jwt.sign(req.payload, process.env.MY_SECRET)
