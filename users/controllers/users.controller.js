@@ -166,6 +166,9 @@
                         return resource.setResponse(res,
                             {
                                 status: 500,
+                                error:{
+                                    message: "Cannot update this user"
+                                },
                                 item: {
                                     "error": true,
                                     "data": {
@@ -181,6 +184,9 @@
                                 return resource.setResponse(res,
                                     {
                                         status: 500,
+                                        error:{
+                                            message: "Cannot update this user"
+                                        },
                                         item: {
                                             "error": true,
                                             "data": {
@@ -210,6 +216,9 @@
                 return resource.setResponse(res,
                     {
                         status: 400,
+                        error:{
+                            message: "Cannot update this user"
+                        },
                         item: {
                             "error": true,
                             "data": {

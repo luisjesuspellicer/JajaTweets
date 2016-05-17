@@ -65,7 +65,7 @@ function dashboardCtrl($scope, $http, authentication, $location, $sce,
             }
         }
         return res;
-    }
+    };
 
     /*
      * Return true if exists one tweet in mentionTweets that have id as identifier.
@@ -81,7 +81,7 @@ function dashboardCtrl($scope, $http, authentication, $location, $sce,
         }
         return res;
 
-    }
+    };
 
     /*
      * Return the length of the text that the user typed
@@ -95,7 +95,7 @@ function dashboardCtrl($scope, $http, authentication, $location, $sce,
                 self.num = 0;
             }
         }
-    }
+    };
 
     /*
      * Destroy own tweet with ID equal to 'id' in the view and make request to
@@ -133,7 +133,7 @@ function dashboardCtrl($scope, $http, authentication, $location, $sce,
 
 
         });
-    }
+    };
 
     /*
      * Destroy pending tweet with ID equal to 'id' in the view and make request to
@@ -153,7 +153,7 @@ function dashboardCtrl($scope, $http, authentication, $location, $sce,
         }).then(function (data) {
 
         });
-    }
+    };
 
     /*
      * If tweet with ID equal to 'id' is part of ownTweets do nothing. Else,
@@ -286,8 +286,6 @@ function dashboardCtrl($scope, $http, authentication, $location, $sce,
 
             for (var i = 0; i < self.ownTweets.length; i++) {
                 if (self.ownTweets[i].id_str == id && !self.ownTweets[i].retweeted) {
-
-                    console.log("enserio??");
                     spinnerService.show('ownSpinner');
                     spinnerService.show('homeSpinner');
                     spinnerService.show('mentionsSpinner');
@@ -354,7 +352,7 @@ function dashboardCtrl($scope, $http, authentication, $location, $sce,
             spinnerService.hide('ownSpinner');
             self.ownTweets = auxx;
         });
-    }
+    };
 
     /*
      * Make request to the back-end to refresh the view with new home tweets.
@@ -378,7 +376,7 @@ function dashboardCtrl($scope, $http, authentication, $location, $sce,
             spinnerService.hide('homeSpinner');
             self.accountTweets = auxx;
         });
-    }
+    };
 
     /*
      * Make request to the back-end to refresh the view with new pending weets.
@@ -396,14 +394,12 @@ function dashboardCtrl($scope, $http, authentication, $location, $sce,
         }).then(function (data) {
             var auxx = data.data.data.content;
             for (var i = 0;i<auxx.length; i++){
-                console.log(auxx[i].status);
                 auxx[i].status = $sce.trustAsHtml(self.parse2(self.parse3(self.parse(auxx[i].status))));
-                console.log(auxx[i].status);
             }
             spinnerService.hide('pendingSpinner');
             self.pendingTweets = auxx;
         });
-    }
+    };
 
     /*
      * Make request to the back-end to refresh the view with new mention tweets.
@@ -428,7 +424,7 @@ function dashboardCtrl($scope, $http, authentication, $location, $sce,
             self.mentions = auxx;
 
         });
-    }
+    };
 
     /*
      * Make request to back-end to send one tweet. If validDate is
@@ -479,7 +475,7 @@ function dashboardCtrl($scope, $http, authentication, $location, $sce,
                 self.ownTweets = self.updateOwn();
             }
         });
-    }
+    };
 
     /*
      * If the user click in checkbox, parse de date and call method sendTweet.
@@ -523,7 +519,7 @@ function dashboardCtrl($scope, $http, authentication, $location, $sce,
             spinnerService.show('homeSpinner');
             self.sendTweet();
         }
-    }
+    };
 
     /*
      * Parse urls to show it in interface.
@@ -538,7 +534,7 @@ function dashboardCtrl($scope, $http, authentication, $location, $sce,
             return ""
         }
 
-    }
+    };
 
     /*
      * Update in memory tweets when user click like.
@@ -548,7 +544,7 @@ function dashboardCtrl($scope, $http, authentication, $location, $sce,
         self.likeHome(id, type);
         self.likeMentions(id, type);
 
-    }
+    };
     self.likeOwn = function(id, type){
 
         for (var i = 0; i < self.ownTweets.length; i++) {
@@ -564,7 +560,7 @@ function dashboardCtrl($scope, $http, authentication, $location, $sce,
 
         }
 
-    }
+    };
     self.likeHome = function(id, type){
 
         for (var i = 0; i < self.accountTweets.length; i++) {
@@ -579,7 +575,7 @@ function dashboardCtrl($scope, $http, authentication, $location, $sce,
             }
         }
         spinnerService.hide('homeSpinner');
-    }
+    };
     self.likeMentions = function(id, type){
         for (var i = 0; i < self.mentions.length; i++) {
             if (self.mentions[i].id_str == id) {
@@ -593,7 +589,7 @@ function dashboardCtrl($scope, $http, authentication, $location, $sce,
             }
         }
         spinnerService.hide('mentionsSpinner');
-    }
+    };
 
     /*
      * Send url to backend shortenner and show the response in the view.
@@ -629,7 +625,7 @@ function dashboardCtrl($scope, $http, authentication, $location, $sce,
                 return '</span> ' + '<a href="' + 'https://twitter.com/hashtag/' + aux5.substring(1)
                     + '?src=hash' + '">' + hash +' </a><span>';
             }) + '</span>';
-    }
+    };
 
     /*
      * Parse user mention to show it in interface.
@@ -642,7 +638,7 @@ function dashboardCtrl($scope, $http, authentication, $location, $sce,
                 return '</span> ' + '<a href="' + 'https://twitter.com/' + aux6.substring(1)
                     + '?src=hash' + '">' + user +' </a><span>';
             }) + '</span>';
-    }
+    };
 
     /*
      * Update in memory if it's possible, in other case
@@ -653,7 +649,7 @@ function dashboardCtrl($scope, $http, authentication, $location, $sce,
         self.updateRtHome(id, type);
         self.updateRtMentions(id, type);
 
-    }
+    };
     self.updateRtHome = function(id, type){
 
         for (var i = 0; i < self.accountTweets.length; i++) {
@@ -669,7 +665,7 @@ function dashboardCtrl($scope, $http, authentication, $location, $sce,
                 i = self.accountTweets.length;
             }
         }
-    }
+    };
     self.updateRtMentions = function(id, type){
         for (var i = 0; i < self.mentions.length; i++) {
             if (self.mentions[i].id_str == id) {
@@ -683,7 +679,7 @@ function dashboardCtrl($scope, $http, authentication, $location, $sce,
                 i = self.mentions.length;
             }
         }
-    }
+    };
 
    // Refresh all section at start.
    self.updateOwn();

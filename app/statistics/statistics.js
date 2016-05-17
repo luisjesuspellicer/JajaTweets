@@ -110,8 +110,8 @@ function statisticsCtrl($http, $scope, authentication, $location, errorsService,
         errorsService.errorMessage = data.data.message || "Undefined error";
         $location.path('errors');
     }).then(function (data) {
-        vm.data1[0] = data.data.tweet_app | 0;
-        vm.data1[1] = data.data.tweet_total | 0;
+        vm.data1[0] = data.data.data.tweet_app | 0;
+        vm.data1[1] = data.data.data.tweet_total | 0;
     });
 
     // Gets all twitter accounts of current user

@@ -48,10 +48,10 @@ function profileCtrl($http, authentication, errorsService, $location, $routePara
             'Authorization': 'Bearer ' + authentication.getToken()
         }
     }).then(function(data) {
-        vm.newUser = data.data;
-        vm.credentials.name = data.data.name;
-        vm.credentials.email = data.data.email;
-        vm.credentials.oldEmail = data.data.email;
+        vm.newUser = data.data.data;
+        vm.credentials.name = data.data.data.name;
+        vm.credentials.email = data.data.data.email;
+        vm.credentials.oldEmail = data.data.data.email;
     }, function(error) {
         errorsService.errorCode = error.code;
         errorsService.errorMessage = error.data.data.message || "Undefined error";
