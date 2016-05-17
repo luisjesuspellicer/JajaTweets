@@ -11,14 +11,10 @@
     var passport = require('passport');
     var mongoose = require('mongoose');
     var Twitter = mongoose.model('twitter');
-    var User = mongoose.model('users');
     var user_required = require('../../config/policies.config').user_required;
     var TweetCommons = require('../../common/tweets');
     var TwitterCommons = require('../../common/twitter');
     var request = require('request');
-
-    // TODO: quit in production
-    var util = require('util');
 
 
     module.exports = function(app) {
