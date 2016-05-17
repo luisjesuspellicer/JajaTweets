@@ -36,6 +36,13 @@ function graphsCtrl($http, authentication, $location, errorsService, spinnerServ
     vm.labels1 = ["App","Twitter"];
     var tw_id=0, la_id=0, el_id=0;
 
+    // Checks if user is root
+    if (!authentication.isRoot()) {
+        errorsService.errorCode = 401;
+        errorsService.errorMessage = "Unauthorized operation.";
+        $location.path('errors');
+    }
+
     spinnerService.showAll();
 
     // Gets available data for graphs

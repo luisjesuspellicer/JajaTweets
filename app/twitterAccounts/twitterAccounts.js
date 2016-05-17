@@ -36,7 +36,6 @@ function twAccountsCtrl($window, $http, authentication, spinnerService, errorsSe
 
     // Checks if user is logged in
     if (!authentication.isLoggedIn()) {
-        console.log('unauth');
         errorsService.errorCode = 401;
         errorsService.errorMessage = "Unauthorized operation.";
         $location.path('errors');

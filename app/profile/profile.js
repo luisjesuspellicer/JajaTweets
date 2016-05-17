@@ -42,8 +42,6 @@ function profileCtrl($http, authentication, errorsService, $location, $routePara
         $location.path('errors');
     }
 
-    console.log($routeParams.id);
-
     // Get information from user profile
     $http.get('/users/'+$routeParams.id,{
         headers: {
@@ -62,7 +60,6 @@ function profileCtrl($http, authentication, errorsService, $location, $routePara
 
     // Submits new changes on the user profile
     function onSubmit() {
-        console.log(vm.credentials);
         if(vm.credentials.password=="" || !vm.credentials.password){
             console.log("Form validation error");
         } else {

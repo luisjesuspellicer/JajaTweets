@@ -86,7 +86,7 @@
                     <li ng-if="!nav.isLoggedIn()"><a href="#/signin"><i class="fa fa-sign-in fa-lg" aria-hidden="true"></i>&nbsp;Sign in</a></li>
                     <li ng-if="nav.isLoggedIn()"><a href="" ng-click="nav.logOut();console.log('foo');nav.loc.path('signin')"><i class="fa fa-sign-out fa-lg" aria-hidden="true"></i>&nbsp;Log out</a></li>
                     <li ng-if="nav.isLoggedIn()"><a ng-href="#/profile/{{nav.id()}}"><i class="fa fa-user fa-lg" aria-hidden="true"></i>&nbsp;Profile</a></li>
-                    <li ng-if="nav.isRoot()"><a href="#/signup"><i class="fa fa-sign-in fa-lg" aria-hidden="true"></i>&nbsp;Sign up</a></li>
+                    <li ng-if="nav.isRoot()"><a href="#/signup"><i class="fa fa-sign-in fa-lg" aria-hidden="true"></i>&nbsp;Create user</a></li>
                 </ul>
             </li>
             </ul>

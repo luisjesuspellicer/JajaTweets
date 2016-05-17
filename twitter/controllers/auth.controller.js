@@ -74,7 +74,6 @@
                                 if (!error && response.statusCode == 200) {
                                     res.redirect(process.env.CURRENT_DOMAIN + "/#/twitterAccounts");
                                 } else {
-                                    console.log("[AuthTwitter] - Cannot set in use new account")
                                     res.redirect(process.env.CURRENT_DOMAIN + '/#/errors');
                                 }
                             });

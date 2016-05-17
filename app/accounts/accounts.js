@@ -30,7 +30,6 @@ function accountsCtrl($http, authentication, errorsService, $location) {
      * Be sure that the user is logged in.
      */
     if (!authentication.isLoggedIn()) {
-        console.log('unauth');
         errorsService.errorCode = 401;
         errorsService.errorMessage = "Unauthorized operation.";
         $location.path('errors');
@@ -42,7 +41,7 @@ function accountsCtrl($http, authentication, errorsService, $location) {
             'Authorization': 'Bearer ' + authentication.getToken()
         }
     }).error(function(data, status, headers, config) {
-        console.log("GET users error");
+        console.log("[Accounts] - GET /users failed with "+status);
         errorsService.errorCode = status;
         errorsService.errorMessage = data.data.message || "Undefined error";
         $location.path('errors');
@@ -59,7 +58,7 @@ function accountsCtrl($http, authentication, errorsService, $location) {
                 'Authorization': 'Bearer ' + authentication.getToken()
             }
         }).error(function(data, status, headers, config) {
-            console.log("Delete user error");
+            console.log("[Accounts] - DELETE /users failed with "+status);
             errorsService.errorCode = status;
             errorsService.errorMessage = data.data.message || "Undefined error";
             $location.path('errors');

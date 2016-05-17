@@ -233,13 +233,7 @@
             Twitter.findOneAndUpdate({user: user.user}, 
                 {$set: {statuses_count: result.statuses_count},
                 $inc: { tweet_app: num_app }}, function(err, doc){
-                if(err) {
-                    console.log(err);
-                }
                 Twitter.find({user:user.user}, function(err,docs){
-                    if(err){
-                        console.log(err);
-                    }
                     var totalTwitter = 0;
                     var totalApp = 0;
                     for(var doc in docs){
@@ -248,11 +242,7 @@
                     }
                     User.findOneAndUpdate({email: user.user}, 
                         {$set: {tweet_total: totalTwitter, tweet_app: totalApp}},
-                        function(err, doc){
-                        if(err) {
-                            console.log(err);
-                        }
-                    });
+                        function(){});
                 });
             });
         });

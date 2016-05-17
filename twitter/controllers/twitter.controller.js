@@ -58,7 +58,6 @@
             TwitterCommons.getUserFromJWT(req, function(user){
                 Twitter.create(req.body, function(err){
                     if(err){
-                        console.log(err);
                         res.json({
                             "error": true,
                             "data" : {

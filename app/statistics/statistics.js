@@ -94,7 +94,6 @@ function statisticsCtrl($http, $scope, authentication, $location, errorsService,
 
     // Checks if user is loggged in
     if (!authentication.isLoggedIn()) {
-        console.log('unauth');
         errorsService.errorCode = 401;
         errorsService.errorMessage = "Unauthorized operation.";
         $location.path('errors');

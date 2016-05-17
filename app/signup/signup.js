@@ -42,7 +42,6 @@ function signupCtrl($http, errorsService, $location, authentication) {
 
     // Check if user is admin user
     if (!authentication.isRoot()) {
-        console.log('unauth');
         errorsService.errorCode = 401;
         errorsService.errorMessage = "Unauthorized operation.";
         $location.path('errors');

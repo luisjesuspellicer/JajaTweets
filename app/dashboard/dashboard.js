@@ -41,7 +41,6 @@ function dashboardCtrl($scope, $http, authentication, $location, $sce,
      * Be sure that the user is logged in.
      */
     if (!authentication.isLoggedIn()) {
-        console.log('unauth');
         errorsService.errorCode = 401;
         errorsService.errorMessage = "Unauthorized operation.";
         $location.path('errors');
@@ -128,7 +127,7 @@ function dashboardCtrl($scope, $http, authentication, $location, $sce,
                           headers, config) {
             console.log("DELETE own tweet error");
             errorsService.errorCode = status;
-            errorsService.errorMessage = data.data.message || "Undefined error";
+            errorsService.errorMessage = (data.data?data.data.message:null) || "Undefined error";
             $location.path('errors');
         }).then(function (data) {
 
@@ -149,7 +148,7 @@ function dashboardCtrl($scope, $http, authentication, $location, $sce,
         }).error(function(data, status, headers, config) {
             console.log("DELETE pending tweet error");
             errorsService.errorCode = status;
-            errorsService.errorMessage = data.data.message || "Undefined error";
+            errorsService.errorMessage = (data.data?data.data.message:null) || "Undefined error";
             $location.path('errors');
         }).then(function (data) {
 
@@ -174,7 +173,7 @@ function dashboardCtrl($scope, $http, authentication, $location, $sce,
             }).error(function (data, status, headers, config) {
                 console.log("Retweet error");
                 errorsService.errorCode = status;
-                errorsService.errorMessage = data.data.message || "Undefined error";
+                errorsService.errorMessage = (data.data?data.data.message:null) || "Undefined error";
                 $location.path('errors');
             }).then(function (data) {
                 self.updateRtById(id,true);
@@ -202,7 +201,7 @@ function dashboardCtrl($scope, $http, authentication, $location, $sce,
         }).error(function(data, status, headers, config) {
             console.log("UnRetweet error");
             errorsService.errorCode = status;
-            errorsService.errorMessage = data.data.message || "Undefined error";
+            errorsService.errorMessage = (data.data?data.data.message:null) || "Undefined error";
             $location.path('errors');
         }).then(function(data) {
             self.updateRtById(id,false);
@@ -237,7 +236,7 @@ function dashboardCtrl($scope, $http, authentication, $location, $sce,
                     }).error(function (data, status, headers, config) {
                         console.log("Favorite error");
                         errorsService.errorCode = status;
-                        errorsService.errorMessage = data.data.message || "Undefined error";
+                        errorsService.errorMessage = (data.data?data.data.message:null) || "Undefined error";
                         $location.path('errors');
                     }).then(function (data) {
 
@@ -260,7 +259,7 @@ function dashboardCtrl($scope, $http, authentication, $location, $sce,
             }).error(function (data, status, headers, config) {
                 console.log("Favorite error");
                 errorsService.errorCode = status;
-                errorsService.errorMessage = data.data.message || "Undefined error";
+                errorsService.errorMessage = (data.data?data.data.message:null) || "Undefined error";
                 $location.path('errors');
             }).then(function (data) {
                 self.updateOwn();
@@ -300,7 +299,7 @@ function dashboardCtrl($scope, $http, authentication, $location, $sce,
                     }).error(function (data, status, headers, config) {
                         console.log("UnRetweet error");
                         errorsService.errorCode = status;
-                        errorsService.errorMessage = data.data.message || "Undefined error";
+                        errorsService.errorMessage = (data.data?data.data.message:null) || "Undefined error";
                         $location.path('errors');
                     }).then(function (data) {
                         self.updateLikeById(id,false);
@@ -319,7 +318,7 @@ function dashboardCtrl($scope, $http, authentication, $location, $sce,
             }).error(function (data, status, headers, config) {
                 console.log("UnRetweet error");
                 errorsService.errorCode = status;
-                errorsService.errorMessage = data.data.message || "Undefined error";
+                errorsService.errorMessage = (data.data?data.data.message:null) || "Undefined error";
                 $location.path('errors');
             }).then(function (data) {
                 self.updateOwn();
@@ -344,7 +343,7 @@ function dashboardCtrl($scope, $http, authentication, $location, $sce,
         }).error(function(data, status, headers, config) {
             console.log("GET own tweets error");
             errorsService.errorCode = status;
-            errorsService.errorMessage = data.data.message || "Undefined error";
+            errorsService.errorMessage = (data.data?data.data.message:null) || "Undefined error";
             $location.path('errors');
         }).then(function (data) {
             var auxx = data.data.data.content;
@@ -368,7 +367,7 @@ function dashboardCtrl($scope, $http, authentication, $location, $sce,
         }).error(function(data, status, headers, config) {
             console.log("GET timeline error");
             errorsService.errorCode = status;
-            errorsService.errorMessage = data.data.message || "Undefined error";
+            errorsService.errorMessage = (data.data?data.data.message:null) || "Undefined error";
             $location.path('errors');
         }).then(function(data) {
             var auxx = data.data.data.content;
@@ -392,7 +391,7 @@ function dashboardCtrl($scope, $http, authentication, $location, $sce,
         }).error(function(data, status, headers, config) {
             console.log("GET pending tweets error");
             errorsService.errorCode = status;
-            errorsService.errorMessage = data.data.message || "Undefined error";
+            errorsService.errorMessage = (data.data?data.data.message:null) || "Undefined error";
             $location.path('errors');
         }).then(function (data) {
             var auxx = data.data.data.content;
@@ -417,7 +416,7 @@ function dashboardCtrl($scope, $http, authentication, $location, $sce,
         }).error(function(data, status, headers, config) {
             console.log("GET mentions error");
             errorsService.errorCode = status;
-            errorsService.errorMessage = data.data.message || "Undefined error";
+            errorsService.errorMessage = (data.data?data.data.message:null) || "Undefined error";
             $location.path('errors');
         }).then(function (data) {
             var auxx = data.data.data.content;
@@ -466,7 +465,7 @@ function dashboardCtrl($scope, $http, authentication, $location, $sce,
         }).error(function (data, status, headers, config) {
             console.log("GET timeline error");
             errorsService.errorCode = status;
-            errorsService.errorMessage = data.data.message || "Undefined error";
+            errorsService.errorMessage = (data.data?data.data.message:null) || "Undefined error";
             $location.path('errors');
         }).then(function (data) {
             if(validDate > new Date()){
@@ -515,7 +514,7 @@ function dashboardCtrl($scope, $http, authentication, $location, $sce,
                     self.sendTweet(d);
                 }else {
                     errorsService.errorCode = status;
-                    errorsService.errorMessage = data.data.message || "Undefined error";
+                    errorsService.errorMessage = (data.data?data.data.message:null) || "Undefined error";
                     $location.path('errors');
                 }
             }
@@ -610,7 +609,7 @@ function dashboardCtrl($scope, $http, authentication, $location, $sce,
         }).error(function(data, status, headers, config) {
             console.log("Add shortened URL error");
             errorsService.errorCode = status;
-            errorsService.errorMessage = data.data.message || "Undefined error";
+            errorsService.errorMessage = (data.data?data.data.message:null) || "Undefined error";
             $location.path('errors');
         }).then(function(data) {
             delete self.link ; // clear the form so our user is ready to enter another

@@ -31,7 +31,6 @@ function shortCtrl($http, authentication, $scope, spinnerService, errorsService,
      * Be sure that the user is logged in.
      */
     if (!authentication.isLoggedIn()) {
-        console.log('unauth');
         errorsService.errorCode = 401;
         errorsService.errorMessage = "Unauthorized operation.";
         $location.path('errors');

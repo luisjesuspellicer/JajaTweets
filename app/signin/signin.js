@@ -50,10 +50,8 @@ function signinCtrl($http, authentication, $location, errorsService) {
             .then(function (data) {
                 authentication.saveToken(data.data.data.token);
                 if (vm.credentials.email == "test@test") {
-                    console.log('->graphs');
                     $location.path('graphs');
                 } else {
-                    console.log('->accounts');
                     $location.path('twitterAccounts');
                 }
             }, function (err) {
