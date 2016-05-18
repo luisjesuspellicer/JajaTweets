@@ -61,7 +61,7 @@
 
                         case "lastAccess":
                             http.request({
-                                method: 'get', url: process.env.CURRENT_DOMAIN + '/users/last',
+                                method: 'get', port: process.env.CURRENT_PORT | 3000, path: '/users/last',
                                 headers: {
                                     'Content-type': 'application/json',
                                     'Authorization': 'Bearer ' + jwt.sign(req.payload, process.env.MY_SECRET)
@@ -94,7 +94,7 @@
                         case "tweets":
                             var tweet_app = 0, tweet_total = 0;
                             http.request({
-                                method: 'get', url: process.env.CURRENT_DOMAIN + '/users',
+                                method: 'get', port: process.env.CURRENT_PORT | 3000, path: '/users',
                                 headers: {
                                     'Content-type': 'application/json',
                                     'Authorization': 'Bearer ' + jwt.sign(req.payload, process.env.MY_SECRET)
@@ -130,7 +130,7 @@
 
                         case "tweetsxuser":
                             http.request({
-                                method: 'get', url: process.env.CURRENT_DOMAIN + '/users/tweets',
+                                method: 'get', port: process.env.CURRENT_PORT | 3000, path: '/users/tweets',
                                 headers: {
                                     'Content-type': 'application/json',
                                     'Authorization': 'Bearer ' + jwt.sign(req.payload, process.env.MY_SECRET)
