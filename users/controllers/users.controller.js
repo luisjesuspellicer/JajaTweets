@@ -319,7 +319,7 @@
      * @param {String} token
      */
     function updateUsers(num,token) {
-        http.request({ method: 'get', path:'/data',
+        http.request({ method: 'get', url: process.env.CURRENT_DOMAIN + '/data',
             headers: {
                 'Content-type': 'application/json',
                 'Authorization': 'Bearer '+token
@@ -338,7 +338,7 @@
                     if (data[i].name == "subunsub") {
                         if (num>0) data[i].chart[0]++;
                         else { data[i].chart[1]++ }
-                        var req = http.request({ method: 'put', path:'/data/'+data[i]._id,
+                        var req = http.request({ method: 'put', url: process.env.CURRENT_DOMAIN + '/data/'+data[i]._id,
                             headers: {
                                 'Content-type': 'application/json',
                                 'Authorization': 'Bearer '+token
