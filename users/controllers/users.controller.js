@@ -319,7 +319,7 @@
      * @param {String} token
      */
     function updateUsers(num,token) {
-        http.request({ method: 'get',  port: process.env.CURRENT_PORT | 3000,  path:'/data',
+        http.request({ method: 'get',  port: process.env.PORT | 3000,  path:'/data',
             headers: {
                 'Content-type': 'application/json',
                 'Authorization': 'Bearer '+token
@@ -338,7 +338,8 @@
                     if (data[i].name == "subunsub") {
                         if (num>0) data[i].chart[0]++;
                         else { data[i].chart[1]++ }
-                        var req = http.request({ method: 'put',  port: process.env.CURRENT_PORT | 3000,  path:'/data/'+data[i]._id,
+                        var req = http.request({ method: 'put',  port: process.env.PORT | 3000,
+                            path:'/data/'+data[i]._id,
                             headers: {
                                 'Content-type': 'application/json',
                                 'Authorization': 'Bearer '+token
