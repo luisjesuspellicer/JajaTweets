@@ -505,9 +505,12 @@ function dashboardCtrl($scope, $http, authentication, $location, $sce,
 
                     var min = t[1];
                     var hours = t[0];
-                    var d = new Date(new Date(parseInt(year),parseInt(month),
-                        parseInt(day),parseInt(hours),parseInt(min),0,0))
+                    console.log(day + month + year + min + hours);
+                    var d = new Date(new Date(parseInt(year),parseInt(month)-1,
+                        parseInt(day),parseInt(hours),parseInt(min),0,0));
+                    console.log(d);
                     self.sendTweet(d);
+                    console.log()
                 }else {
                     errorsService.errorCode = status;
                     errorsService.errorMessage = (data.data?data.data.message:null) || "Undefined error";

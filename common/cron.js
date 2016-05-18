@@ -18,7 +18,7 @@
         var TweetCommons = require('./tweets');
 
         // Each minute.
-        new CronJob('*/1 * * * * *', function () {
+        new CronJob('00 * * * * *', function () {
             var date = new Date();
             Tweet.find({}, function (err, result) {
                 for (var tweet in result) {
