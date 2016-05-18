@@ -166,7 +166,7 @@ function dashboardCtrl($scope, $http, authentication, $location, $sce,
             spinnerService.show('homeSpinner');
             spinnerService.show('mentionsSpinner');
 
-            $http.get('/tweets/' + id + '/retweet', {
+            $http.put('/tweets/' + id + '/retweet', "", {
                 headers: {
                     'Authorization': 'Bearer ' + authentication.getToken()
                 }
@@ -194,7 +194,7 @@ function dashboardCtrl($scope, $http, authentication, $location, $sce,
         spinnerService.show('ownSpinner');
         spinnerService.show('homeSpinner');
         spinnerService.show('mentionsSpinner');
-        $http.get('/tweets/' + id + '/unretweet',{
+        $http.put('/tweets/' + id + '/unretweet', "", {
             headers: {
                 'Authorization': 'Bearer ' + authentication.getToken()
             }
@@ -229,7 +229,7 @@ function dashboardCtrl($scope, $http, authentication, $location, $sce,
             for (var i = 0; i < self.ownTweets.length; i++) {
                 if (self.ownTweets[i].id_str == id && !self.ownTweets[i].retweeted) {
                     //spinnerService.show('loadingSpinner');
-                    $http.get('/tweets/' + id + '/favorite', {
+                    $http.put('/tweets/' + id + '/favorite', "", {
                         headers: {
                             'Authorization': 'Bearer ' + authentication.getToken()
                         }
@@ -248,11 +248,11 @@ function dashboardCtrl($scope, $http, authentication, $location, $sce,
                     });
                 }
             }
-            spinnerService.hide('mentionsSpinner')
+            spinnerService.hide('mentionsSpinner');
             spinnerService.hide('ownSpinner');
             spinnerService.hide('homeSpinner');
         }else{
-            $http.get('/tweets/' + id + '/favorite', {
+            $http.put('/tweets/' + id + '/favorite', "", {
                 headers: {
                     'Authorization': 'Bearer ' + authentication.getToken()
                 }
@@ -290,7 +290,7 @@ function dashboardCtrl($scope, $http, authentication, $location, $sce,
                     spinnerService.show('homeSpinner');
                     spinnerService.show('mentionsSpinner');
 
-                    $http.get('/tweets/' + id + '/unfavorite', {
+                    $http.put('/tweets/' + id + '/unfavorite', "", {
                         headers: {
                             'Authorization': 'Bearer ' + authentication.getToken()
                         }
@@ -309,7 +309,7 @@ function dashboardCtrl($scope, $http, authentication, $location, $sce,
             spinnerService.hide('ownSpinner');
             spinnerService.hide('homeSpinner');
         }else{
-            $http.get('/tweets/' + id + '/unfavorite', {
+            $http.put('/tweets/' + id + '/unfavorite', "", {
                 headers: {
                     'Authorization': 'Bearer ' + authentication.getToken()
                 }
@@ -321,7 +321,7 @@ function dashboardCtrl($scope, $http, authentication, $location, $sce,
             }).then(function (data) {
                 self.updateOwn();
                 self.updateLikeById(id, false);
-                spinnerService.hide('mentionsSpinner')
+                spinnerService.hide('mentionsSpinner');
                 spinnerService.hide('ownSpinner');
                 spinnerService.hide('homeSpinner');
             });
@@ -495,7 +495,7 @@ function dashboardCtrl($scope, $http, authentication, $location, $sce,
                 // Date format
 
                 var aux2 = "" +  self.datePending;
-                var aux = aux2.split(", ")
+                var aux = aux2.split(", ");
                 var d = aux[0].split("/");
                 var t = aux[1].split(":");
                 if(aux.length ==2 && d.length == 3 && t.length == 2) {

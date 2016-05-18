@@ -323,7 +323,7 @@
          * Get parameters required:
          * - id: unique tweet id (from Twitter "id_str").
          */
-        app.get('/tweets/:id/retweet', user_required.before, function(req, res, next) {
+        app.put('/tweets/:id/retweet', user_required.before, function(req, res, next) {
             TweetCommons.getUserFromJWT(req, function(user){
                 if(user==null){
                     next();
@@ -359,7 +359,7 @@
          * Get parameters required:
          * - id: unique tweet id (from Twitter "id_str").
          */
-        app.get('/tweets/:id/unretweet', user_required.before, function(req, res, next) {
+        app.put('/tweets/:id/unretweet', user_required.before, function(req, res, next) {
             TweetCommons.getUserFromJWT(req, function(user){
                 if(user==null){
                     next();
@@ -403,7 +403,7 @@
          * Get parameters required:
          * - id: unique tweet id (from Twitter "id_str").
          */
-        app.get('/tweets/:id/favorite', user_required.before, function(req, res, next) {
+        app.put('/tweets/:id/favorite', user_required.before, function(req, res, next) {
             TweetCommons.getUserFromJWT(req, function(user){
                 if(user==null){
                     next();
@@ -439,7 +439,7 @@
          * Get parameters required:
          * - id: unique tweet id (from Twitter "id_str").
          */
-        app.get('/tweets/:id/unfavorite', user_required.before, function(req, res, next) {
+        app.put('/tweets/:id/unfavorite', user_required.before, function(req, res, next) {
             TweetCommons.getUserFromJWT(req, function(user){
                 if(user==null){
                     next();

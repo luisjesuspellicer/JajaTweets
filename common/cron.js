@@ -28,7 +28,7 @@
                         user: result[tweet].user};
 
                     // If date is bigger than tweet's date, post it.
-                    if (result[tweet].date < date) {
+                    if (result[tweet].date <= date) {
                         OAuth.initTwitterOauth(function(oa){
                             oa.post(
                                 "https://api.twitter.com/1.1/statuses/update.json"

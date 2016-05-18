@@ -115,7 +115,7 @@
          * Set to not use all twitter accounts of current user (by unique id).
          * Local user authentication required.
          */
-        app.get('/twitter/notUse', user_required.before, function(req, res, next) {
+        app.put('/twitter/notUse', user_required.before, function(req, res, next) {
             TwitterCommons.notUseAnyAccount(req, function(err){
                 if(err){
                     res.json({
@@ -177,7 +177,7 @@
          * Also set to not use any other possible twitter accounts of current user.
          * Local user authentication required.
          */
-        app.get('/twitter/:id/use', user_required.before, function(req, res, next) {
+        app.put('/twitter/:id/use', user_required.before, function(req, res, next) {
             TwitterCommons.getUserFromJWT(req, function(user){
                 TwitterCommons.notUseAnyAccount(req, function (err){
                     if (err){
@@ -231,7 +231,7 @@
          * Update statistics of one twitter account of current user (by unique id).
          * Local user authentication required.
          */
-        app.get('/twitter/:id/update', user_required.before, function(req, res, next) {
+        app.put('/twitter/:id/update', user_required.before, function(req, res, next) {
             if(req.params.id=="update" || req.params.id=="notUse"){
                 next();
             } else {
@@ -280,7 +280,7 @@
          * Set to not use one twitter accounts of current user (by unique id).
          * Local user authentication required.
          */
-        app.get('/twitter/:id/notUse', user_required.before, function(req, res, next) {
+        app.put('/twitter/:id/notUse', user_required.before, function(req, res, next) {
             TwitterCommons.getUserFromJWT(req, function(user){
                 Twitter.findOneAndUpdate({user: user.email, id_str: req.params.id}, {$set: {in_use: false}},
                     {new: true}, function(err, doc){

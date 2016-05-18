@@ -62,7 +62,7 @@
                             // Now setting as active account (using)
                             request({
                                     url: process.env.CURRENT_DOMAIN + '/twitter/' + mainContent.id_str + '/use',
-                                    method: 'GET',
+                                    method: 'PUT',
                                     headers: {
                                         'Authorization': 'Bearer ' + req.session.jwt
                                     }

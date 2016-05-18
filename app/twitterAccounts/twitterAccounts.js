@@ -83,7 +83,7 @@ function twAccountsCtrl($window, $http, authentication, spinnerService, errorsSe
     // Update info for one twitter account by id
     vm.update = function(id) {
         spinnerService.show('loadingSpinner');
-        $http.get('/twitter/'+id+'/update',{
+        $http.put('/twitter/'+id+'/update', "", {
             headers: {
                 'Authorization': 'Bearer ' + authentication.getToken()
             }
@@ -107,7 +107,7 @@ function twAccountsCtrl($window, $http, authentication, spinnerService, errorsSe
     // Set to use one twitter account by id
     vm.use = function(id) {
         spinnerService.show('loadingSpinner');
-        $http.get('/twitter/'+id+'/use',{
+        $http.put('/twitter/'+id+'/use', "", {
             headers: {
                 'Authorization': 'Bearer ' + authentication.getToken()
             }
