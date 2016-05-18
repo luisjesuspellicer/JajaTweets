@@ -94,7 +94,7 @@
                         case "tweets":
                             var tweet_app = 0, tweet_total = 0;
                             http.request({
-                                method: 'get', port: 3000, path: '/users',
+                                method: 'get', path: '/users',
                                 headers: {
                                     'Content-type': 'application/json',
                                     'Authorization': 'Bearer ' + jwt.sign(req.payload, process.env.MY_SECRET)
@@ -130,7 +130,7 @@
 
                         case "tweetsxuser":
                             http.request({
-                                method: 'get', port: 3000, path: '/users/tweets',
+                                method: 'get', path: '/users/tweets',
                                 headers: {
                                     'Content-type': 'application/json',
                                     'Authorization': 'Bearer ' + jwt.sign(req.payload, process.env.MY_SECRET)
