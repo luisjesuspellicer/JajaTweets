@@ -16,7 +16,7 @@ Proyecto de sistemas y tecnologías Web (2016).
   export TWITTER_CONSUMER_KEY="[Your Twitter app consumer key]"
   export TWITTER_CONSUMER_SECRET="[Your Twitter app consumer secret]"
   export CURRENT_DOMAIN="[Domain where the app is going to be executed, ex: http://localhost:3000]"
-  export CURRENT_PORT="[Port where the app is going to be listening, ex: 80]"
+  export PORT="[Port where the app is going to be listening, ex: 80]"
   ```
 
 3. Run "npm test" to test the application backend (or execute the script "test.sh").
