@@ -49,11 +49,7 @@ function signinCtrl($http, authentication, $location, errorsService) {
         $http.post('/login', vm.credentials)
             .then(function (data) {
                 authentication.saveToken(data.data.data.token);
-                if (vm.credentials.email == "test@test") {
-                    $location.path('graphs');
-                } else {
-                    $location.path('twitterAccounts');
-                }
+                $location.path('twitterAccounts');
             }, function (err) {
                 if (err.status==401 && err.data.message=="User not found") {
                     vm.wrong = true;
