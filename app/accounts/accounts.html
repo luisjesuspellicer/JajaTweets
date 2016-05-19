@@ -13,7 +13,6 @@
         <th>In app tweets</th>
         <th>Total tweets</th>
         <th>Last access</th>
-        <th>Subscribed</th>
     </tr>
     <tr ng-repeat="user in acc.users">
         <td>
@@ -29,6 +28,5 @@
         <td>{{user.tweet_app?user.tweet_app:0}}</td>
         <td>{{user.tweet_total?user.tweet_total:0}}</td>
         <td>{{user.lastAccess}}</td>
-        <td><span ng-repeat="hashtag in users.subscribed">{{hashtag}}</span></td>
     </tr>
 </table>

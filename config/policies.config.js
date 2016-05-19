@@ -36,14 +36,16 @@
      */
     var require_admin = function (req, res, next) { // Need to be admin
         if (req.payload && req.payload.email != "test@test") {
-            res.status(401)
-                .json({
-                    "error": false,
-                    "data": {
-                        "message": "Insufficient privileges.",
-                        "url": process.env.CURRENT_DOMAIN + "/login"
-                    }
-                })
+            if(!res.finished) {
+                res.status(401)
+                    .json({
+                        "error": false,
+                        "data": {
+                            "message": "Insufficient privileges.",
+                            "url": process.env.CURRENT_DOMAIN + "/login"
+                        }
+                    })
+            }
         } else {
             next();
         }

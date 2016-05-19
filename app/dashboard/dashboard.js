@@ -468,11 +468,12 @@ function dashboardCtrl($scope, $http, authentication, $location, $sce,
 
                 self.updatePending();
             }else{
-                spinerService.show('ownSpinner');
+                spinnerService.show('ownSpinner');
                 spinnerService.show('homeSpinner');
                 self.tweet = "";
                 self.ownTweets = self.updateHome();
                 self.ownTweets = self.updateOwn();
+                spinnerService.hide('pendingSpinner');
             }
         });
     };
