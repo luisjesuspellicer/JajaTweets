@@ -18,6 +18,7 @@
     var Tweets = mongoose.model('tweets');
     var Shortened = mongoose.model('shortened');
     var http = require('http');
+    var request = require('request');
     var _ = require('lodash');
     var jwt = require('jsonwebtoken');
 
@@ -319,39 +320,30 @@
      * @param {String} token
      */
     function updateUsers(num,token) {
-        http.request({ method: 'get', url: process.env.CURRENT_DOMAIN, port: process.env.PORT | 3000,  path:'/data',
+        request({ method: 'GET', url: process.env.CURRENT_DOMAIN + '/data',
             headers: {
                 'Content-type': 'application/json',
                 'Authorization': 'Bearer '+token
             }
-        }, function (res) {
-            var result = "";
-            res.on('data', function (chunk) {
-                result += chunk.toString();
-            });
-            res.on('end', function() {
+        }, function (error, response, body) {
                 var i = -1;
-
-                var data = JSON.parse(result);
+                var data = JSON.parse(body);
                 do {
                     i++;
                     if (data[i].name == "subunsub") {
                         if (num>0) data[i].chart[0]++;
                         else { data[i].chart[1]++ }
-                        var req = http.request({ method: 'put', url: process.env.CURRENT_DOMAIN,
-                            port: process.env.PORT | 3000,
-                            path:'/data/'+data[i]._id,
+                        request({ method: 'PUT', url: process.env.CURRENT_DOMAIN + '/data/'+data[i]._id,
                             headers: {
                                 'Content-type': 'application/json',
                                 'Authorization': 'Bearer '+token
-                            }
+                            },
+                            body: JSON.stringify(data[i])
+                        }, function(error, response, body){
                         });
-                        req.write(JSON.stringify(data[i]));
-                        req.end();
                     }
                 } while (i < data.length && data[i].name != "subunsub");
-            })
-        }).end();
+            });
     }
 
 })();

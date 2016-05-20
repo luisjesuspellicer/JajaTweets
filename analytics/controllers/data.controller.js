@@ -9,12 +9,14 @@
 
     var mongoose = require('mongoose');
     var http = require('http');
+    var request = require('request');
     var Resource = require('resourcejs');
     var _ = require('lodash');
     var Data = mongoose.model('data');
     var admin_required = require('../../config/policies.config').admin_required;
     var user_required = require('../../config/policies.config').user_required;
     var jwt = require('jsonwebtoken');
+    
 
     var error = {
         status: 500,
@@ -60,106 +62,85 @@
                             break;
 
                         case "lastAccess":
-                            http.request({
-                                method: 'get',
-                                url: process.env.CURRENT_DOMAIN,
-                                port: process.env.PORT | 3000, path: '/users/last',
+                            request({
+                                method: 'GET',
+                                url: process.env.CURRENT_DOMAIN + '/users/last',
                                 headers: {
                                     'Content-type': 'application/json',
                                     'Authorization': 'Bearer ' + jwt.sign(req.payload, process.env.MY_SECRET)
                                 }
-                            }, function (subres) {
-                                var result = "";
-                                subres.on('data', function (chunk) {
-                                    result += chunk.toString();
+                            }, function (error, response, body) {
+                                Data.findById(_id, function (err, data) {
+                                    data.chart = JSON.parse(body);
+                                    data.save();
                                 });
-                                subres.on('end', function () {
-                                    Data.findById(_id, function (err, data) {
-                                        data.chart = JSON.parse(result);
-                                        data.save();
-                                    });
-                                    return resource.setResponse(res, {
-                                        "status": 200,
-                                        "item": {
-                                            "error": false,
-                                            "data": {
-                                                "chart": JSON.parse(result),
-                                                "url": process.env.CURRENT_DOMAIN + "/data"
-                                            }
+                                return resource.setResponse(res, {
+                                    "status": 200,
+                                    "item": {
+                                        "error": false,
+                                        "data": {
+                                            "chart": JSON.parse(body),
+                                            "url": process.env.CURRENT_DOMAIN + "/data"
                                         }
+                                    }
 
-                                    }, next);
-                                })
+                                }, next);
                             }).end();
                             break;
 
                         case "tweets":
                             var tweet_app = 0, tweet_total = 0;
-                            http.request({
-                                method: 'get',
-                                url: process.env.CURRENT_DOMAIN,
-                                port: process.env.PORT | 3000, path: '/users',
+                            request({
+                                method: 'GET',
+                                url: process.env.CURRENT_DOMAIN + '/users',
                                 headers: {
                                     'Content-type': 'application/json',
                                     'Authorization': 'Bearer ' + jwt.sign(req.payload, process.env.MY_SECRET)
                                 }
-                            }, function (subres) {
-                                var result = "";
-                                subres.on('data', function (chunk) {
-                                    result += chunk.toString();
+                            }, function (error, response, body) {
+                                JSON.parse(body).forEach(function (user) {
+                                    tweet_app += user.tweet_app ? user.tweet_app : 0;
+                                    tweet_total += user.tweet_total ? user.tweet_total : 0;
                                 });
-                                subres.on('end', function () {
-                                    JSON.parse(result).forEach(function (user) {
-                                        tweet_app += user.tweet_app ? user.tweet_app : 0;
-                                        tweet_total += user.tweet_total ? user.tweet_total : 0;
-                                    });
 
-                                    data.chart = [tweet_app, tweet_total];
-                                    data.save();
+                                data.chart = [tweet_app, tweet_total];
+                                data.save();
 
-                                    return resource.setResponse(res, {
-                                        "status": 200,
-                                        "item": {
-                                            "error": false,
-                                            "data": {
-                                                "chart": data,
-                                                "url": process.env.CURRENT_DOMAIN + "/data"
-                                            }
+                                return resource.setResponse(res, {
+                                    "status": 200,
+                                    "item": {
+                                        "error": false,
+                                        "data": {
+                                            "chart": data,
+                                            "url": process.env.CURRENT_DOMAIN + "/data"
                                         }
+                                    }
 
-                                    }, next);
-                                })
-                            }).end();
+                                }, next);
+                            });
                             break;
 
                         case "tweetsxuser":
-                            http.request({
-                                method: 'get',
-                                url: process.env.CURRENT_DOMAIN,
-                                port: process.env.PORT | 3000, path: '/users/tweets',
+                            request({
+                                method: 'GET',
+                                url: process.env.CURRENT_DOMAIN + '/users/tweets',
                                 headers: {
                                     'Content-type': 'application/json',
                                     'Authorization': 'Bearer ' + jwt.sign(req.payload, process.env.MY_SECRET)
                                 }
-                            }, function (subres) {
-                                var result = "";
-                                subres.on('data', function (chunk) {
-                                    result += chunk.toString();
-                                });
-                                subres.on('end', function() {
+                            }, function (error, response, body) {
                                     return resource.setResponse(res, {
                                         "status": 200,
                                         "item": {
                                             "error": false,
                                             "data": {
-                                                "chart": JSON.parse(result),
+                                                "chart": JSON.parse(body),
                                                 "url": process.env.CURRENT_DOMAIN + "/data"
                                             }
                                         }
 
                                     }, next);
-                                })
-                            }).end();
+                            });
                             break;
                     }
                 }
