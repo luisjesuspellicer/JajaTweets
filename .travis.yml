@@ -1,10 +1,5 @@
 language: node_js
 node_js:
 - 5.10.1
-deploy:
-  app: jajatweets
-  provider: heroku
-  api_key:
-    secure: IomzboeinxZY6WONg596zgtKPUrlIB94/ycUZIY7q2sm20RXQUT8yeS3a4pB2teksnWDZ+1lTarKF94QD4V6HBMWtyL5QXNTAHHvTtUjFPaCB6/zUH9i5acWNt+ItPUklV5VYmRKqRtZ+/nz+O/LVQuJMCbgP2dmq9tZp5FmkD95bJke/cw45uMj6uqwaJa7Z7iWOCElq9tPQB5jprAtgbbUJXwjSBXElB3NoX0AiAYas3jrf0FZc00yfzZPbLxtuLYzp/C3BlOEwAvFY7CTR2iRQhpMO3vUd6sx7X3wShSeJQF9yl4o9ibabp5fLOPtRDfsgTqMngKNhdWKqzLNis8M/L36ZHfuxgLRZm/k3e0HTGM9mDXpnSM9J0su//3IoXh3ghBh+oSIFfPEd7nvAAXysJMtV7OugLZI9YnIAX/NfDWPVLL919P5oP/Jou3pXK1DUzSnhAMa04sakW8jjL8SbHxZpwyaSIeISeFKYiOjgIqq+FhoKvAtoeiwST29aPrmsQ++LM3I+rPh6QAO1Vdnm9LjMYGVXFjFIF/l0CHcr+I6STjdKdA/HXUZa5OmVq/gAAG2kwE86tL/vy1MukKIlcOUEJembeNSpF3s2FH9OQ9VUYoEnb95+ITSTL5Kkml3bBZYgug8N/VNeOgDY9c3UKUd8kibxaKhebLLy3A=
 notifications:
   email: false
